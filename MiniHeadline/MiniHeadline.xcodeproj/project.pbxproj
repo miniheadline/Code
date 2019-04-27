@@ -26,6 +26,12 @@
 		1B09D1C0226B013700BB7480 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09D1B9226B013700BB7480 /* camera.png */; };
 		1B09D1C1226B013700BB7480 /* video_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09D1BA226B013700BB7480 /* video_selected.png */; };
 		1B09D1C2226B013700BB7480 /* personal_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09D1BB226B013700BB7480 /* personal_unselected.png */; };
+		E84031332273EE75000B98E1 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E84031322273EE75000B98E1 /* SettingViewController.m */; };
+		E8523D3E2273568C0067C5CD /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8523D3D2273568C0067C5CD /* UIButton+ImageTitleStyle.m */; };
+		E8AA52FC2271F8B700E9A3C5 /* pinglun.png in Resources */ = {isa = PBXBuildFile; fileRef = E8AA52F82271F8B700E9A3C5 /* pinglun.png */; };
+		E8AA52FD2271F8B700E9A3C5 /* lishixiao.png in Resources */ = {isa = PBXBuildFile; fileRef = E8AA52F92271F8B700E9A3C5 /* lishixiao.png */; };
+		E8AA52FE2271F8B700E9A3C5 /* shoucang.png in Resources */ = {isa = PBXBuildFile; fileRef = E8AA52FA2271F8B700E9A3C5 /* shoucang.png */; };
+		E8AA52FF2271F8B700E9A3C5 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8AA52FB2271F8B700E9A3C5 /* dianzan.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +61,14 @@
 		1B09D1B9226B013700BB7480 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
 		1B09D1BA226B013700BB7480 /* video_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video_selected.png; sourceTree = "<group>"; };
 		1B09D1BB226B013700BB7480 /* personal_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = personal_unselected.png; sourceTree = "<group>"; };
+		E84031312273EE75000B98E1 /* SettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
+		E84031322273EE75000B98E1 /* SettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
+		E8523D3C227356690067C5CD /* UIButton+ImageTitleStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+ImageTitleStyle.h"; sourceTree = "<group>"; };
+		E8523D3D2273568C0067C5CD /* UIButton+ImageTitleStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ImageTitleStyle.m"; sourceTree = "<group>"; };
+		E8AA52F82271F8B700E9A3C5 /* pinglun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinglun.png; sourceTree = "<group>"; };
+		E8AA52F92271F8B700E9A3C5 /* lishixiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lishixiao.png; sourceTree = "<group>"; };
+		E8AA52FA2271F8B700E9A3C5 /* shoucang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shoucang.png; sourceTree = "<group>"; };
+		E8AA52FB2271F8B700E9A3C5 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,9 +125,7 @@
 				1B09D19C226B004100BB7480 /* VideoPageViewController.h */,
 				1B09D19D226B004100BB7480 /* VideoPageViewController.m */,
 				1B09D19E226B004100BB7480 /* VideoPageViewController.xib */,
-				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
-				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
-				1B09D1A3226B005500BB7480 /* PersonalPageViewController.xib */,
+				E8AA52E72271A99600E9A3C5 /* PersonalPage */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -121,6 +133,10 @@
 		1B09D1A6226B006500BB7480 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E8AA52FB2271F8B700E9A3C5 /* dianzan.png */,
+				E8AA52F92271F8B700E9A3C5 /* lishixiao.png */,
+				E8AA52F82271F8B700E9A3C5 /* pinglun.png */,
+				E8AA52FA2271F8B700E9A3C5 /* shoucang.png */,
 				1B09D1B9226B013700BB7480 /* camera.png */,
 				1B09D1B7226B013700BB7480 /* mainpage_selected.png */,
 				1B09D1B8226B013700BB7480 /* mainpage_unselected.png */,
@@ -130,6 +146,20 @@
 				1B09D1B6226B013700BB7480 /* video_unselected.png */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		E8AA52E72271A99600E9A3C5 /* PersonalPage */ = {
+			isa = PBXGroup;
+			children = (
+				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
+				1B09D1A3226B005500BB7480 /* PersonalPageViewController.xib */,
+				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
+				E8523D3C227356690067C5CD /* UIButton+ImageTitleStyle.h */,
+				E8523D3D2273568C0067C5CD /* UIButton+ImageTitleStyle.m */,
+				E84031312273EE75000B98E1 /* SettingViewController.h */,
+				E84031322273EE75000B98E1 /* SettingViewController.m */,
+			);
+			path = PersonalPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,11 +226,15 @@
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
 				1B09D1BE226B013700BB7480 /* mainpage_selected.png in Resources */,
 				1B09D1BC226B013700BB7480 /* personal_selected.png in Resources */,
+				E8AA52FE2271F8B700E9A3C5 /* shoucang.png in Resources */,
+				E8AA52FC2271F8B700E9A3C5 /* pinglun.png in Resources */,
 				1B09D1C2226B013700BB7480 /* personal_unselected.png in Resources */,
 				1B09D18A226AFF7C00BB7480 /* Assets.xcassets in Resources */,
+				E8AA52FF2271F8B700E9A3C5 /* dianzan.png in Resources */,
 				1B09D1C1226B013700BB7480 /* video_selected.png in Resources */,
 				1B09D1A5226B005500BB7480 /* PersonalPageViewController.xib in Resources */,
 				1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */,
+				E8AA52FD2271F8B700E9A3C5 /* lishixiao.png in Resources */,
 				1B09D1A0226B004100BB7480 /* VideoPageViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,9 +249,11 @@
 				1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */,
 				1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */,
 				1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */,
+				E8523D3E2273568C0067C5CD /* UIButton+ImageTitleStyle.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */,
 				1B09D1A4226B005500BB7480 /* PersonalPageViewController.m in Sources */,
+				E84031332273EE75000B98E1 /* SettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +397,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MiniHeadline/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -377,6 +414,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MiniHeadline/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
