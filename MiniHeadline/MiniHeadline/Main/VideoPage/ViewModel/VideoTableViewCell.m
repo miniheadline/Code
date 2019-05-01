@@ -69,14 +69,17 @@
     [self.contentView addSubview:self.name];
     self.followBtn = [[UIButton alloc] init];
     [self.followBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.followBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self.contentView addSubview:self.followBtn];
     self.commentBtn = [[UIButton alloc] init];
     [self.commentBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.commentBtn setFrame:CGRectMake(291, 255, 62, 30)];
+    [self.commentBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:self.commentBtn];
     self.shareBtn = [[UIButton alloc] init];
     [self.shareBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.shareBtn setFrame:CGRectMake(356, 255, 30, 30)];
+    [self.shareBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:self.shareBtn];
 }
 
@@ -103,8 +106,8 @@
         [self.followBtn setTitle:@"unfollow" forState:UIControlStateNormal];
         [self.followBtn setTitle:@"follow" forState:UIControlStateSelected];
     }
-    [self.commentBtn setTitle:[NSString stringWithFormat:@"%d", cellData.commentNum] forState:UIControlStateNormal];
-    [self.commentBtn setImage:[UIImage imageNamed:@"comments.png"] forState:(UIControlState)UIControlStateNormal];
+    [self.commentBtn setTitle:[NSString stringWithFormat:@" %d", cellData.commentNum] forState:UIControlStateNormal];
+    [self.commentBtn setImage:[UIImage imageNamed:@"comment.png"] forState:(UIControlState)UIControlStateNormal];
     [self.shareBtn setTitle:@"∙∙∙" forState:UIControlStateNormal];
 }
 - (IBAction)playBtnClick:(id)sender {

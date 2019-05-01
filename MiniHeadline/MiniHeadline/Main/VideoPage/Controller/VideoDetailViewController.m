@@ -77,7 +77,7 @@
     [self.videoView.layer addSublayer:self.video];
     [self.view addSubview:self.videoView];
     self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(8, 8, 30, 30)];
-    [self.backBtn setBackgroundImage:[UIImage imageNamed:@"back_white.png"] forState:UIControlStateNormal];
+    [self.backBtn setBackgroundImage:[UIImage imageNamed:@"back_white_25.png"] forState:UIControlStateNormal];
     [self.backBtn addTarget:self action:@selector(backBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.backBtn];
     self.playBtn = [[UIButton alloc] initWithFrame:CGRectMake(19, 219, 25, 25)];
@@ -97,7 +97,7 @@
     [self.name setText:self.myVideo.authorName];
     [self.view addSubview:self.name];
     self.followBtn = [[UIButton alloc] initWithFrame:CGRectMake(324, 313, 70, 30)];
-    if(self.myVideo.isFollow == YES) {
+    if(self.myVideo.isFollow == NO) {
         self.followBtn.backgroundColor = [UIColor colorWithHexString:@"#B54434"];
         [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
     }
@@ -108,12 +108,13 @@
     [self.followBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.view addSubview:self.followBtn];
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 354, 374, 31)];
-    self.titleLabel.font = [UIFont systemFontOfSize:25];
+    self.titleLabel.font = [UIFont systemFontOfSize:30];
     [self.titleLabel setText:self.myVideo.title];
     [self.view addSubview:self.titleLabel];
     self.moreDetail = [[UILabel alloc] initWithFrame:CGRectMake(20, 393, 374, 21)];
-    self.moreDetail.font = [UIFont systemFontOfSize:20];
+    self.moreDetail.font = [UIFont systemFontOfSize:17];
     self.moreDetail.textColor = [UIColor grayColor];
+    [self.moreDetail setText:@"随便下的视频"];
     [self.view addSubview:self.moreDetail];
     self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(19, 436, 71, 25)];
     [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
