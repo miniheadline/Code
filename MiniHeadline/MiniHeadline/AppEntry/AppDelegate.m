@@ -24,7 +24,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     // 2.给window设置根控制器
     ViewController *viewController = [[ViewController alloc] init];
-    self.window.rootViewController = viewController;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = nav;
     // 3.显示window
     [self.window makeKeyAndVisible];
     
