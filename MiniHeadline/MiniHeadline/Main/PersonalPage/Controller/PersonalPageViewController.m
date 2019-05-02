@@ -141,6 +141,7 @@
         tableView.rowHeight = itemHeight;
         tableView;
     });
+    self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.markButton];
     [self.view addSubview:self.likeButton];
