@@ -69,6 +69,10 @@
 		D6BC8B68227A3127001AFD60 /* back_white_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B67227A3127001AFD60 /* back_white_25.png */; };
 		E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893880227AAFCD003C8FB7 /* SettingViewController.m */; };
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
+		E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388E227AB8EE003C8FB7 /* shoucang.png */; };
+		E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388F227AB8EE003C8FB7 /* lishixiao.png */; };
+		E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893890227AB8EF003C8FB7 /* pinglun.png */; };
+		E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893891227AB8EF003C8FB7 /* dianzan.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -153,6 +157,10 @@
 		E8893881227AAFCD003C8FB7 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ImageTitleStyle.h"; sourceTree = "<group>"; };
 		E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ImageTitleStyle.m"; sourceTree = "<group>"; };
+		E889388E227AB8EE003C8FB7 /* shoucang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shoucang.png; sourceTree = "<group>"; };
+		E889388F227AB8EE003C8FB7 /* lishixiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lishixiao.png; sourceTree = "<group>"; };
+		E8893890227AB8EF003C8FB7 /* pinglun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinglun.png; sourceTree = "<group>"; };
+		E8893891227AB8EF003C8FB7 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +261,10 @@
 				D6BC8B492279C113001AFD60 /* play_white.png */,
 				D6BC8B462279949C001AFD60 /* link.png */,
 				D6BC8B3F22799422001AFD60 /* like_25.png */,
+				E8893891227AB8EF003C8FB7 /* dianzan.png */,
+				E889388F227AB8EE003C8FB7 /* lishixiao.png */,
+				E8893890227AB8EF003C8FB7 /* pinglun.png */,
+				E889388E227AB8EE003C8FB7 /* shoucang.png */,
 				D6BC8B3E22799422001AFD60 /* like-fill_25.png */,
 				D6BC8B4122799422001AFD60 /* unlike_25.png */,
 				D6BC8B4022799422001AFD60 /* unlike-fill_25.png */,
@@ -575,7 +587,9 @@
 				1B09D1BD226B013700BB7480 /* video_unselected.png in Resources */,
 				D6BC8B4422799423001AFD60 /* unlike-fill_25.png in Resources */,
 				1B7F82E22270AAAB000165F6 /* write.png in Resources */,
+				E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */,
 				D6BC8B64227A2EF1001AFD60 /* comment.png in Resources */,
+				E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */,
 				D6BC8B3322798CDB001AFD60 /* View.xib in Resources */,
 				1B7F82DD2270AAAB000165F6 /* edit_label.png in Resources */,
 				D6BC8B4522799423001AFD60 /* unlike_25.png in Resources */,
@@ -587,6 +601,8 @@
 				1B7F82DB2270AAAB000165F6 /* back.png in Resources */,
 				D6BC8B3D22799380001AFD60 /* unlike_23.png in Resources */,
 				D6BC8B3C22799380001AFD60 /* like_23.png in Resources */,
+				E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */,
+				E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */,
 				1B7F82E02270AAAB000165F6 /* like_selected.png in Resources */,
 				1B7F82E52270AAAB000165F6 /* share.png in Resources */,
 				D6BC8B3B22799380001AFD60 /* unlike-fill_23.png in Resources */,
