@@ -16,11 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) NSString* title;
 @property(nonatomic, strong) UIImage* icon;
 @property(nonatomic, strong) NSString* authorName;
-@property(nonatomic, strong) AVPlayer* video;
+@property(nonatomic, strong) NSString* video;
 @property(nonatomic) NSInteger cellType;
 @property(nonatomic, assign) NSInteger commentNum;
 @property(nonatomic, assign) BOOL isFollow;
-- (instancetype)initWithVideo:(NSString*)title video:(AVPlayer*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow;
+@property(nonatomic, assign) NSInteger playNum;
+- (instancetype)initWithVideo:(NSString*)title video:(NSString*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow
+    playNum:(NSInteger)playNum;
 
 @end
 

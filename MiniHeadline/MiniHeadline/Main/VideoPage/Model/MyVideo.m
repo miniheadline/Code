@@ -11,7 +11,8 @@
 
 @end
 @implementation MyVideo
-- (instancetype)initWithVideo:(NSString*)title video:(AVPlayer*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow {
+- (instancetype)initWithVideo:(NSString*)title video:(NSString*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow
+    playNum:(NSInteger)playNum {
     if(self=[super init]) {
         self.title = [title copy];
         self.video = [video copy];
@@ -20,6 +21,7 @@
         self.commentNum = commentNum;
         self.isFollow = isFollow;
         self.cellType = 1;
+        self.playNum = playNum;
     }
     return self;
 }
