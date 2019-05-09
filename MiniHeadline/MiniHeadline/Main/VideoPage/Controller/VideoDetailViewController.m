@@ -19,10 +19,7 @@
 
 @property (nonatomic, strong) UIButton *backBtn;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIView *videoView;
-@property (nonatomic, strong) UIButton *playBtn;
-@property (nonatomic, strong) UISlider *videoProgess;
-@property (nonatomic, strong) UIButton *fullScreamBtn;
+
 @property (nonatomic, strong) UIButton *icon;
 @property (nonatomic, strong) UILabel *name;
 @property (nonatomic, strong) UIButton *followBtn;
@@ -42,6 +39,13 @@
 @property (nonatomic, assign) BOOL isPlay;
 @property (nonatomic, strong) AVPlayer *videoPlayer;
 @property (nonatomic, strong) AVPlayerLayer *video;
+@property (nonatomic, strong) UIView *videoView;
+@property (nonatomic, strong) UIButton *playBtn;
+@property (nonatomic, strong) UISlider *videoProgess;
+@property (nonatomic, strong) UIButton *fullScreamBtn;
+@property (nonatomic, strong) UILabel *currTime;
+@property (nonatomic, strong) UILabel *duraTime;
+@property (nonatomic, strong) UIView *fullView;
 
 @property (nonatomic, strong) NSMutableArray<MyVideo*>* recommendationVideoList;
 @property (nonatomic, strong) NSMutableArray<MyComment*>* commentsList;
@@ -174,16 +178,29 @@
         tableView;
     });
     [self.view addSubview:self.commentTableView];
+    self.fullView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 896, 414)];
     
     NSArray* videoPart = [self loadVideo];
     self.recommendationVideoList = [NSMutableArray arrayWithArray:videoPart];
     NSArray* commentPart = [self loadComment:0];
     self.commentsList = [NSMutableArray arrayWithArray:commentPart];
     self.pageIndex = 0;
+    
+    [self.fullScreamBtn addTarget:self action:@selector(fullScreamBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.commentBtn addTarget:self action:@selector(commentBtnClick:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (IBAction)backBtnClick:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (IBAction)fullScreamBtnClick:(id)sender {
+    
+}
+
+- (IBAction)commentBtnClick:(id)sender {
+    NSIndexPath * dayOne = [NSIndexPath indexPathForRow:0 inSection:1];
+    [self.commentTableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (IBAction)pauseBtnClick:(id)sender {

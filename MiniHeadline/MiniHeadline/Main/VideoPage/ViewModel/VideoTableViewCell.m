@@ -95,7 +95,7 @@
     [self.videoView addSubview:self.pauseBtn];
     [self.icon setBackgroundImage:cellData.icon forState:UIControlStateNormal];
     CGRect rect = [cellData.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.titleLabel.font} context:nil];
-    [self.name setFrame:CGRectMake(61, 255, rect.size.width, 21)];
+    [self.name setFrame:CGRectMake(61, 260, rect.size.width, 21)];
     [self.name setText:cellData.authorName];
     if(cellData.isFollow == NO) {
         [self.followBtn setFrame:CGRectMake(61+rect.size.width+8, 255, 70, 30)];

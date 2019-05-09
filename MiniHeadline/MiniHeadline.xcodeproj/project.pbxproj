@@ -41,6 +41,7 @@
 		1B7F82E62270AAAB000165F6 /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D92270AAAB000165F6 /* more.png */; };
 		1B7F82EC2270AE9B000165F6 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82EB2270AE9B000165F6 /* logo.png */; };
 		1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BEBE322226CBA200003C151 /* NewsDetailViewController.m */; };
+		D6AC51F72283F1B700318629 /* share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6AC51F62283F1B600318629 /* share_white.png */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
 		D6BC8B102273F524001AFD60 /* icon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B0A2273F524001AFD60 /* icon_1.png */; };
 		D6BC8B142273F524001AFD60 /* icon_2.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B0E2273F524001AFD60 /* icon_2.png */; };
@@ -74,6 +75,7 @@
 		D6BC8B7A227C7365001AFD60 /* CommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B78227C7365001AFD60 /* CommentTableViewCell.xib */; };
 		D6BC8BB42282AE5F001AFD60 /* RecommendationVideoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8BB22282AE5F001AFD60 /* RecommendationVideoTableViewCell.m */; };
 		D6BC8BB52282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */; };
+		D6BC8BB72283E66B001AFD60 /* View2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8BB62283E66B001AFD60 /* View2.xib */; };
 		E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893880227AAFCD003C8FB7 /* SettingViewController.m */; };
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388E227AB8EE003C8FB7 /* shoucang.png */; };
@@ -130,6 +132,7 @@
 		1B7F82EB2270AE9B000165F6 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1BEBE321226CBA200003C151 /* NewsDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewController.h; sourceTree = "<group>"; };
 		1BEBE322226CBA200003C151 /* NewsDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewController.m; sourceTree = "<group>"; };
+		D6AC51F62283F1B600318629 /* share_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_white.png; sourceTree = "<group>"; };
 		D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8B012273F23A001AFD60 /* LoadingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingTableViewCell.h; sourceTree = "<group>"; };
 		D6BC8B0A2273F524001AFD60 /* icon_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_1.png; sourceTree = "<group>"; };
@@ -195,6 +198,7 @@
 		D6BC8BB12282AE5F001AFD60 /* RecommendationVideoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecommendationVideoTableViewCell.h; sourceTree = "<group>"; };
 		D6BC8BB22282AE5F001AFD60 /* RecommendationVideoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationVideoTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecommendationVideoTableViewCell.xib; sourceTree = "<group>"; };
+		D6BC8BB62283E66B001AFD60 /* View2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = View2.xib; sourceTree = "<group>"; };
 		E8893880227AAFCD003C8FB7 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		E8893881227AAFCD003C8FB7 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ImageTitleStyle.h"; sourceTree = "<group>"; };
@@ -296,6 +300,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				D6AC51F62283F1B600318629 /* share_white.png */,
 				D6BC8B6B227B5E97001AFD60 /* Share_25.png */,
 				D6BC8B69227B5BA9001AFD60 /* star_25.png */,
 				D6BC8B67227A3127001AFD60 /* back_white_25.png */,
@@ -446,6 +451,7 @@
 				D6BC8B1B227407BF001AFD60 /* VideoDetailViewController.h */,
 				D6BC8B1C227407BF001AFD60 /* VideoDetailViewController.m */,
 				D6BC8B3222798CDB001AFD60 /* View.xib */,
+				D6BC8BB62283E66B001AFD60 /* View2.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -685,6 +691,7 @@
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
 				D6BC8B4A2279C113001AFD60 /* pause _white.png in Resources */,
 				1B09D1BE226B013700BB7480 /* mainpage_selected.png in Resources */,
+				D6AC51F72283F1B700318629 /* share_white.png in Resources */,
 				1B7F82DB2270AAAB000165F6 /* back.png in Resources */,
 				D6BC8B3D22799380001AFD60 /* unlike_23.png in Resources */,
 				D6BC8B3C22799380001AFD60 /* like_23.png in Resources */,
@@ -692,6 +699,7 @@
 				E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */,
 				1B7F82E02270AAAB000165F6 /* like_selected.png in Resources */,
 				1B7F82E52270AAAB000165F6 /* share.png in Resources */,
+				D6BC8BB72283E66B001AFD60 /* View2.xib in Resources */,
 				D6BC8B3B22799380001AFD60 /* unlike-fill_23.png in Resources */,
 				D6BC8B2E2279609A001AFD60 /* play.png in Resources */,
 				1B09D1BC226B013700BB7480 /* personal_selected.png in Resources */,
