@@ -46,6 +46,7 @@
 @property (nonatomic, strong) UILabel *currTime;
 @property (nonatomic, strong) UILabel *duraTime;
 @property (nonatomic, strong) UIView *fullView;
+@property (nonatomic, strong) NSTimer *videoTimer;
 
 @property (nonatomic, strong) NSMutableArray<MyVideo*>* recommendationVideoList;
 @property (nonatomic, strong) NSMutableArray<MyComment*>* commentsList;
@@ -98,7 +99,7 @@
     [self.playBtn setBackgroundImage:[UIImage imageNamed:@"play_white.png"] forState:UIControlStateNormal];
     [self.playBtn addTarget:self action:@selector(pauseBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.playBtn];
-    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(50, 217, 308, 30)];
+    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(92, 217, 231, 30)];
     [self.videoView addSubview:self.videoProgess];
     self.fullScreamBtn = [[UIButton alloc] initWithFrame:CGRectMake(364, 219, 25, 25)];
     [self.fullScreamBtn setBackgroundImage:[UIImage imageNamed:@"full-screen.png"] forState:UIControlStateNormal];
@@ -169,6 +170,24 @@
     self.shareBtn = [[UIButton alloc] initWithFrame:CGRectMake(351, 8, 25, 25)];
     [self.shareBtn setBackgroundImage:[UIImage imageNamed:@"Share_25.png"] forState:UIControlStateNormal];
     [self.footToolBar addSubview:self.shareBtn];
+    self.currTime = [[UILabel alloc] initWithFrame:CGRectMake(52, 224, 34, 15)];
+    [self.currTime setTextColor:[UIColor whiteColor]];
+    self.currTime.font = [UIFont systemFontOfSize:12];
+    [self.currTime setText:@"00:00"];
+    [self.videoView addSubview:self.currTime];
+    AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
+    CMTime videoDuration = [avUrlAsset duration];
+    float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoDurationSeconds];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
+    NSString* result = [dateFormatter stringFromDate:date];
+    self.duraTime = [[UILabel alloc] initWithFrame:CGRectMake(329, 224, 34, 15)];
+    [self.duraTime setTextColor:[UIColor whiteColor]];
+    self.duraTime.font = [UIFont systemFontOfSize:12];
+    [self.duraTime setText:result];
+    [self.videoView addSubview:self.duraTime];
     
     self.commentTableView = ({
         UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 477, 414, 341) style:UITableViewStylePlain]);
@@ -188,6 +207,23 @@
     
     [self.fullScreamBtn addTarget:self action:@selector(fullScreamBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.commentBtn addTarget:self action:@selector(commentBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    
+    /// 添加监听.以及回调
+    __weak typeof(self) weakSelf = self;
+    self.videoTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timer) userInfo:nil repeats:YES];
+}
+
+- (void)timer {
+    self.videoProgess.value = CMTimeGetSeconds(self.videoPlayer.currentItem.currentTime) / CMTimeGetSeconds(self.videoPlayer.currentItem.duration);
+    float videoCurrentSeconds = CMTimeGetSeconds(self.videoPlayer.currentItem.currentTime);
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoCurrentSeconds];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
+    NSString* result = [dateFormatter stringFromDate:date];
+    [self.currTime setText:result];
 }
 
 - (IBAction)backBtnClick:(id)sender {
