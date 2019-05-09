@@ -73,6 +73,10 @@
 		E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388F227AB8EE003C8FB7 /* lishixiao.png */; };
 		E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893890227AB8EF003C8FB7 /* pinglun.png */; };
 		E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893891227AB8EF003C8FB7 /* dianzan.png */; };
+		E88938982282FC30003C8FB7 /* UserInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E88938972282FC30003C8FB7 /* UserInfoModel.m */; };
+		E889389A2283249C003C8FB7 /* next_black.png in Resources */ = {isa = PBXBuildFile; fileRef = E88938992283249C003C8FB7 /* next_black.png */; };
+		E889389D22833042003C8FB7 /* UserInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E889389C22833042003C8FB7 /* UserInfoController.m */; };
+		E88938A022840129003C8FB7 /* EditInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E889389F22840129003C8FB7 /* EditInfoController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -161,6 +165,13 @@
 		E889388F227AB8EE003C8FB7 /* lishixiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lishixiao.png; sourceTree = "<group>"; };
 		E8893890227AB8EF003C8FB7 /* pinglun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinglun.png; sourceTree = "<group>"; };
 		E8893891227AB8EF003C8FB7 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
+		E88938962282FB36003C8FB7 /* UserInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfoModel.h; sourceTree = "<group>"; };
+		E88938972282FC30003C8FB7 /* UserInfoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfoModel.m; sourceTree = "<group>"; };
+		E88938992283249C003C8FB7 /* next_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next_black.png; sourceTree = "<group>"; };
+		E889389B22833007003C8FB7 /* UserInfoController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfoController.h; sourceTree = "<group>"; };
+		E889389C22833042003C8FB7 /* UserInfoController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfoController.m; sourceTree = "<group>"; };
+		E889389E22840103003C8FB7 /* EditInfoController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditInfoController.h; sourceTree = "<group>"; };
+		E889389F22840129003C8FB7 /* EditInfoController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditInfoController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +264,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				E88938992283249C003C8FB7 /* next_black.png */,
 				D6BC8B67227A3127001AFD60 /* back_white_25.png */,
 				D6BC8B65227A2F5D001AFD60 /* back_white.png */,
 				D6BC8B62227A2EF1001AFD60 /* comment.png */,
@@ -411,6 +423,8 @@
 		1BCE642F226DB42D0078E11B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E88938962282FB36003C8FB7 /* UserInfoModel.h */,
+				E88938972282FC30003C8FB7 /* UserInfoModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -438,6 +452,10 @@
 				E8893880227AAFCD003C8FB7 /* SettingViewController.m */,
 				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
 				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
+				E889389B22833007003C8FB7 /* UserInfoController.h */,
+				E889389C22833042003C8FB7 /* UserInfoController.m */,
+				E889389E22840103003C8FB7 /* EditInfoController.h */,
+				E889389F22840129003C8FB7 /* EditInfoController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -598,6 +616,7 @@
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
 				D6BC8B4A2279C113001AFD60 /* pause _white.png in Resources */,
 				1B09D1BE226B013700BB7480 /* mainpage_selected.png in Resources */,
+				E889389A2283249C003C8FB7 /* next_black.png in Resources */,
 				1B7F82DB2270AAAB000165F6 /* back.png in Resources */,
 				D6BC8B3D22799380001AFD60 /* unlike_23.png in Resources */,
 				D6BC8B3C22799380001AFD60 /* like_23.png in Resources */,
@@ -639,8 +658,10 @@
 			files = (
 				1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */,
 				D6BC8B5E2279EB3F001AFD60 /* MyVideo.m in Sources */,
+				E88938982282FC30003C8FB7 /* UserInfoModel.m in Sources */,
 				E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */,
 				1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */,
+				E88938A022840129003C8FB7 /* EditInfoController.m in Sources */,
 				D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */,
 				1B7F82AC227052DC000165F6 /* SearchViewController.m in Sources */,
 				1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */,
@@ -648,6 +669,7 @@
 				1B69A99A226EF664008B5A16 /* NewsModel.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
+				E889389D22833042003C8FB7 /* UserInfoController.m in Sources */,
 				D6BC8B212276B3B1001AFD60 /* VideoTableViewCell.m in Sources */,
 				1B17BCF7227197C300F30CEF /* UIColor+Hex.m in Sources */,
 				1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */,
