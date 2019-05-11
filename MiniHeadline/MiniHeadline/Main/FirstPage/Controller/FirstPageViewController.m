@@ -99,7 +99,7 @@
     [self.publishImageView addGestureRecognizer:publish];
     // 发布选项下拉菜单
     self.publishChoiceArray = @[@"发图文", @"拍小视频", @"发视频", @"提问", @"开直播", @"爆料"];
-    self.publishTableView = [[UITableView alloc] initWithFrame:CGRectMake(screenBound.size.width - 100, self.searchBackgroundView.frame.size.height, 100,    ) style:UITableViewStylePlain];
+    self.publishTableView = [[UITableView alloc] initWithFrame:CGRectMake(screenBound.size.width - 100, self.searchBackgroundView.frame.size.height, 100,    100) style:UITableViewStylePlain];
     self.publishTableView.delegate = self;
     self.publishTableView.dataSource = self;
     self.publishTableView.backgroundColor = [UIColor yellowColor];
