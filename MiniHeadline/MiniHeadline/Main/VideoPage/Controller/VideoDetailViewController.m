@@ -47,6 +47,7 @@
 @property (nonatomic, strong) UILabel *duraTime;
 @property (nonatomic, strong) UIView *fullView;
 @property (nonatomic, strong) NSTimer *videoTimer;
+@property (nonatomic, strong) UIButton *backFullScreenBtn;
 
 @property (nonatomic, strong) NSMutableArray<MyVideo*>* recommendationVideoList;
 @property (nonatomic, strong) NSMutableArray<MyComment*>* commentsList;
@@ -83,27 +84,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0, 44, 414, 254)];
-    self.videoView.backgroundColor = [UIColor blackColor];
-    NSURL *url = [NSURL fileURLWithPath:self.myVideo.video];
-    self.videoPlayer = [AVPlayer playerWithURL:url];
-    self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
-    self.video.frame = self.videoView.bounds;
-    [self.videoView.layer addSublayer:self.video];
-    [self.view addSubview:self.videoView];
-    self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(8, 8, 30, 30)];
-    [self.backBtn setBackgroundImage:[UIImage imageNamed:@"back_white_25.png"] forState:UIControlStateNormal];
-    [self.backBtn addTarget:self action:@selector(backBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.videoView addSubview:self.backBtn];
-    self.playBtn = [[UIButton alloc] initWithFrame:CGRectMake(19, 219, 25, 25)];
-    [self.playBtn setBackgroundImage:[UIImage imageNamed:@"play_white.png"] forState:UIControlStateNormal];
-    [self.playBtn addTarget:self action:@selector(pauseBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.videoView addSubview:self.playBtn];
-    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(92, 217, 231, 30)];
-    [self.videoView addSubview:self.videoProgess];
-    self.fullScreamBtn = [[UIButton alloc] initWithFrame:CGRectMake(364, 219, 25, 25)];
-    [self.fullScreamBtn setBackgroundImage:[UIImage imageNamed:@"full-screen.png"] forState:UIControlStateNormal];
-    [self.videoView addSubview:self.fullScreamBtn];
+    
     self.icon = [[UIButton alloc] initWithFrame:CGRectMake(19, 311, 35, 35)];
     [self.icon setBackgroundImage:self.myVideo.icon forState:UIControlStateNormal];
     [self.view addSubview:self.icon];
@@ -170,6 +151,29 @@
     self.shareBtn = [[UIButton alloc] initWithFrame:CGRectMake(351, 8, 25, 25)];
     [self.shareBtn setBackgroundImage:[UIImage imageNamed:@"Share_25.png"] forState:UIControlStateNormal];
     [self.footToolBar addSubview:self.shareBtn];
+    self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0, 44, screenBound.size.width, 254)];
+    self.videoView.backgroundColor = [UIColor blackColor];
+    NSURL *url = [NSURL fileURLWithPath:self.myVideo.video];
+    self.videoPlayer = [AVPlayer playerWithURL:url];
+    self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
+    self.video.frame = self.videoView.bounds;
+    [self.videoView.layer addSublayer:self.video];
+    [self.view addSubview:self.videoView];
+    self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(8, 8, 30, 30)];
+    [self.backBtn setBackgroundImage:[UIImage imageNamed:@"back_white_25.png"] forState:UIControlStateNormal];
+    [self.backBtn addTarget:self action:@selector(backBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.videoView addSubview:self.backBtn];
+    self.playBtn = [[UIButton alloc] initWithFrame:CGRectMake(19, 219, 25, 25)];
+    [self.playBtn setBackgroundImage:[UIImage imageNamed:@"play_white.png"] forState:UIControlStateNormal];
+    [self.playBtn addTarget:self action:@selector(pauseBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.videoView addSubview:self.playBtn];
+    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(92, 217, 231, 30)];
+    [self.videoView addSubview:self.videoProgess];
+    self.fullScreamBtn = [[UIButton alloc] initWithFrame:CGRectMake(364, 219, 25, 25)];
+    [self.fullScreamBtn setBackgroundImage:[UIImage imageNamed:@"full-screen.png"] forState:UIControlStateNormal];
+    [self.videoView addSubview:self.fullScreamBtn];
+    self.backFullScreenBtn = [[UIButton alloc] initWithFrame:CGRectMake(60, 21, 30, 30)];
+    [self.backFullScreenBtn setBackgroundImage:[UIImage imageNamed:@"back_white_25.png"] forState:UIControlStateNormal];
     self.currTime = [[UILabel alloc] initWithFrame:CGRectMake(52, 224, 34, 15)];
     [self.currTime setTextColor:[UIColor whiteColor]];
     self.currTime.font = [UIFont systemFontOfSize:12];
@@ -207,7 +211,7 @@
     
     [self.fullScreamBtn addTarget:self action:@selector(fullScreamBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.commentBtn addTarget:self action:@selector(commentBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [self.backFullScreenBtn addTarget:self action:@selector(backBtnFullScreenClick:) forControlEvents:UIControlEventTouchUpInside];
     
     
     /// 添加监听.以及回调
@@ -231,6 +235,19 @@
 }
 
 - (IBAction)fullScreamBtnClick:(id)sender {
+    CGRect screenBound = [UIScreen mainScreen].bounds;
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationLandscapeRight] forKey:@"orientation"];
+    [self.videoView setFrame:CGRectMake(0, 0, 896, 414)];
+    [self.videoView addSubview:self.backFullScreenBtn];
+    [self.backBtn removeFromSuperview];
+    //[self.playBtn setFrame:CGRectMake(60, screenBound.size.width-50, 30, 30)];
+    [self.currTime setFrame:CGRectMake(98, screenBound.size.width-45, 46, 21)];
+    [self.videoProgess setFrame:CGRectMake(150, screenBound.size.width-50, (screenBound.size.height/2-150)*2, 30)];
+    [self.duraTime setFrame:CGRectMake(screenBound.size.height-130, screenBound.size.width-45, 46, 21)];
+    self.video.frame = self.videoView.bounds;
+    [self.fullScreamBtn removeFromSuperview];
+    //[self.backBtn removeTarget:self action:@selector(backBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
     
 }
 
@@ -250,6 +267,20 @@
         [self.playBtn setBackgroundImage:[UIImage imageNamed:@"pause _white.png"] forState:UIControlStateNormal];
         self.isPlay = YES;
     }
+}
+
+- (IBAction)backBtnFullScreenClick:(id)sender {
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
+    [self.videoView setFrame:CGRectMake(0, 44, 414, 254)];
+    //[self.backBtn setFrame:CGRectMake(60, 21, 30, 30)];
+    [self.backFullScreenBtn removeFromSuperview];
+    [self.videoView addSubview:self.backBtn];
+    [self.playBtn setFrame:CGRectMake(19, 219, 25, 25)];
+    [self.currTime setFrame:CGRectMake(52, 224, 34, 15)];
+    [self.videoProgess setFrame:CGRectMake(92, 217, 231, 30)];
+    [self.duraTime setFrame:CGRectMake(329, 224, 34, 15)];
+    self.video.frame = self.videoView.bounds;
+    [self.videoView addSubview:self.fullScreamBtn];
 }
 
 - (NSArray*)loadVideo{
