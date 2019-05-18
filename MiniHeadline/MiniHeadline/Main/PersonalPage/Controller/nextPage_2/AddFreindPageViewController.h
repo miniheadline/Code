@@ -1,8 +1,8 @@
 //
-//  ChildPage2ViewController.h
+//  AddFreindPageViewController.h
 //  MiniHeadline
 //
-//  Created by 蔡倓 on 2019/5/2.
+//  Created by 蔡倓 on 2019/5/16.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChildPage2ViewController : UIViewController
+@interface AddFreindPageViewController : UIViewController
 
 @end
+
 NS_ASSUME_NONNULL_END

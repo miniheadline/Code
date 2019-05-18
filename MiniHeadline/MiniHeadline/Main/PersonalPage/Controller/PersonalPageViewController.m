@@ -87,6 +87,22 @@
     [self.navigationController pushViewController:controller animated:NO];
 }
 
+- (void)FansLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"Fans Click");
+    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
+    
+    [self.navigationController pushViewController:controller animated:NO];
+}
+
+- (void)LikeLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"Like Click");
+    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
+    
+    [self.navigationController pushViewController:controller animated:NO];
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
@@ -207,6 +223,11 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        label.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(FansLabelClick:)];
+        [label addGestureRecognizer:tapGesture];
+        
         label;
         
     });
@@ -225,6 +246,11 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        label.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(LikeLabelClick:)];
+        [label addGestureRecognizer:tapGesture];
+        
         label;
         
     });

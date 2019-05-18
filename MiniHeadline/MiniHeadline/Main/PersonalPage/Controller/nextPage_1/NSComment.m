@@ -12,17 +12,18 @@
 
 @implementation NSComment
 
-- (id)initWithDict:(NSDictionary *)dict
-{
-    if (self = [super init]) {
-        [self setValuesForKeysWithDictionary:dict];
-    }
+- (id)initWithDict:(NSString *)text iconUrl:(NSString*) msg1 username:(NSString*) msg2 picture:(NSString*) msg3 share: (int)num1 comment: (int)num2 like: (int)num3 {
+    
+    self.text = text;
+    self.iconUrl = msg1;
+    self.name = msg2;
+    self.pictureUrl = msg3;
+    self.shareNums = num1;
+    self.commentNums = num2;
+    self.likeNums = num3;
+    
     return self;
-}
-
-+ (id)commentWithDict:(NSDictionary *)dict
-{
-    return [[self alloc] initWithDict:dict];
+    
 }
 
 @end

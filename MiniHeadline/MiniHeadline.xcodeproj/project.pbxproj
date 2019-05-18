@@ -44,6 +44,13 @@
 		B10E4FA92285D554000902A8 /* NSComment.m in Sources */ = {isa = PBXBuildFile; fileRef = B10E4FA82285D554000902A8 /* NSComment.m */; };
 		B10E4FAD2285E738000902A8 /* InfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B10E4FAB2285E738000902A8 /* InfoTableViewCell.m */; };
 		B10E4FB02285F9AA000902A8 /* InfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B10E4FAF2285F9A9000902A8 /* InfoTableViewCell.xib */; };
+		B11AFB7C228FF48A00C73717 /* InfoTableViewCellWithPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = B11AFB79228FF48900C73717 /* InfoTableViewCellWithPicture.m */; };
+		B11AFB7D228FF48A00C73717 /* InfoTableViewCellWithPicture.xib in Resources */ = {isa = PBXBuildFile; fileRef = B11AFB7B228FF48A00C73717 /* InfoTableViewCellWithPicture.xib */; };
+		B11AFB85228FF49700C73717 /* AddFreindPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B11AFB80228FF49500C73717 /* AddFreindPageViewController.m */; };
+		B11AFB86228FF49700C73717 /* AddFreindPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B11AFB81228FF49600C73717 /* AddFreindPageViewController.xib */; };
+		B11AFB87228FF49700C73717 /* PersonInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B11AFB82228FF49600C73717 /* PersonInfoCell.m */; };
+		B11AFB88228FF49700C73717 /* PersonInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B11AFB84228FF49700C73717 /* PersonInfoCell.xib */; };
+		B11AFB8C228FF5CC00C73717 /* NSPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = B11AFB8B228FF5CC00C73717 /* NSPerson.m */; };
 		B18E173522849BBA004990B7 /* tianjiahaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = B18E173322849BB9004990B7 /* tianjiahaoyou.png */; };
 		B18E173622849BBA004990B7 /* sousuo.png in Resources */ = {isa = PBXBuildFile; fileRef = B18E173422849BBA004990B7 /* sousuo.png */; };
 		B18E173A22849BC7004990B7 /* bianji.png in Resources */ = {isa = PBXBuildFile; fileRef = B18E173722849BC7004990B7 /* bianji.png */; };
@@ -147,6 +154,17 @@
 		B10E4FAA2285E738000902A8 /* InfoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoTableViewCell.h; sourceTree = "<group>"; };
 		B10E4FAB2285E738000902A8 /* InfoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoTableViewCell.m; sourceTree = "<group>"; };
 		B10E4FAF2285F9A9000902A8 /* InfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoTableViewCell.xib; sourceTree = "<group>"; };
+		B11AFB79228FF48900C73717 /* InfoTableViewCellWithPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoTableViewCellWithPicture.m; sourceTree = "<group>"; };
+		B11AFB7A228FF48A00C73717 /* InfoTableViewCellWithPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoTableViewCellWithPicture.h; sourceTree = "<group>"; };
+		B11AFB7B228FF48A00C73717 /* InfoTableViewCellWithPicture.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoTableViewCellWithPicture.xib; sourceTree = "<group>"; };
+		B11AFB7E228FF49500C73717 /* AddFreindPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddFreindPageViewController.h; sourceTree = "<group>"; };
+		B11AFB7F228FF49500C73717 /* PersonInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonInfoCell.h; sourceTree = "<group>"; };
+		B11AFB80228FF49500C73717 /* AddFreindPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddFreindPageViewController.m; sourceTree = "<group>"; };
+		B11AFB81228FF49600C73717 /* AddFreindPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddFreindPageViewController.xib; sourceTree = "<group>"; };
+		B11AFB82228FF49600C73717 /* PersonInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonInfoCell.m; sourceTree = "<group>"; };
+		B11AFB83228FF49700C73717 /* NSPerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSPerson.h; sourceTree = "<group>"; };
+		B11AFB84228FF49700C73717 /* PersonInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonInfoCell.xib; sourceTree = "<group>"; };
+		B11AFB8B228FF5CC00C73717 /* NSPerson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSPerson.m; sourceTree = "<group>"; };
 		B18E173322849BB9004990B7 /* tianjiahaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tianjiahaoyou.png; sourceTree = "<group>"; };
 		B18E173422849BBA004990B7 /* sousuo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sousuo.png; sourceTree = "<group>"; };
 		B18E173722849BC7004990B7 /* bianji.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bianji.png; sourceTree = "<group>"; };
@@ -580,6 +598,9 @@
 		B18E17512284A095004990B7 /* nextPage_1 */ = {
 			isa = PBXGroup;
 			children = (
+				B11AFB7A228FF48A00C73717 /* InfoTableViewCellWithPicture.h */,
+				B11AFB79228FF48900C73717 /* InfoTableViewCellWithPicture.m */,
+				B11AFB7B228FF48A00C73717 /* InfoTableViewCellWithPicture.xib */,
 				B10E4FAF2285F9A9000902A8 /* InfoTableViewCell.xib */,
 				B18E17532284A0CF004990B7 /* ChildPageViewController.h */,
 				B18E17542284A0CF004990B7 /* ChildPageViewController.m */,
@@ -595,6 +616,14 @@
 		B18E175C2284A19B004990B7 /* nextPage_2 */ = {
 			isa = PBXGroup;
 			children = (
+				B11AFB7E228FF49500C73717 /* AddFreindPageViewController.h */,
+				B11AFB80228FF49500C73717 /* AddFreindPageViewController.m */,
+				B11AFB81228FF49600C73717 /* AddFreindPageViewController.xib */,
+				B11AFB83228FF49700C73717 /* NSPerson.h */,
+				B11AFB8B228FF5CC00C73717 /* NSPerson.m */,
+				B11AFB7F228FF49500C73717 /* PersonInfoCell.h */,
+				B11AFB82228FF49600C73717 /* PersonInfoCell.m */,
+				B11AFB84228FF49700C73717 /* PersonInfoCell.xib */,
 				B18E175F2284A219004990B7 /* ChildPage2ViewController.h */,
 				B18E175E2284A219004990B7 /* ChildPage2ViewController.m */,
 				B18E175D2284A219004990B7 /* ChildPage2ViewController.xib */,
@@ -683,10 +712,12 @@
 				B18E17602284A219004990B7 /* ChildPage2ViewController.xib in Resources */,
 				D6BC8B64227A2EF1001AFD60 /* comment.png in Resources */,
 				E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */,
+				B11AFB7D228FF48A00C73717 /* InfoTableViewCellWithPicture.xib in Resources */,
 				D6BC8B3322798CDB001AFD60 /* View.xib in Resources */,
 				1B7F82DD2270AAAB000165F6 /* edit_label.png in Resources */,
 				D6BC8B4522799423001AFD60 /* unlike_25.png in Resources */,
 				D6BC8B142273F524001AFD60 /* icon_2.png in Resources */,
+				B11AFB86228FF49700C73717 /* AddFreindPageViewController.xib in Resources */,
 				1B7F82DC2270AAAB000165F6 /* camera.png in Resources */,
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
 				D6BC8B4A2279C113001AFD60 /* pause _white.png in Resources */,
@@ -694,6 +725,7 @@
 				E889389A2283249C003C8FB7 /* next_black.png in Resources */,
 				1B7F82DB2270AAAB000165F6 /* back.png in Resources */,
 				D6BC8B3D22799380001AFD60 /* unlike_23.png in Resources */,
+				B11AFB88228FF49700C73717 /* PersonInfoCell.xib in Resources */,
 				D6BC8B3C22799380001AFD60 /* like_23.png in Resources */,
 				E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */,
 				E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */,
@@ -746,11 +778,15 @@
 				E88938A022840129003C8FB7 /* EditInfoController.m in Sources */,
 				D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */,
 				1B7F82AC227052DC000165F6 /* SearchViewController.m in Sources */,
+				B11AFB8C228FF5CC00C73717 /* NSPerson.m in Sources */,
 				1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */,
+				B11AFB85228FF49700C73717 /* AddFreindPageViewController.m in Sources */,
 				1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */,
 				1B69A99A226EF664008B5A16 /* NewsModel.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
+				B11AFB87228FF49700C73717 /* PersonInfoCell.m in Sources */,
 				E8458A78228D3FEB00910015 /* UserLoginController.m in Sources */,
+				B11AFB7C228FF48A00C73717 /* InfoTableViewCellWithPicture.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
 				B18E17612284A219004990B7 /* ChildPage2ViewController.m in Sources */,
 				E889389D22833042003C8FB7 /* UserInfoController.m in Sources */,
