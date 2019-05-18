@@ -52,7 +52,7 @@
     [self.likeBtn setImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.likeBtn];
     self.comments = [[UILabel alloc] initWithFrame:CGRectMake(54, 49, 340, 30)];
-    self.comments.font = [UIFont systemFontOfSize:25.0];
+    self.comments.font = [UIFont systemFontOfSize:20.0];
     self.comments.numberOfLines = 0;
     [self.contentView addSubview:self.comments];
     self.time = [[UILabel alloc] init];
