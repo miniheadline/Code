@@ -80,6 +80,8 @@
 		D6BC8B64227A2EF1001AFD60 /* comment.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B62227A2EF1001AFD60 /* comment.png */; };
 		D6BC8B66227A2F5D001AFD60 /* back_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B65227A2F5D001AFD60 /* back_white.png */; };
 		D6BC8B68227A3127001AFD60 /* back_white_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B67227A3127001AFD60 /* back_white_25.png */; };
+		E8458A78228D3FEB00910015 /* UserLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8458A77228D3FEB00910015 /* UserLoginController.m */; };
+		E8458A7A228D6FA800910015 /* jiantou.png in Resources */ = {isa = PBXBuildFile; fileRef = E8458A79228D6FA800910015 /* jiantou.png */; };
 		E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893880227AAFCD003C8FB7 /* SettingViewController.m */; };
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388E227AB8EE003C8FB7 /* shoucang.png */; };
@@ -187,6 +189,9 @@
 		D6BC8B62227A2EF1001AFD60 /* comment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comment.png; sourceTree = "<group>"; };
 		D6BC8B65227A2F5D001AFD60 /* back_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_white.png; sourceTree = "<group>"; };
 		D6BC8B67227A3127001AFD60 /* back_white_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_white_25.png; sourceTree = "<group>"; };
+		E8458A76228D3FD200910015 /* UserLoginController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserLoginController.h; sourceTree = "<group>"; };
+		E8458A77228D3FEB00910015 /* UserLoginController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserLoginController.m; sourceTree = "<group>"; };
+		E8458A79228D6FA800910015 /* jiantou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jiantou.png; sourceTree = "<group>"; };
 		E8893880227AAFCD003C8FB7 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		E8893881227AAFCD003C8FB7 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ImageTitleStyle.h"; sourceTree = "<group>"; };
@@ -325,6 +330,7 @@
 				1B7F82EB2270AE9B000165F6 /* logo.png */,
 				1B7F82CE2270AAAA000165F6 /* back.png */,
 				1B7F82CF2270AAAB000165F6 /* camera.png */,
+				E8458A79228D6FA800910015 /* jiantou.png */,
 				1B7F82CD2270AAAA000165F6 /* comments.png */,
 				1B7F82D02270AAAB000165F6 /* edit_label.png */,
 				1B7F82D32270AAAB000165F6 /* like_selected.png */,
@@ -494,6 +500,8 @@
 				E889389C22833042003C8FB7 /* UserInfoController.m */,
 				E889389E22840103003C8FB7 /* EditInfoController.h */,
 				E889389F22840129003C8FB7 /* EditInfoController.m */,
+				E8458A76228D3FD200910015 /* UserLoginController.h */,
+				E8458A77228D3FEB00910015 /* UserLoginController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -671,6 +679,7 @@
 				1B7F82E22270AAAB000165F6 /* write.png in Resources */,
 				B18E173522849BBA004990B7 /* tianjiahaoyou.png in Resources */,
 				E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */,
+				E8458A7A228D6FA800910015 /* jiantou.png in Resources */,
 				B18E17602284A219004990B7 /* ChildPage2ViewController.xib in Resources */,
 				D6BC8B64227A2EF1001AFD60 /* comment.png in Resources */,
 				E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */,
@@ -741,6 +750,7 @@
 				1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */,
 				1B69A99A226EF664008B5A16 /* NewsModel.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
+				E8458A78228D3FEB00910015 /* UserLoginController.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
 				B18E17612284A219004990B7 /* ChildPage2ViewController.m in Sources */,
 				E889389D22833042003C8FB7 /* UserInfoController.m in Sources */,

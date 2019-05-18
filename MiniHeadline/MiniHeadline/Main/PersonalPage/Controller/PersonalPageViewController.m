@@ -13,6 +13,7 @@
 #import "UserInfoController.h"
 #import "nextPage_1/ChildPageViewController.h"
 #import "nextPage_2/ChildPage2ViewController.h"
+#import "UserLoginController.h"
 
 @interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -45,7 +46,9 @@
 @implementation PersonalPageViewController
 
 - (void)LoginButtonClick {
-    
+    NSLog(@"LoginClick");
+    UserLoginController *controller = [[UserLoginController alloc] init];
+    [self.navigationController pushViewController:controller animated:NO];
 }
 
 - (void)MarkButtonClick {
@@ -184,6 +187,8 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        
         label;
         
     });
@@ -315,7 +320,7 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    
+    /*
     [self.view addSubview:self.photoImageView];
     [self.view addSubview:self.userNameLabel];
     [self.view addSubview:self.toUserInfoImageView];
@@ -324,8 +329,8 @@
     [self.view addSubview:self.numOfFansLabel];
     [self.view addSubview:self.numOfLikeLabel];
     [self.view addSubview:grayline2];
-    
-    //[self.view addSubview:self.loginButton];
+    */
+    [self.view addSubview:self.loginButton];
     
     
 }
