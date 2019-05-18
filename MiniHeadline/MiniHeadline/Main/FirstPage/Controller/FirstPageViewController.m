@@ -181,7 +181,7 @@
 - (NSMutableArray *)tableDataArray {
     if (_tableDataArray == nil || _tableDataArray == NULL) {
         _tableDataArray = [NSMutableArray array];
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 20; i++) {
             NewsModel *tempModel = [NewsModel myNewsModel];
             [tempModel HttpPost];
             [_tableDataArray addObject:tempModel];

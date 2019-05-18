@@ -55,8 +55,8 @@
         NSLog(@"%@", data);
         NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         NSLog(@"%@", res);
-        NSString *temp = [[[res objectForKey:@"data"] objectForKey:@"article_feed"] objectForKey:@"group_id"];
-        NSLog(@"%@", temp);
+//        NSString *temp = [[[res objectForKey:@"data"] objectForKey:@"article_feed"] objectForKey:@"group_id"];
+//        NSLog(@"%@", temp);
         dispatch_async(dispatch_get_main_queue(), ^{
             
         });
