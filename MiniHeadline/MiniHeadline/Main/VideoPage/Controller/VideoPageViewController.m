@@ -85,7 +85,7 @@
     NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
     for(int i=0; i<3; i++){
         NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO];
         [result addObject:myVideo];
     }
     return result;

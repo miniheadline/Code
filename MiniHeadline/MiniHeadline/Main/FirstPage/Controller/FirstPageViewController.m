@@ -13,18 +13,14 @@
 #import "NewsModel.h"
 #import "UIColor+Hex.h"
 
-@interface FirstPageViewController ()<UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate>
+@interface FirstPageViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UIView *searchBackgroundView;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIImageView *publishImageView;
 @property (nonatomic, strong) UILabel *publishLabel;
 @property (nonatomic, strong) UITableView *publishTableView;
-@property (nonatomic, strong) UIView *publishView;
-@property (nonatomic, strong) UIView *tagView;
 @property (nonatomic, strong) UIScrollView *tagScrollView;
-@property (nonatomic, strong) UIImageView *tagImageView;
-@property (nonatomic, strong) UIView *verticalLine;
 @property (nonatomic, strong) UIView *horizontalLine;
 @property (nonatomic, strong) UITableView *newsTableView;
 
@@ -41,6 +37,8 @@
     [super viewDidLoad];
     
     [self addSubViews];
+    
+    self.clickOnce = NO;
 }
 
 - (void)addSubViews {
@@ -97,22 +95,14 @@
     // 图片添加点击事件
     self.publishImageView.userInteractionEnabled = YES;
     UITapGestureRecognizer *publish = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(publishSingleTap:)];
+    publish.cancelsTouchesInView = NO;
     [self.publishImageView addGestureRecognizer:publish];
     // 发布选项下拉菜单
-    self.publishView = [[UIView alloc] initWithFrame:CGRectMake(0, statusBound.size.height, screenBound.size.width, screenBound.size.height - statusBound.size.height)];
-    self.publishView.backgroundColor = [UIColor whiteColor];
-    self.publishView.alpha = 0.1;
-    self.publishView.userInteractionEnabled = YES;
-    UITapGestureRecognizer *other = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(otherSingleTap:)];
-    [self.publishView addGestureRecognizer:other];
-    [self.view addSubview:self.publishView];
-    [self.view sendSubviewToBack:self.publishView];
-    
     self.publishChoiceArray = @[@"发图文", @"拍小视频", @"发视频", @"提问", @"开直播", @"爆料"];
-    self.publishTableView = [[UITableView alloc] initWithFrame:CGRectMake(screenBound.size.width - 100, self.searchBackgroundView.frame.size.height, 100, 260) style:UITableViewStylePlain];
-    self.publishTableView.backgroundColor = [UIColor yellowColor];
+    self.publishTableView = [[UITableView alloc] initWithFrame:CGRectMake(screenBound.size.width - 100, self.searchBackgroundView.frame.size.height, 100,    100) style:UITableViewStylePlain];
     self.publishTableView.delegate = self;
     self.publishTableView.dataSource = self;
+    self.publishTableView.backgroundColor = [UIColor yellowColor];
     [self.view addSubview:self.publishTableView];
     
     self.publishLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenBound.size.width - 45, statusBound.size.height + 32, 30, 10)];
@@ -129,35 +119,21 @@
     self.tagScrollView.showsHorizontalScrollIndicator = NO; // 不显示横向拉动条
     self.tagScrollView.bounces = YES; // 设置反弹效果
     self.tagScrollView.scrollEnabled = YES; // 设置能否滚动
-    self.tagScrollView.delegate = self;
     // 在scrollView中添加label
     NSArray *category = [NSArray arrayWithObjects:@"关注", @"推荐", @"热点", @"娱乐", @"科技", @"数码", @"电影", @"游戏", nil];
     for (int i = 0; i < category.count; i++) {
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(5 + 60 * i, 0, 60, 40)];
-        [tempLabel setFont:[UIFont systemFontOfSize:20]];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(60 * i, 0, 60, 40)];
+        [tempLabel setFont:[UIFont systemFontOfSize:18]];
         [tempLabel setTextAlignment:NSTextAlignmentCenter];
         [tempLabel setTextColor:[UIColor blackColor]];
         [tempLabel setText:[category objectAtIndex:i]];
         [self.tagScrollView addSubview:tempLabel];
     }
-    [self.tagScrollView setContentSize:CGSizeMake(5 + 45 + 60 * category.count, 40)];
+    [self.tagScrollView setContentSize:CGSizeMake(60 * category.count, 40)];
     [self.view addSubview:self.tagScrollView];
     
-    self.tagView = [[UIView alloc] initWithFrame:CGRectMake(screenBound.size.width - 40, self.searchBackgroundView.bounds.size.height, 40, 40)];
-    self.tagView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.tagView];
-    
-    UIImage *tagImage = [UIImage imageNamed:@"edit_label.png"];
-    self.tagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 20, 20)];
-    self.tagImageView.image = tagImage;
-    [self.tagView addSubview:self.tagImageView];
-    
-    self.verticalLine = [[UIView alloc] initWithFrame:CGRectMake(0, 10, 1, 20)];
-    self.verticalLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
-    [self.tagView addSubview:self.verticalLine];
-    
     // 分割线
-    self.horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height, screenBound.size.width, 1)];
+    self.horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height, screenBound.size.width, 0.5)];
     self.horizontalLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
     [self.view addSubview:self.horizontalLine];
     
@@ -174,33 +150,16 @@
     [self.view addSubview:self.newsTableView];
 }
 
-// 懒加载
-- (NSMutableArray *)tableDataArray {
-    if (_tableDataArray == nil || _tableDataArray == NULL) {
-        _tableDataArray = [NSMutableArray array];
-        for (int i = 0; i < 20; i++) {
-            NewsModel *tempModel = [NewsModel myNewsModel];
-            [_tableDataArray addObject:tempModel];
-        }
-    }
-    return _tableDataArray;
-}
-
-
-#pragma mark - SingleTap
-
-// 点击除下拉菜单之外的区域触发事件
-- (void)otherSingleTap:(UIGestureRecognizer *)gestureRecognizer {
-    NSLog(@"otherSingleTap");
-    [self.view sendSubviewToBack:self.publishView];
-    [self.view sendSubviewToBack:self.publishTableView];
-}
-
 // 发布按钮点击触发事件
 - (void)publishSingleTap:(UIGestureRecognizer *)gestureRecognizer {
     NSLog(@"publishSingleTap");
-    [self.view bringSubviewToFront:self.publishView];
-    [self.view bringSubviewToFront:self.publishTableView];
+    if (self.clickOnce == NO) {
+        [self.view bringSubviewToFront:self.publishTableView];
+        self.clickOnce = YES;
+    } else {
+        [self.view sendSubviewToBack:self.publishTableView];
+        self.clickOnce = NO;
+    }
 }
 
 // 搜索输入框点击触发事件
@@ -221,6 +180,27 @@
     [super viewWillDisappear:animated];
 }
 
+// 懒加载
+- (NSMutableArray *)tableDataArray {
+    if (_tableDataArray == nil || _tableDataArray == NULL) {
+        _tableDataArray = [NSMutableArray array];
+        for (int i = 0; i < 20; i++) {
+            NewsModel *tempModel = [NewsModel myNewsModel];
+            [_tableDataArray addObject:tempModel];
+        }
+    }
+    return _tableDataArray;
+}
+
+// 点击其他区域时隐藏下拉菜单（被scrollView searchBar tableView等拦截，需要加拓展）
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    NSLog(@"point");
+    CGPoint point = [[touches anyObject] locationInView:self.view];
+//    point = [self.publishTableView.layer convertPoint:point toLayer:self.publishTableView.layer];
+//    if (![self.publishTableView.layer containsPoint:point]) {
+//        NSLog(@"click on other position");
+//    }
+}
 
 #pragma mark - UITableViewDataSource
 
@@ -241,10 +221,8 @@
         return cell;
     }
     else {
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        cell.backgroundColor = [UIColor grayColor];
+        UITableViewCell *cell = [[UITableViewCell alloc] init];
         cell.textLabel.text = self.publishChoiceArray[indexPath.row];
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
         return cell;
     }
 }
@@ -267,30 +245,6 @@
         // 跳转
         NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
         [self.navigationController pushViewController:newsDetailVC animated:NO];
-    }
-}
-
-
-#pragma mark - UIScrollViewDelegate
-
-// 当开始滚动视图时，执行该方法，一次有效滑动（开始滑动，滑动一小段距离，只要手指不松开，只算一次滑动），只执行一次
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if ([scrollView isEqual:self.tagScrollView]) {
-        NSLog(@"scrollViewWillBeginDragging");
-        self.tagView.alpha = 0.9; // 设置tagView为透明
-    }
-}
-
-// 滑动scrollView，并且手指离开时执行，一次有效滑动，只执行一次，当pagingEnabled=YES时不会调用该方法
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewWillEndDragging");
-}
-
-// 滑动视图，当手指离开屏幕那一霎那，调用该方法，一次有效滑动，只执行一次，decelerate指当我们手指离开那一瞬后，视图是否还将继续向前滚动一段距离
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if ([scrollView isEqual:self.tagScrollView]) {
-        NSLog(@"scrollViewDidEndDragging");
-        self.tagView.alpha = 1;
     }
 }
 
