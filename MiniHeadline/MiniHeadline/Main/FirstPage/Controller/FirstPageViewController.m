@@ -13,7 +13,10 @@
 #import "NewsModel.h"
 #import "UIColor+Hex.h"
 
-@interface FirstPageViewController ()<UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate>
+@interface FirstPageViewController ()<UITableViewDelegate,
+                                      UITableViewDataSource,
+                                      UIScrollViewDelegate,
+                                      NSURLSessionDelegate>
 
 @property (nonatomic, strong) UIView *searchBackgroundView;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -110,7 +113,7 @@
     
     self.publishChoiceArray = @[@"发图文", @"拍小视频", @"发视频", @"提问", @"开直播", @"爆料"];
     self.publishTableView = [[UITableView alloc] initWithFrame:CGRectMake(screenBound.size.width - 100, self.searchBackgroundView.frame.size.height, 100, 260) style:UITableViewStylePlain];
-    self.publishTableView.backgroundColor = [UIColor yellowColor];
+    self.publishTableView.backgroundColor = [UIColor whiteColor];
     self.publishTableView.delegate = self;
     self.publishTableView.dataSource = self;
     [self.view addSubview:self.publishTableView];
@@ -178,8 +181,9 @@
 - (NSMutableArray *)tableDataArray {
     if (_tableDataArray == nil || _tableDataArray == NULL) {
         _tableDataArray = [NSMutableArray array];
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 2; i++) {
             NewsModel *tempModel = [NewsModel myNewsModel];
+            [tempModel HttpPost];
             [_tableDataArray addObject:tempModel];
         }
     }
@@ -242,9 +246,10 @@
     }
     else {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        cell.backgroundColor = [UIColor grayColor];
+        cell.backgroundColor = [UIColor darkGrayColor];
         cell.textLabel.text = self.publishChoiceArray[indexPath.row];
         cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.textColor = [UIColor whiteColor];
         return cell;
     }
 }

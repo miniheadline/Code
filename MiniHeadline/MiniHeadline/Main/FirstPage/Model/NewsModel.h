@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)myNewsModel;
 
+- (void)HttpPost;
+- (void)downloadPicture;
+
 @end
 
 NS_ASSUME_NONNULL_END

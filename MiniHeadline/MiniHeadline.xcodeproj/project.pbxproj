@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B09A34D228E5B5E00A0AFF5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09A34C228E5B5D00A0AFF5 /* logo.png */; };
 		1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D181226AFF7B00BB7480 /* AppDelegate.m */; };
 		1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D184226AFF7B00BB7480 /* ViewController.m */; };
 		1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B09D186226AFF7B00BB7480 /* Main.storyboard */; };
@@ -39,7 +40,6 @@
 		1B7F82E42270AAAB000165F6 /* star_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D72270AAAB000165F6 /* star_unselected.png */; };
 		1B7F82E52270AAAB000165F6 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D82270AAAB000165F6 /* share.png */; };
 		1B7F82E62270AAAB000165F6 /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D92270AAAB000165F6 /* more.png */; };
-		1B7F82EC2270AE9B000165F6 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82EB2270AE9B000165F6 /* logo.png */; };
 		1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BEBE322226CBA200003C151 /* NewsDetailViewController.m */; };
 		D6AC51F72283F1B700318629 /* share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6AC51F62283F1B600318629 /* share_white.png */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
@@ -85,6 +85,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B09A34C228E5B5D00A0AFF5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1B09D17D226AFF7B00BB7480 /* MiniHeadline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniHeadline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B09D180226AFF7B00BB7480 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1B09D181226AFF7B00BB7480 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -129,7 +130,6 @@
 		1B7F82D72270AAAB000165F6 /* star_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_unselected.png; sourceTree = "<group>"; };
 		1B7F82D82270AAAB000165F6 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
 		1B7F82D92270AAAB000165F6 /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more.png; sourceTree = "<group>"; };
-		1B7F82EB2270AE9B000165F6 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1BEBE321226CBA200003C151 /* NewsDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewController.h; sourceTree = "<group>"; };
 		1BEBE322226CBA200003C151 /* NewsDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewController.m; sourceTree = "<group>"; };
 		D6AC51F62283F1B600318629 /* share_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_white.png; sourceTree = "<group>"; };
@@ -300,6 +300,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				1B09A34C228E5B5D00A0AFF5 /* logo.png */,
 				D6AC51F62283F1B600318629 /* share_white.png */,
 				D6BC8B6B227B5E97001AFD60 /* Share_25.png */,
 				D6BC8B69227B5BA9001AFD60 /* star_25.png */,
@@ -324,7 +325,6 @@
 				D6BC8B3722799380001AFD60 /* unlike-fill_23.png */,
 				D6BC8B2D2279609A001AFD60 /* pause.png */,
 				D6BC8B2C2279609A001AFD60 /* play.png */,
-				1B7F82EB2270AE9B000165F6 /* logo.png */,
 				1B7F82CE2270AAAA000165F6 /* back.png */,
 				1B7F82CF2270AAAB000165F6 /* camera.png */,
 				1B7F82CD2270AAAA000165F6 /* comments.png */,
@@ -673,6 +673,7 @@
 				D6BC8B4D2279C1C7001AFD60 /* full-screen.png in Resources */,
 				1B7F82DA2270AAAB000165F6 /* comments.png in Resources */,
 				1B7F82E62270AAAB000165F6 /* more.png in Resources */,
+				1B09A34D228E5B5E00A0AFF5 /* logo.png in Resources */,
 				D6BC8B6C227B5E97001AFD60 /* Share_25.png in Resources */,
 				D6BC8BB52282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib in Resources */,
 				1B69A9A1226F5900008B5A16 /* SingleImageTableViewCell.xib in Resources */,
@@ -710,7 +711,6 @@
 				D6BC8B4B2279C113001AFD60 /* play_white.png in Resources */,
 				D6BC8B4222799423001AFD60 /* like-fill_25.png in Resources */,
 				D6BC8B68227A3127001AFD60 /* back_white_25.png in Resources */,
-				1B7F82EC2270AE9B000165F6 /* logo.png in Resources */,
 				1B09D18A226AFF7C00BB7480 /* Assets.xcassets in Resources */,
 				D6BC8B2F2279609A001AFD60 /* pause.png in Resources */,
 				D6BC8B3A22799380001AFD60 /* like-fill_23.png in Resources */,
