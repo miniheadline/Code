@@ -35,6 +35,8 @@
     
     self.timeLabel.textColor = [UIColor grayColor];
     self.timeLabel.font = [UIFont systemFontOfSize:10.0];
+    
+    self.firstImageView.contentMode = UIViewContentModeScaleAspectFill;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

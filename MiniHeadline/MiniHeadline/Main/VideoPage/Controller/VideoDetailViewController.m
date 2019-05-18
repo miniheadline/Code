@@ -10,21 +10,16 @@
 #import "../../../Common/UIColor+Hex.h"
 #import "../Model/MyVideo.h"
 #import <AVFoundation/AVFoundation.h>
+#import "../Model/MyComment.h"
+#import "../ViewModel/LoadingTableViewCell.h"
+#import "../ViewModel/RecommendationVideoTableViewCell.h"
+#import "../ViewModel/CommentTableViewCell.h"
 
 @interface VideoDetailViewController ()
-@property (nonatomic, strong) UIView *header;
-@property (nonatomic, strong) UIView *footer;
-
-@property (nonatomic, strong) UIView *headerLine;
-@property (nonatomic, strong) UIView *footerLine;
-
 
 @property (nonatomic, strong) UIButton *backBtn;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIView *videoView;
-@property (nonatomic, strong) UIButton *playBtn;
-@property (nonatomic, strong) UISlider *videoProgess;
-@property (nonatomic, strong) UIButton *fullScreamBtn;
+
 @property (nonatomic, strong) UIButton *icon;
 @property (nonatomic, strong) UILabel *name;
 @property (nonatomic, strong) UIButton *followBtn;
@@ -34,9 +29,29 @@
 @property (nonatomic, strong) UIButton *moreBtn;
 @property (nonatomic, strong) UITableView *commentTableView;
 
+@property (nonatomic, strong) UIView *footToolBar;
+@property (nonatomic, strong) UIButton *editCommentBtn;
+@property (nonatomic, strong) UIButton *commentBtn;
+@property (nonatomic, strong) UIButton *starBtn;
+@property (nonatomic, strong) UIButton *likeBarBtn;
+@property (nonatomic, strong) UIButton *shareBtn;
+
 @property (nonatomic, assign) BOOL isPlay;
 @property (nonatomic, strong) AVPlayer *videoPlayer;
 @property (nonatomic, strong) AVPlayerLayer *video;
+@property (nonatomic, strong) UIView *videoView;
+@property (nonatomic, strong) UIButton *playBtn;
+@property (nonatomic, strong) UISlider *videoProgess;
+@property (nonatomic, strong) UIButton *fullScreamBtn;
+@property (nonatomic, strong) UILabel *currTime;
+@property (nonatomic, strong) UILabel *duraTime;
+@property (nonatomic, strong) UIView *fullView;
+@property (nonatomic, strong) NSTimer *videoTimer;
+
+@property (nonatomic, strong) NSMutableArray<MyVideo*>* recommendationVideoList;
+@property (nonatomic, strong) NSMutableArray<MyComment*>* commentsList;
+@property (nonatomic, assign) NSInteger pageIndex;
+@property(nonatomic, assign)LoadingStatus status;
 @end
 
 @implementation VideoDetailViewController
@@ -84,7 +99,7 @@
     [self.playBtn setBackgroundImage:[UIImage imageNamed:@"play_white.png"] forState:UIControlStateNormal];
     [self.playBtn addTarget:self action:@selector(pauseBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.playBtn];
-    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(50, 217, 308, 30)];
+    self.videoProgess = [[UISlider alloc] initWithFrame:CGRectMake(92, 217, 231, 30)];
     [self.videoView addSubview:self.videoProgess];
     self.fullScreamBtn = [[UIButton alloc] initWithFrame:CGRectMake(364, 219, 25, 25)];
     [self.fullScreamBtn setBackgroundImage:[UIImage imageNamed:@"full-screen.png"] forState:UIControlStateNormal];
@@ -97,6 +112,7 @@
     [self.name setText:self.myVideo.authorName];
     [self.view addSubview:self.name];
     self.followBtn = [[UIButton alloc] initWithFrame:CGRectMake(324, 313, 70, 30)];
+    self.followBtn.layer.cornerRadius = 5;
     if(self.myVideo.isFollow == NO) {
         self.followBtn.backgroundColor = [UIColor colorWithHexString:@"#B54434"];
         [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
@@ -132,21 +148,95 @@
     [self.moreBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.view addSubview:self.moreBtn];
     
+    self.footToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, 818, 414, 44)];
+    [self.footToolBar setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    [self.view addSubview:self.footToolBar];
+    self.editCommentBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 7, 130, 30)];
+    [self.editCommentBtn setImage:[UIImage imageNamed:@"write.png"] forState:UIControlStateNormal];
+    [self.editCommentBtn setTitle:@"写评论..." forState:UIControlStateNormal];
+    [self.editCommentBtn setBackgroundColor:[UIColor whiteColor]];
+    [self.editCommentBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.editCommentBtn.layer.cornerRadius = 15;
+    [self.footToolBar addSubview:self.editCommentBtn];
+    self.commentBtn = [[UIButton alloc] initWithFrame:CGRectMake(181, 8, 25, 25)];
+    [self.commentBtn setBackgroundImage:[UIImage imageNamed:@"comment.png"] forState:UIControlStateNormal];
+    [self.footToolBar addSubview:self.commentBtn];
+    self.starBtn = [[UIButton alloc] initWithFrame:CGRectMake(237, 8, 25, 25)];
+    [self.starBtn setBackgroundImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
+    [self.footToolBar addSubview:self.starBtn];
+    self.likeBarBtn = [[UIButton alloc] initWithFrame:CGRectMake(296, 8, 25, 25)];
+    [self.likeBarBtn setBackgroundImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
+    [self.footToolBar addSubview:self.likeBarBtn];
+    self.shareBtn = [[UIButton alloc] initWithFrame:CGRectMake(351, 8, 25, 25)];
+    [self.shareBtn setBackgroundImage:[UIImage imageNamed:@"Share_25.png"] forState:UIControlStateNormal];
+    [self.footToolBar addSubview:self.shareBtn];
+    self.currTime = [[UILabel alloc] initWithFrame:CGRectMake(52, 224, 34, 15)];
+    [self.currTime setTextColor:[UIColor whiteColor]];
+    self.currTime.font = [UIFont systemFontOfSize:12];
+    [self.currTime setText:@"00:00"];
+    [self.videoView addSubview:self.currTime];
+    AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
+    CMTime videoDuration = [avUrlAsset duration];
+    float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoDurationSeconds];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
+    NSString* result = [dateFormatter stringFromDate:date];
+    self.duraTime = [[UILabel alloc] initWithFrame:CGRectMake(329, 224, 34, 15)];
+    [self.duraTime setTextColor:[UIColor whiteColor]];
+    self.duraTime.font = [UIFont systemFontOfSize:12];
+    [self.duraTime setText:result];
+    [self.videoView addSubview:self.duraTime];
     
-    self.footer = [[UIView alloc] initWithFrame:CGRectMake(0, screenBound.size.height - 60, screenBound.size.width, 60)];
-    [self.view addSubview:self.footer];
+    self.commentTableView = ({
+        UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 477, 414, 341) style:UITableViewStylePlain]);
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.tableFooterView = [UIView new];
+        tableView;
+    });
+    [self.view addSubview:self.commentTableView];
+    self.fullView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 896, 414)];
     
-    self.headerLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.header.frame.size.height - 0.5, screenBound.size.width, 0.5)];
-    self.headerLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
-    [self.header addSubview:self.headerLine];
+    NSArray* videoPart = [self loadVideo];
+    self.recommendationVideoList = [NSMutableArray arrayWithArray:videoPart];
+    NSArray* commentPart = [self loadComment:0];
+    self.commentsList = [NSMutableArray arrayWithArray:commentPart];
+    self.pageIndex = 0;
     
-    self.footerLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, 0.5)];
-    self.footerLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
-    [self.footer addSubview:self.footerLine];
+    [self.fullScreamBtn addTarget:self action:@selector(fullScreamBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.commentBtn addTarget:self action:@selector(commentBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    
+    /// 添加监听.以及回调
+    __weak typeof(self) weakSelf = self;
+    self.videoTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timer) userInfo:nil repeats:YES];
+}
+
+- (void)timer {
+    self.videoProgess.value = CMTimeGetSeconds(self.videoPlayer.currentItem.currentTime) / CMTimeGetSeconds(self.videoPlayer.currentItem.duration);
+    float videoCurrentSeconds = CMTimeGetSeconds(self.videoPlayer.currentItem.currentTime);
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoCurrentSeconds];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
+    NSString* result = [dateFormatter stringFromDate:date];
+    [self.currTime setText:result];
 }
 
 - (IBAction)backBtnClick:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (IBAction)fullScreamBtnClick:(id)sender {
+    
+}
+
+- (IBAction)commentBtnClick:(id)sender {
+    NSIndexPath * dayOne = [NSIndexPath indexPathForRow:0 inSection:1];
+    [self.commentTableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (IBAction)pauseBtnClick:(id)sender {
@@ -160,6 +250,138 @@
         [self.playBtn setBackgroundImage:[UIImage imageNamed:@"pause _white.png"] forState:UIControlStateNormal];
         self.isPlay = YES;
     }
+}
+
+- (NSArray*)loadVideo{
+    NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
+    for(int i=0; i<3; i++){
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*10000];
+        [result addObject:myVideo];
+    }
+    return result;
+}
+
+- (NSArray*)loadComment:(NSInteger)pageIndex{
+    NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
+    for(int i=0; i<3; i++){
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        MyComment *myComment = [[MyComment alloc] initWithComment:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] comment:[NSString stringWithFormat:@"视频随便找的吧喂，放什么鬼抖音啊，你就不能下个别的什么视频吗？？？？？_%d", i]  likeNum:(i+1)*10 isLike:NO date:[NSDate date]];
+        [result addObject:myComment];
+    }
+    return result;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(section == 0){
+        return self.recommendationVideoList.count;
+    }
+    else {
+        return self.commentsList.count + 1; // 增加的1为加载更多
+    }
+}
+
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    NSInteger cellType;
+    if(indexPath.row == self.commentsList.count) {
+        cellType = 0;
+    }
+    else if(indexPath.section == 0) {
+        cellType = self.recommendationVideoList[indexPath.row].cellType;
+    }
+    else {
+        cellType = self.commentsList[indexPath.row].cellType;
+    }
+    NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+    
+    if(cell == nil) {
+        if(cellType == 0){
+            cell = [[LoadingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            ((LoadingTableViewCell*) cell).status = self.status;
+            cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
+        }
+        else if(cellType == 1) {
+            cell = [[RecommendationVideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.recommendationVideoList[indexPath.row]];
+            //cell.cellD
+        }
+        else if(cellType == 2) {
+            cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            [(CommentTableViewCell*)cell setCellData:self.commentsList[indexPath.row]];
+        }
+    } else {
+        if(cellType == 0){
+            ((LoadingTableViewCell*) cell).status = self.status;
+            cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
+        }
+        else if(cellType == 1) {
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.recommendationVideoList[indexPath.row]];
+        }
+        else if(cellType == 2) {
+            [(CommentTableViewCell*)cell setCellData:self.commentsList[indexPath.row]];
+        }
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    if(indexPath.row == self.commentsList.count) {
+        self.status = LoadingStatusLoding;
+        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.pageIndex++;
+            if (self.pageIndex < 5) {
+                self.status = LoadingStatusDefault;
+            } else {
+                self.status = LoadingStatusNoMore;
+            }
+            
+            NSArray *newPage = [self loadComment:self.pageIndex];
+            [self.commentsList addObjectsFromArray:newPage];
+            
+            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
+        });
+    }
+    else {
+        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        if (indexPath.section == 0) {
+            // 跳转
+            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            NSString *cellType = cell.reuseIdentifier;
+            if([cellType isEqualToString:@"cellType:1"]) {
+                VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
+                videoDetailViewController.myVideo = self.recommendationVideoList[indexPath.row];
+                [self.navigationController pushViewController:videoDetailViewController animated:NO];
+            }
+        }
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(indexPath.row == self.commentsList.count) {
+        return 30;
+    }
+    else {
+        if(indexPath.section == 0) {
+            return 110;
+        }
+        return self.commentsList[indexPath.row].height;
+    }
+}
+
+// 通知委托指定行将要被选中，返回响应行的索引
+- (nullable NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    return indexPath;
 }
 
 /*
