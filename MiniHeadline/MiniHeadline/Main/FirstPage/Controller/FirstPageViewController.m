@@ -12,6 +12,7 @@
 #import "SingleImageTableViewCell.h"
 #import "NewsModel.h"
 #import "UIColor+Hex.h"
+#import "FirstPageViewModel.h"
 
 @interface FirstPageViewController ()<UITableViewDelegate,
                                       UITableViewDataSource,
@@ -44,6 +45,17 @@
     [super viewDidLoad];
     
     [self addSubViews];
+    
+    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+    [viewModel getFeedsListWithSuccess:^(NSMutableArray * _Nonnull dataArray) {
+        [self.tableDataArray removeAllObjects];
+        [self.tableDataArray addObjectsFromArray:dataArray];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.newsTableView reloadData];
+        });
+    } andFailure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
 }
 
 - (void)addSubViews {
@@ -168,6 +180,10 @@
     self.newsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height + 1, screenBound.size.width, screenBound.size.height - self.searchBackgroundView.bounds.size.height - self.tagScrollView.bounds.size.height) style:UITableViewStylePlain];
     self.newsTableView.dataSource = self;
     self.newsTableView.delegate = self;
+    // 去除多余的分割线
+    UIView *footer = [[UIView alloc] init];
+    footer.backgroundColor = [UIColor clearColor];
+    self.newsTableView.tableFooterView = footer;
     // tableView分割线
     self.newsTableView.separatorInset = UIEdgeInsetsMake(1, 0, 1, 0);
     self.newsTableView.separatorColor = [UIColor lightGrayColor];
@@ -181,11 +197,6 @@
 - (NSMutableArray *)tableDataArray {
     if (_tableDataArray == nil || _tableDataArray == NULL) {
         _tableDataArray = [NSMutableArray array];
-        for (int i = 0; i < 20; i++) {
-            NewsModel *tempModel = [NewsModel myNewsModel];
-            [tempModel HttpPost];
-            [_tableDataArray addObject:tempModel];
-        }
     }
     return _tableDataArray;
 }
