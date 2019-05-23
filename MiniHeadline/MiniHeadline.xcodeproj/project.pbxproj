@@ -103,6 +103,7 @@
 		E8893893227AB8F0003C8FB7 /* lishixiao.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388F227AB8EE003C8FB7 /* lishixiao.png */; };
 		E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893890227AB8EF003C8FB7 /* pinglun.png */; };
 		E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893891227AB8EF003C8FB7 /* dianzan.png */; };
+		E89EBAB32296A18A00517AB7 /* NewsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E89EBAB12296A18900517AB7 /* NewsDetailViewModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -264,6 +265,8 @@
 		E889388F227AB8EE003C8FB7 /* lishixiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lishixiao.png; sourceTree = "<group>"; };
 		E8893890227AB8EF003C8FB7 /* pinglun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinglun.png; sourceTree = "<group>"; };
 		E8893891227AB8EF003C8FB7 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
+		E89EBAB12296A18900517AB7 /* NewsDetailViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewModel.m; sourceTree = "<group>"; };
+		E89EBAB22296A18A00517AB7 /* NewsDetailViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewModel.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +444,8 @@
 			children = (
 				1B7485A8229536AB00E508A8 /* FirstPageViewModel.h */,
 				1B7485A9229536AB00E508A8 /* FirstPageViewModel.m */,
+				E89EBAB22296A18A00517AB7 /* NewsDetailViewModel.h */,
+				E89EBAB12296A18900517AB7 /* NewsDetailViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -887,6 +892,7 @@
 			files = (
 				D6BC8BB42282AE5F001AFD60 /* RecommendationVideoTableViewCell.m in Sources */,
 				1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */,
+				E89EBAB32296A18A00517AB7 /* NewsDetailViewModel.m in Sources */,
 				E84EE5842296839300896A53 /* UserInfoModel.m in Sources */,
 				D6BC8B5E2279EB3F001AFD60 /* MyVideo.m in Sources */,
 				D6BC8B79227C7365001AFD60 /* CommentTableViewCell.m in Sources */,
