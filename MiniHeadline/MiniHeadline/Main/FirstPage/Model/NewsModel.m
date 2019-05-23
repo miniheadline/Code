@@ -10,13 +10,13 @@
 
 @implementation NewsModel
 
-+ (instancetype)myNewsModel {
++ (instancetype)initWithTitle:(NSString *)title imagePath:(NSString *)imagePath {
     NewsModel *cellModel = [[NewsModel alloc] init];
-    cellModel.title = @"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试";
+    cellModel.title = title;
     cellModel.publisher = @"中山大学";
     cellModel.comments = @"432评论";
     cellModel.time = @"5小时前";
-    cellModel.firstImageName = @"logo.png";
+    cellModel.firstImagePath = imagePath;
     return cellModel;
 }
 

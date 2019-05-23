@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *publisher;
 @property (nonatomic, copy) NSString *comments;
 @property (nonatomic, copy) NSString *time;
-@property (nonatomic, copy) NSString *firstImageName;
+@property (nonatomic, copy) NSString *firstImagePath;
 
-+ (instancetype)myNewsModel;
++ (instancetype)initWithTitle:(NSString *)title imagePath:(NSString *)imagePath;
 
 @end
 

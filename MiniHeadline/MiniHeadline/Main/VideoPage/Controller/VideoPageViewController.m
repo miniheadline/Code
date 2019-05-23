@@ -79,13 +79,15 @@
     NSArray* firstPage = [self loadData:0];
     self.dataList = [NSMutableArray arrayWithArray:firstPage];
     self.pageIndex = 0;
+    
+    [self setupDownRefresh];
 }
 
 - (NSArray*)loadData:(NSInteger)pageIndex{
     NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
     for(int i=0; i<3; i++){
         NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO];
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
         [result addObject:myVideo];
     }
     return result;
@@ -179,6 +181,28 @@
 - (nullable NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     return indexPath;
+}
+- (void)setupDownRefresh {
+    UIRefreshControl *control = [[UIRefreshControl alloc] init];
+    [control addTarget:self action:@selector(loadNewData:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:control];
+}
+
+- (void)loadNewData:(UIRefreshControl *)control {
+    NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
+    for(int i=0; i<3; i++){
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d_new", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
+        [result addObject:myVideo];
+    }
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndex:0];
+    [indexes addIndex:1];
+    [indexes addIndex:2];
+    [self.dataList insertObjects:result atIndexes:indexes];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [control endRefreshing];
+    });
 }
 
 
