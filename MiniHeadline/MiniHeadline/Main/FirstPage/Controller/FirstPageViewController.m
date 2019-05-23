@@ -282,6 +282,8 @@
     if ([tableView isEqual:self.newsTableView]) {
         // 跳转
         NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
+        NewsModel *temp = self.tableDataArray[indexPath.row];
+        newsDetailVC.groupID = temp.groupID;
         [self.navigationController pushViewController:newsDetailVC animated:NO];
     }
 }

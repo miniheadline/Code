@@ -8,6 +8,7 @@
 
 #import "NewsDetailViewController.h"
 #import "UIColor+Hex.h"
+#import "NewsDetailViewModel.h"
 
 @interface NewsDetailViewController ()
 
@@ -29,7 +30,11 @@
 @property (nonatomic, strong) UIImageView *shareImageView;
 
 @property (nonatomic, strong) UIView *writeCommentView;
-@property (nonatomic, strong) UILabel* writeCommentLabel;
+@property (nonatomic, strong) UILabel *writeCommentLabel;
+
+@property (nonatomic, strong) UIScrollView *detailScrollView;
+@property (nonatomic, strong) UILabel *feedTitleLabel;
+@property (nonatomic, strong) UILabel *feedContentLabel;
 
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
@@ -45,6 +50,9 @@
     
     self.isStar = NO;
     self.isLike = NO;
+    
+    NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -169,6 +177,13 @@
     self.shareImageView.userInteractionEnabled = YES;
     UITapGestureRecognizer *share = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shareSingleTap:)];
     [self.shareImageView addGestureRecognizer:share];
+    
+    // 内容
+    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.header.frame.size.height, screenBound.size.width, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height)];
+    self.detailScrollView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.detailScrollView];
+    
+    //self.feedContentLabel = 
 }
 
 #pragma mark - TapFunctionDefinition

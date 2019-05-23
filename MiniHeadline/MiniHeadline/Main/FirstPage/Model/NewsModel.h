@@ -17,8 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *comments;
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, copy) NSString *firstImagePath;
+@property (nonatomic, copy) NSString *groupID;
 
-+ (instancetype)initWithTitle:(NSString *)title imagePath:(NSString *)imagePath;
++ (instancetype)initWithTitle:(NSString *)title imagePath:(NSString *)imagePath groupID:(NSString *)groupID;
 
 @end
 

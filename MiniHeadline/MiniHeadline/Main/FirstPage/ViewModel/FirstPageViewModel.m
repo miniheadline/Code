@@ -47,6 +47,9 @@
             NSString *title = [dataArr[i] objectForKey:@"title"];
             NSLog(@"%@", title);
             
+            NSString *groupID = [dataArr[i] objectForKey:@"group_id"];
+            NSLog(@"%@", groupID);
+            
             NSMutableArray *imageInfos = [dataArr[i] objectForKey:@"image_infos"];
             NSLog(@"%lu", imageInfos.count);
             NSString *urlPrefix = [imageInfos[0] objectForKey:@"url_prefix"];
@@ -56,7 +59,7 @@
             
             dispatch_group_enter(downloadTaskGroup);
             [self downloadImageWithURL:url index:i success:^(NSString * _Nonnull imagePath) {
-                NewsModel *news = [NewsModel initWithTitle:title imagePath:imagePath];
+                NewsModel *news = [NewsModel initWithTitle:title imagePath:imagePath groupID:groupID];
                 [arr addObject:news];
                 dispatch_group_leave(downloadTaskGroup);
             } failure:^(NSError * _Nonnull error) {
