@@ -80,6 +80,13 @@
 		D6BC8BB42282AE5F001AFD60 /* RecommendationVideoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8BB22282AE5F001AFD60 /* RecommendationVideoTableViewCell.m */; };
 		D6BC8BB52282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */; };
 		D6BC8BB72283E66B001AFD60 /* View2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8BB62283E66B001AFD60 /* View2.xib */; };
+		E84EE57C2296837200896A53 /* EditInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E84EE5732296837100896A53 /* EditInfoController.m */; };
+		E84EE57D2296837200896A53 /* UserLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = E84EE5742296837200896A53 /* UserLoginController.m */; };
+		E84EE57E2296837200896A53 /* PersonalPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E84EE5752296837200896A53 /* PersonalPageViewController.xib */; };
+		E84EE57F2296837200896A53 /* nextPage_2 in Resources */ = {isa = PBXBuildFile; fileRef = E84EE5772296837200896A53 /* nextPage_2 */; };
+		E84EE5802296837200896A53 /* nextPage_1 in Resources */ = {isa = PBXBuildFile; fileRef = E84EE5782296837200896A53 /* nextPage_1 */; };
+		E84EE5812296837200896A53 /* UserInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = E84EE5792296837200896A53 /* UserInfoController.m */; };
+		E84EE5842296839300896A53 /* UserInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E84EE5822296839300896A53 /* UserInfoModel.m */; };
 		E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893880227AAFCD003C8FB7 /* SettingViewController.m */; };
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */ = {isa = PBXBuildFile; fileRef = E889388E227AB8EE003C8FB7 /* shoucang.png */; };
@@ -211,6 +218,17 @@
 		D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecommendationVideoTableViewCell.xib; sourceTree = "<group>"; };
 		D6BC8BB62283E66B001AFD60 /* View2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = View2.xib; sourceTree = "<group>"; };
 		E1B070BB2A098023ACBA36D0 /* Pods-MiniHeadline.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MiniHeadline.release.xcconfig"; path = "Target Support Files/Pods-MiniHeadline/Pods-MiniHeadline.release.xcconfig"; sourceTree = "<group>"; };
+		E84EE5732296837100896A53 /* EditInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditInfoController.m; sourceTree = "<group>"; };
+		E84EE5742296837200896A53 /* UserLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginController.m; sourceTree = "<group>"; };
+		E84EE5752296837200896A53 /* PersonalPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonalPageViewController.xib; sourceTree = "<group>"; };
+		E84EE5762296837200896A53 /* UserInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoController.h; sourceTree = "<group>"; };
+		E84EE5772296837200896A53 /* nextPage_2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = nextPage_2; sourceTree = "<group>"; };
+		E84EE5782296837200896A53 /* nextPage_1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = nextPage_1; sourceTree = "<group>"; };
+		E84EE5792296837200896A53 /* UserInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoController.m; sourceTree = "<group>"; };
+		E84EE57A2296837200896A53 /* EditInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditInfoController.h; sourceTree = "<group>"; };
+		E84EE57B2296837200896A53 /* UserLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginController.h; sourceTree = "<group>"; };
+		E84EE5822296839300896A53 /* UserInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoModel.m; sourceTree = "<group>"; };
+		E84EE5832296839300896A53 /* UserInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoModel.h; sourceTree = "<group>"; };
 		E8893880227AAFCD003C8FB7 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		E8893881227AAFCD003C8FB7 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ImageTitleStyle.h"; sourceTree = "<group>"; };
@@ -489,6 +507,8 @@
 		1BCE642F226DB42D0078E11B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E84EE5832296839300896A53 /* UserInfoModel.h */,
+				E84EE5822296839300896A53 /* UserInfoModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -512,6 +532,15 @@
 		1BCE6432226DB44C0078E11B /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				E84EE57A2296837200896A53 /* EditInfoController.h */,
+				E84EE5732296837100896A53 /* EditInfoController.m */,
+				E84EE5782296837200896A53 /* nextPage_1 */,
+				E84EE5772296837200896A53 /* nextPage_2 */,
+				E84EE5752296837200896A53 /* PersonalPageViewController.xib */,
+				E84EE5762296837200896A53 /* UserInfoController.h */,
+				E84EE5792296837200896A53 /* UserInfoController.m */,
+				E84EE57B2296837200896A53 /* UserLoginController.h */,
+				E84EE5742296837200896A53 /* UserLoginController.m */,
 				E8893881227AAFCD003C8FB7 /* SettingViewController.h */,
 				E8893880227AAFCD003C8FB7 /* SettingViewController.m */,
 				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
@@ -638,7 +667,6 @@
 				4124A5849560543821FC1812 /* Pods-MiniHeadline.debug.xcconfig */,
 				E1B070BB2A098023ACBA36D0 /* Pods-MiniHeadline.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -712,6 +740,7 @@
 				1B09D1BD226B013700BB7480 /* video_unselected.png in Resources */,
 				D6BC8B4422799423001AFD60 /* unlike-fill_25.png in Resources */,
 				1B7F82E22270AAAB000165F6 /* write.png in Resources */,
+				E84EE57E2296837200896A53 /* PersonalPageViewController.xib in Resources */,
 				E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */,
 				D6BC8B64227A2EF1001AFD60 /* comment.png in Resources */,
 				E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */,
@@ -750,8 +779,10 @@
 				D6BC8B4322799423001AFD60 /* like_25.png in Resources */,
 				D6BC8B66227A2F5D001AFD60 /* back_white.png in Resources */,
 				D6BC8B472279949C001AFD60 /* link.png in Resources */,
+				E84EE5802296837200896A53 /* nextPage_1 in Resources */,
 				1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */,
 				1B7F82DE2270AAAB000165F6 /* star_selected.png in Resources */,
+				E84EE57F2296837200896A53 /* nextPage_2 in Resources */,
 				D6BC8B102273F524001AFD60 /* icon_1.png in Resources */,
 				D6BC8B6A227B5BAA001AFD60 /* star_25.png in Resources */,
 				D6123D12228C6492004A1E4F /* PersonalDetailViewController.xib in Resources */,
@@ -793,6 +824,7 @@
 			files = (
 				D6BC8BB42282AE5F001AFD60 /* RecommendationVideoTableViewCell.m in Sources */,
 				1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */,
+				E84EE5842296839300896A53 /* UserInfoModel.m in Sources */,
 				D6BC8B5E2279EB3F001AFD60 /* MyVideo.m in Sources */,
 				D6BC8B79227C7365001AFD60 /* CommentTableViewCell.m in Sources */,
 				E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */,
@@ -800,7 +832,9 @@
 				D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */,
 				1B7F82AC227052DC000165F6 /* SearchViewController.m in Sources */,
 				1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */,
+				E84EE57C2296837200896A53 /* EditInfoController.m in Sources */,
 				1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */,
+				E84EE5812296837200896A53 /* UserInfoController.m in Sources */,
 				1B69A99A226EF664008B5A16 /* NewsModel.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
@@ -810,6 +844,7 @@
 				1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */,
 				1B09D1A4226B005500BB7480 /* PersonalPageViewController.m in Sources */,
 				D6BC8B6F227C2877001AFD60 /* MyComment.m in Sources */,
+				E84EE57D2296837200896A53 /* UserLoginController.m in Sources */,
 				D6BC8B1D227407BF001AFD60 /* VideoDetailViewController.m in Sources */,
 				1B7485AA229536AB00E508A8 /* FirstPageViewModel.m in Sources */,
 				E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */,
