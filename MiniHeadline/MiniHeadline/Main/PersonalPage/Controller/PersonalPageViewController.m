@@ -11,6 +11,9 @@
 #import "SettingViewController.h"
 #import "UserInfoModel.h"
 #import "UserInfoController.h"
+#import "nextPage_1/ChildPageViewController.h"
+#import "nextPage_2/ChildPage2ViewController.h"
+#import "UserLoginController.h"
 
 @interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -43,21 +46,39 @@
 @implementation PersonalPageViewController
 
 - (void)LoginButtonClick {
-    
+    NSLog(@"LoginClick");
+    UserLoginController *controller = [[UserLoginController alloc] init];
+    [self.navigationController pushViewController:controller animated:NO];
 }
 
 - (void)MarkButtonClick {
-
+    NSLog(@"MarkInfo");
+    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+    
+    [self.navigationController pushViewController:controller animated:NO];
+    [controller SelectPage:1];
 
 }
 - (void)LikeButtonClick {
+    NSLog(@"LikeInfo");
+    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+    [controller SelectPage:2];
     
+    [self.navigationController pushViewController:controller animated:NO];
 }
 - (void)CommentButtonClick {
+    NSLog(@"CommentInfo");
+    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+    [controller SelectPage:3];
     
+    [self.navigationController pushViewController:controller animated:NO];
 }
 - (void)HistoryButtonClick {
+    NSLog(@"HisInfo");
+    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+    [controller SelectPage:4];
     
+    [self.navigationController pushViewController:controller animated:NO];
 }
 
 - (void)toUserInfo:(UITapGestureRecognizer *)gestureRecognizer {
@@ -65,6 +86,22 @@
     UserInfoController *controller = [[UserInfoController alloc] init];
     [self.navigationController pushViewController:controller animated:NO];
 }
+
+- (void)FansLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"Fans Click");
+    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
+    
+    [self.navigationController pushViewController:controller animated:NO];
+}
+
+- (void)LikeLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"Like Click");
+    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
+    
+    [self.navigationController pushViewController:controller animated:NO];
+}
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -166,6 +203,8 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        
         label;
         
     });
@@ -184,6 +223,11 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        label.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(FansLabelClick:)];
+        [label addGestureRecognizer:tapGesture];
+        
         label;
         
     });
@@ -202,6 +246,11 @@
         label.attributedText = attributedString;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 2;
+        
+        label.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(LikeLabelClick:)];
+        [label addGestureRecognizer:tapGesture];
+        
         label;
         
     });
@@ -297,7 +346,7 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    
+    /*
     [self.view addSubview:self.photoImageView];
     [self.view addSubview:self.userNameLabel];
     [self.view addSubview:self.toUserInfoImageView];
@@ -306,8 +355,8 @@
     [self.view addSubview:self.numOfFansLabel];
     [self.view addSubview:self.numOfLikeLabel];
     [self.view addSubview:grayline2];
-    
-    //[self.view addSubview:self.loginButton];
+    */
+    [self.view addSubview:self.loginButton];
     
     
 }
