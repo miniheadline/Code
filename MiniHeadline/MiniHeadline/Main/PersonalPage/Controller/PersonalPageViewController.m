@@ -9,31 +9,16 @@
 #import "PersonalPageViewController.h"
 #import "UIButton+ImageTitleStyle.h"
 #import "SettingViewController.h"
-#import "UserInfoModel.h"
-#import "UserInfoController.h"
-#import "nextPage_1/ChildPageViewController.h"
-#import "nextPage_2/ChildPage2ViewController.h"
-#import "UserLoginController.h"
 
 @interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSArray<NSString*> *items;
-
 @property(nonatomic, strong) UIButton* likeButton;
 @property(nonatomic, strong) UIButton* commentButton;
 @property(nonatomic, strong) UIButton* historyButton;
 @property(nonatomic, strong) UIButton* markButton;
 @property(nonatomic, strong) UIButton* loginButton;
-
-@property(nonatomic, strong) UILabel* numOfHeadlineLabel;
-@property(nonatomic, strong) UILabel* numOfAttentionLabel;
-@property(nonatomic, strong) UILabel* numOfFansLabel;
-@property(nonatomic, strong) UILabel* numOfLikeLabel;
-@property(nonatomic, strong) UILabel* userNameLabel;
-
-@property(nonatomic, strong) UIImageView* photoImageView;
-@property(nonatomic, strong) UIImageView* toUserInfoImageView;
 
 - (void)LoginButtonClick;
 - (void)MarkButtonClick;
@@ -46,62 +31,22 @@
 @implementation PersonalPageViewController
 
 - (void)LoginButtonClick {
-    NSLog(@"LoginClick");
-    UserLoginController *controller = [[UserLoginController alloc] init];
-    [self.navigationController pushViewController:controller animated:NO];
+    
 }
 
 - (void)MarkButtonClick {
-    NSLog(@"MarkInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    
-    [self.navigationController pushViewController:controller animated:NO];
-    [controller SelectPage:1];
+
 
 }
 - (void)LikeButtonClick {
-    NSLog(@"LikeInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:2];
     
-    [self.navigationController pushViewController:controller animated:NO];
 }
 - (void)CommentButtonClick {
-    NSLog(@"CommentInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:3];
     
-    [self.navigationController pushViewController:controller animated:NO];
 }
 - (void)HistoryButtonClick {
-    NSLog(@"HisInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:4];
     
-    [self.navigationController pushViewController:controller animated:NO];
 }
-
-- (void)toUserInfo:(UITapGestureRecognizer *)gestureRecognizer {
-    NSLog(@"toUserInfo");
-    UserInfoController *controller = [[UserInfoController alloc] init];
-    [self.navigationController pushViewController:controller animated:NO];
-}
-
-- (void)FansLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
-    NSLog(@"Fans Click");
-    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
-    
-    [self.navigationController pushViewController:controller animated:NO];
-}
-
-- (void)LikeLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
-    NSLog(@"Like Click");
-    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
-    
-    [self.navigationController pushViewController:controller animated:NO];
-}
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -120,151 +65,15 @@
         button.clipsToBounds = YES;
         button.layer.cornerRadius = button.frame.size.width/2;
         [button setTitle:@"登 录" forState:UIControlStateNormal];
-        button.titleLabel.font = [UIFont systemFontOfSize:32];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:32];
         [button addTarget:self action:@selector(LoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
         button;
     });
     
-    UserInfoModel *myUser = [UserInfoModel testUser];
-    
-    int width = 0;
-    int height = screenBound.size.height/2 - 3 * screenBound.size.width/4;
-    extra = 10;
-    self.photoImageView = ({
-        UIImageView *imageView =  [[UIImageView alloc] initWithImage:myUser.photo];
-        imageView.frame = CGRectMake(width + extra, height, screenBound.size.width/4 - 2*extra, screenBound.size.width/4- 2*extra);
-        
-        imageView.clipsToBounds = YES;
-        imageView.layer.cornerRadius = imageView.frame.size.width/2;
-        imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toUserInfo:)];
-        [imageView addGestureRecognizer:gesture];
-        imageView;
-    });
-    width += screenBound.size.width/4;
-    self.userNameLabel = ({
-        UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/2, screenBound.size.width/4)];
-        UIFont *Font = [UIFont systemFontOfSize:24];
-        NSAttributedString *string = [[NSAttributedString alloc] initWithString:myUser.username attributes:@{NSFontAttributeName:Font,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        label.attributedText = string;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toUserInfo:)];
-        [label addGestureRecognizer:gesture];
-        label;
-    });
-    width += screenBound.size.width/2;
-    self.toUserInfoImageView = ({
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/4, screenBound.size.width/4)];
-        UIImage *image = [UIImage imageNamed:@"next_black.png"];
-        imageView.image = image;
-        imageView.contentMode = UIViewContentModeCenter;
-        imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toUserInfo:)];
-        [imageView addGestureRecognizer:gesture];
-        imageView;
-    });
-    
-    
-    width = 0;
-    height = screenBound.size.height/2 - screenBound.size.width/2;
-    
-    self.numOfHeadlineLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/4, screenBound.size.width/4)];
-        UIFont *bigFont = [UIFont systemFontOfSize:24];
-        UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
-        
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfHeadline] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"头条" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        [attributedString appendAttributedString:number];
-        [attributedString appendAttributedString:title];
-        label.attributedText = attributedString;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.numberOfLines = 2;
-        label.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toUserInfo:)];
-        [label addGestureRecognizer:gesture];
-        label;
-        
-    });
-    width += screenBound.size.width/4;
-    
-    self.numOfAttentionLabel= ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/4, screenBound.size.width/4)];
-        UIFont *bigFont = [UIFont systemFontOfSize:24];
-        UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
-        
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfAttention] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"关注" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        [attributedString appendAttributedString:number];
-        [attributedString appendAttributedString:title];
-        label.attributedText = attributedString;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.numberOfLines = 2;
-        
-        
-        label;
-        
-    });
-    width += screenBound.size.width/4;
-    
-    self.numOfFansLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/4, screenBound.size.width/4)];
-        UIFont *bigFont = [UIFont systemFontOfSize:24];
-        UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
-        
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfFans] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"粉丝" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        [attributedString appendAttributedString:number];
-        [attributedString appendAttributedString:title];
-        label.attributedText = attributedString;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.numberOfLines = 2;
-        
-        label.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(FansLabelClick:)];
-        [label addGestureRecognizer:tapGesture];
-        
-        label;
-        
-    });
-    width += screenBound.size.width/4;
-    
-    self.numOfLikeLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/4, screenBound.size.width/4)];
-        UIFont *bigFont = [UIFont systemFontOfSize:24];
-        UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
-        
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfLike] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"获赞" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
-        [attributedString appendAttributedString:number];
-        [attributedString appendAttributedString:title];
-        label.attributedText = attributedString;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.numberOfLines = 2;
-        
-        label.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(LikeLabelClick:)];
-        [label addGestureRecognizer:tapGesture];
-        
-        label;
-        
-    });
-    
     //收藏，点赞，评论，历史按钮
     
-    width = 0;
-    height = screenBound.size.height/2 - screenBound.size.width/4;
-    
-    UILabel *grayline2 = ({
-        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, 5)];
-        line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
-        line;
-    });
+    int width = 0;
+    int height = screenBound.size.height/2 - screenBound.size.width/4;
     
     self.markButton = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -321,19 +130,12 @@
         [button addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
         button;
     });
-    width = 0;
-    height = screenBound.size.height/2;
-    UILabel *grayline3 = ({
-        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, 5)];
-        line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
-        line;
-    });
     
     self.items = @[@"我的关注", @"消息通知", @"扫一扫", @"用户反馈", @"系统设置"];
     int itemHeight = screenBound.size.height/2/self.items.count;
     self.tableView = ({
         
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height/2) style:UITableViewStylePlain];
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, screenBound.size.height/2, screenBound.size.width, screenBound.size.height/2) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = itemHeight;
@@ -345,19 +147,7 @@
     [self.view addSubview:self.likeButton];
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
-    [self.view addSubview:grayline3];
-    /*
-    [self.view addSubview:self.photoImageView];
-    [self.view addSubview:self.userNameLabel];
-    [self.view addSubview:self.toUserInfoImageView];
-    [self.view addSubview:self.numOfHeadlineLabel];
-    [self.view addSubview:self.numOfAttentionLabel];
-    [self.view addSubview:self.numOfFansLabel];
-    [self.view addSubview:self.numOfLikeLabel];
-    [self.view addSubview:grayline2];
-    */
     [self.view addSubview:self.loginButton];
-    
     
 }
 
@@ -385,7 +175,7 @@
     
     if([self.items[indexPath.row] isEqual:@"系统设置"]) {
         SettingViewController *controller = [[SettingViewController alloc] init];
-        [self.navigationController pushViewController:controller animated:NO];
+        [self.navigationController pushViewController:controller animated:YES];
     }
 }
 
