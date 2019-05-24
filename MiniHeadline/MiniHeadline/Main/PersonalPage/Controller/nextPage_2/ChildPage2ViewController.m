@@ -18,6 +18,8 @@
 @property (nonatomic, retain)IBOutlet UIButton *addFriend;
 @property (nonatomic, retain)IBOutlet UITextField *no_fans_data;
 
+@property (nonatomic, retain)IBOutlet UIImageView *backImageView;
+
 @property int select;
 @property (nonatomic, strong) NSMutableArray<NSString*> *items;
 @property (nonatomic, strong) NSMutableArray<NSString*> *itemsOfbt1;
@@ -28,6 +30,23 @@
 @end
 
 @implementation ChildPage2ViewController
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
+    [super viewWillDisappear:animated];
+}
+
+- (void)backSingleTap:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"backSingleTap");
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
+
 
 - (void)AttentionClick {
     
@@ -122,6 +141,13 @@
     });
     
     [self.view addSubview: self.tableView];
+    
+    self.backImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
+    [self.backImageView addGestureRecognizer:back];
+    
+    [self viewWillAppear:FALSE];
+
     
 }
 

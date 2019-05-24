@@ -18,9 +18,28 @@
 @property (nonatomic, strong) NSMutableArray<NSPerson*> *items;
 @property (nonatomic, retain)IBOutlet UITableView* tableView;
 
+@property (nonatomic, retain)IBOutlet UIImageView *backImageView;
+
 @end
 
 @implementation AddFreindPageViewController
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
+    [super viewWillDisappear:animated];
+}
+
+- (void)backSingleTap:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"backSingleTap");
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
+
 
 - (void)tableLoad {
     
@@ -37,6 +56,13 @@
     // Do any additional setup after loading the view from its nib.
     
     [self tableLoad];
+    
+    self.backImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
+    [self.backImageView addGestureRecognizer:back];
+    
+    [self viewWillAppear:FALSE];
+
 }
 
 /*
