@@ -10,8 +10,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UserLoginController : UIViewController
+@protocol sender <NSObject>
+
+- (void)send:(BOOL)isLogin;
 
 @end
+
+@interface UserLoginController : UIViewController
+
+@property(nonatomic, weak)id <sender>delegate;
+
+@end
+
+
 
 NS_ASSUME_NONNULL_END
