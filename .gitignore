@@ -27,4 +27,5 @@ xcuserdata/
 *.dSYM
 
 #CocoaPods
+*.lock
 Pods/
