@@ -21,6 +21,7 @@
 
 @property (nonatomic, retain)IBOutlet UIButton *editor;
 @property (nonatomic, retain)IBOutlet UIButton *search;
+@property (nonatomic, retain)IBOutlet UIImageView *backImageView;
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -36,6 +37,22 @@
 
 
 @implementation ChildPageViewController
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
+    [super viewWillDisappear:animated];
+}
+
+- (void)backSingleTap:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"backSingleTap");
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
 
 - (void)MarkButtonClick {
     
@@ -104,8 +121,8 @@
     
     NSString* icon = [[NSString alloc] initWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558155437522&di=d98c8427648c6c4b4a38316d524dc4b2&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F01%2F37%2F86%2F37573c65819a30c.jpg"];
     
-    NSComment* first = [[NSComment alloc] initWithDict:@"这篇文章的详细信息为..." iconUrl:icon username:@"用户1号" picture:@"" share:3 comment:12 like:11];
-    NSComment* second = [[NSComment alloc] initWithDict:@"这篇文章的详细信息为..." iconUrl:icon username:@"用户2号" picture:@"" share:4 comment:12 like:11];
+    NSComment* first = [[NSComment alloc] initWithDict:@"本故事纯属虚构，如有雷同，纯属瞎搞，是否继续阅读？" iconUrl:icon username:@"用户1号" picture:@"" share:3 comment:12 like:11];
+    NSComment* second = [[NSComment alloc] initWithDict:@"小学每天会发一袋牛奶，他特别希望上学，小学午饭不好吃，所以来出初中吃午饭，后来他对大学的食堂也充满了期待，呵呵呵，毕竟民以食为天。" iconUrl:icon username:@"用户2号" picture:@"" share:4 comment:12 like:11];
     NSComment* thrid = [[NSComment alloc] initWithDict:@"这篇文章的详细信息为..." iconUrl:icon username:@"用户3号" picture:icon share:10 comment:12 like:11];
     
     self.itemsOfbt1 = [[NSMutableArray alloc] initWithArray:@[first, second, thrid]];
@@ -134,7 +151,7 @@
     CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
     
     int width = 0;
-    int height = screenBound.size.height/4;
+    int height = screenBound.size.height/4 - 40;
     
     int itemHeight = 175;
     self.tableView = ({
@@ -153,6 +170,13 @@
     [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
     
     [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.backImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
+    [self.backImageView addGestureRecognizer:back];
+    
+    [self viewWillAppear:FALSE];
+
     
     
     
@@ -223,9 +247,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSComment* comment = self.items[indexPath.row];
-    BOOL cellType = [comment.pictureUrl isEqualToString:@""]; //为空代表无插图；
+    BOOL cellType = (comment.pictureUrl.length < 1); //为空代表无插图；
     
-    if (!cellType) {
+    if (cellType) {
+        NSLog(@"No picture cell.");
         
         static NSString *identifier = @"MyCell";
         BOOL nibsRegistered = NO;
