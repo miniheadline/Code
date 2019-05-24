@@ -6,6 +6,8 @@
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
+#import <WebKit/WebKit.h>
+
 #import "NewsDetailViewController.h"
 #import "UIColor+Hex.h"
 #import "NewsDetailViewModel.h"
@@ -34,7 +36,8 @@
 
 @property (nonatomic, strong) UIScrollView *detailScrollView;
 @property (nonatomic, strong) UILabel *feedTitleLabel;
-@property (nonatomic, strong) UILabel *feedContentLabel;
+@property (nonatomic, strong) UITextView *feedContentTextView;
+@property (nonatomic, strong) WKWebView *feeeContentWebView;
 
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
@@ -51,8 +54,22 @@
     self.isStar = NO;
     self.isLike = NO;
     
-    NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
+    NSLog(@"%@", _groupID);
     
+    NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
+    [newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
+        NSLog(@"%@", content);
+        // 使用富文本
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithData:[content dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, attributedString.length)];
+        // 需要回到主线程更新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            self.feedContentTextView.attributedText = attributedString;
+            [self.feeeContentWebView loadHTMLString:content baseURL:nil];
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -179,11 +196,17 @@
     [self.shareImageView addGestureRecognizer:share];
     
     // 内容
-    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.header.frame.size.height, screenBound.size.width, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height)];
+    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, statusBound.size.height + self.header.frame.size.height, screenBound.size.width, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height - statusBound.size.height)];
     self.detailScrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.detailScrollView];
     
-    //self.feedContentLabel = 
+//    self.feedContentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
+//    self.feedContentTextView.editable = NO;
+//    [self.detailScrollView addSubview:self.feedContentTextView];
+    
+    self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
+    [self.detailScrollView addSubview:self.feeeContentWebView];
+
 }
 
 #pragma mark - TapFunctionDefinition

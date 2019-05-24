@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NewsDetailViewModel : NSObject
 
-- (void)getFeedDetailWithGroupID:(NSString *)groupID;
+- (void)getFeedDetailWithGroupID:(NSString *)groupID success:(void (^)(NSString *content))success failure:(void (^)(NSError *error))failure;
 
 @end
 
