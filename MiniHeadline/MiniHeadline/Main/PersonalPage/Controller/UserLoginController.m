@@ -9,7 +9,7 @@
 #import "UserLoginController.h"
 #import "UIColor+Hex.h"
 #import "UserInfoModel.h"
-#import "MBProgressHUD.h"
+#import "Toast.h"
 
 @interface UserLoginController ()
 
@@ -30,23 +30,6 @@
 
 @implementation UserLoginController
 
-// Toast 函数
-- (void)showAllTextDialog:(NSString *)str
-{
-    
-    MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:self.view];
-    [self.view addSubview:HUD];
-    [HUD.label setText:str];
-    HUD.mode = MBProgressHUDModeText;
-    
-    //指定距离中心点的X轴和Y轴的位置，不指定则在屏幕中间显示
-    //    HUD.yOffset = 100.0f;
-    //    HUD.xOffset = 100.0f;
-    
-    [HUD showAnimated:YES];
-    
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
     [super viewWillAppear:animated];
@@ -65,11 +48,22 @@
 
 - (void)confirmClick{
     NSLog(@"Confirm Click");
-    //[self showAllTextDialog:@"Test"];
-    if(self.delegate && [self.delegate conformsToProtocol:@protocol(sender)]){
-        [self.delegate send:YES];
+    UserInfoModel *myUser = [UserInfoModel testUser];
+    if([self.username isEqualToString:@""]||[self.password isEqualToString:@""]){
+        [[[Toast alloc] init] popUpToastWithMessage:@"用户名和密码不能为空"];
     }
-    [self.navigationController popViewControllerAnimated:NO];
+    else if(![self.username isEqualToString:myUser.username]){
+        [[[Toast alloc] init] popUpToastWithMessage:@"用户不存在"];
+    }
+    else if([self.username isEqualToString:myUser.username]&&![self.password isEqualToString:myUser.password]){
+        [[[Toast alloc] init] popUpToastWithMessage:@"密码错误"];
+    }
+    else{
+        if(self.delegate && [self.delegate respondsToSelector:@selector(userLoginController:goBackWithIsLogin:)]){
+            [self.delegate userLoginController:self goBackWithIsLogin:YES];
+        }
+        [self.navigationController popViewControllerAnimated:NO];
+    }
 }
 
 - (void) usernameTextFieldChange:(UITextField*) sender {
@@ -84,7 +78,7 @@
     [super viewDidLoad];
     // 获取屏幕尺寸（包括状态栏）
     
-    UserInfoModel *myUser = [UserInfoModel testUser];
+    
     self.username = @"";
     self.password = @"";
     
