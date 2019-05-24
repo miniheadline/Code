@@ -61,6 +61,7 @@
 }
 
 - (void)setCellData:(MyComment*) data {
+    self.data = data;
     [self.icon setBackgroundImage:data.icon forState:UIControlStateNormal];
     [self.comments setText:data.comment];
     CGRect rect = [data.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.name.font} context:nil];

@@ -1,8 +1,8 @@
 //
-//  CommentTableViewCell.h
+//  ChoosenCommentTableViewCell.h
 //  MiniHeadline
 //
-//  Created by huangscar on 2019/5/3.
+//  Created by huangscar on 2019/5/24.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
@@ -11,9 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CommentTableViewCell : UITableViewCell
-@property (nonatomic, assign) GLfloat height;
-@property (nonatomic, strong) MyComment *data;
+@interface ChoosenCommentTableViewCell : UITableViewCell
 - (void)setCellData:(MyComment*) data;
 @end
 
