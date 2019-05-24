@@ -247,9 +247,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSComment* comment = self.items[indexPath.row];
-    BOOL cellType = [comment.pictureUrl isEqualToString:@""]; //为空代表无插图；
+    BOOL cellType = (comment.pictureUrl.length < 1); //为空代表无插图；
     
-    if (!cellType) {
+    if (cellType) {
+        NSLog(@"No picture cell.");
         
         static NSString *identifier = @"MyCell";
         BOOL nibsRegistered = NO;
