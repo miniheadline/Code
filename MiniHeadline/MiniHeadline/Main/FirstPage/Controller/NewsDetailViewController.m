@@ -12,7 +12,7 @@
 #import "UIColor+Hex.h"
 #import "NewsDetailViewModel.h"
 
-@interface NewsDetailViewController ()
+@interface NewsDetailViewController ()<WKNavigationDelegate>
 
 @property (nonatomic, strong) UIView *header;
 @property (nonatomic, strong) UIView *footer;
@@ -58,7 +58,7 @@
     
     NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
     [newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
-        NSLog(@"%@", content);
+        NSLog(@"content:%@", content);
         // 使用富文本
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithData:[content dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
         [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, attributedString.length)];
@@ -205,6 +205,7 @@
 //    [self.detailScrollView addSubview:self.feedContentTextView];
     
     self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
+    self.feeeContentWebView.navigationDelegate = self;
     [self.detailScrollView addSubview:self.feeeContentWebView];
 
 }
@@ -261,5 +262,17 @@
 - (void)shareSingleTap:(UITapGestureRecognizer *)gestureRecognizer {
     NSLog(@"shareSingleTap");
 }
+
+
+#pragma mark - WKNavigationDelegate
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
+//    // 禁止用户选择
+//    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
+//    [webView evaluateJavaScript:@"document.activeElement.blur();" completionHandler:nil];
+    // 适当增大字体大小
+    [webView evaluateJavaScript:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '200%'" completionHandler:nil];
+}
+
 
 @end
