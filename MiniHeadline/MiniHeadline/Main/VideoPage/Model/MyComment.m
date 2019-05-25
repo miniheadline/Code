@@ -18,7 +18,7 @@
         self.isLike = isLike;
         self.date = [date copy];
         self.comment = [comment copy];
-        CGRect rect = [comment boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20.0]} context:nil];
+        CGRect rect = [comment boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17]} context:nil];
         NSInteger commentsHeight = ceil(rect.size.height)+1;
         self.height = 133 + commentsHeight - 30;
     }

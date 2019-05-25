@@ -5,9 +5,13 @@
 //  Created by huangscar on 2019/5/3.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
-
+// 定义这个常量，就可以不用在开发过程中使用mas_前缀。
+#define MAS_SHORTHAND
+// 定义这个常量，就可以让Masonry帮我们自动把基础数据类型的数据，自动装箱为对象类型。
+#define MAS_SHORTHAND_GLOBALS
 #import "CommentTableViewCell.h"
 #import "../Model/MyComment.h"
+#import "Masonry.h"
 
 
 @interface CommentTableViewCell()
@@ -47,17 +51,42 @@
     [self.contentView addSubview:self.icon];
     self.name = [[UIButton alloc] init];
     [self.name setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.name.font = [UIFont systemFontOfSize:15];
     [self.contentView addSubview:self.name];
     self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(348, 18, 46, 23)];
     [self.likeBtn setImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.likeBtn];
     self.comments = [[UILabel alloc] initWithFrame:CGRectMake(54, 49, 340, 30)];
-    self.comments.font = [UIFont systemFontOfSize:20.0];
+    self.comments.font = [UIFont systemFontOfSize:17];
     self.comments.numberOfLines = 0;
     [self.contentView addSubview:self.comments];
     self.time = [[UILabel alloc] init];
-    self.time.font = [UIFont systemFontOfSize:17.0];
+    self.time.font = [UIFont systemFontOfSize:12];
+    [self.time setTextColor:[UIColor lightGrayColor]];
     [self.contentView addSubview:self.time];
+    [self.icon makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).with.offset(15);
+        make.left.equalTo(self.contentView).with.offset(15);
+        make.height.and.width.equalTo(30);
+    }];
+    [self.name makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.icon.centerY);
+        make.left.equalTo(self.icon.right).with.offset(10);
+    }];
+    [self.likeBtn makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.icon.centerY);
+        make.right.equalTo(self.contentView).with.offset(-15);
+    }];
+    [self.comments makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.name.bottom).with.offset(10);
+        make.left.equalTo(self.name.left);
+        make.right.equalTo(self.contentView).with.offset(-20);
+    }];
+    [self.time makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.comments.bottom).with.offset(10);
+        make.left.equalTo(self.comments.left);
+        make.right.equalTo(self.contentView).with.offset(-10);
+    }];
 }
 
 - (void)setCellData:(MyComment*) data {

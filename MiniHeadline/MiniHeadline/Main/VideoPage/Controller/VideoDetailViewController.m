@@ -62,6 +62,7 @@
 @property (nonatomic, strong) UILabel *commentViewLabel;
 @property (nonatomic, strong) UITableView *commentViewTableView;
 @property (nonatomic, strong) UIButton *closeCommentViewBtn;
+@property (nonatomic, strong) UIView *line1;
 @property (nonatomic, strong) UIView *line;
 @property (nonatomic, strong) MyComment *choosenComment;
 
@@ -70,7 +71,8 @@
 @property (nonatomic, strong) NSMutableArray<MyComment*>* commentsListSecond;
 @property (nonatomic, assign) NSInteger pageIndex;
 @property (nonatomic, assign) NSInteger pageIndexSecond;
-@property(nonatomic, assign)LoadingStatus status;
+@property(nonatomic, assign) LoadingStatus status;
+@property(nonatomic, assign) LoadingStatus status2;
 @end
 
 @implementation VideoDetailViewController
@@ -237,7 +239,9 @@
     self.commentViewLabel = [[UILabel alloc] init];
     [self.commentViewLabel setText:@"所有评论"];
     self.line = [[UIView alloc] init];
+    self.line1 = [[UIView alloc] init];
     [self.line setBackgroundColor:[UIColor darkGrayColor]];
+    [self.line1 setBackgroundColor:[UIColor darkGrayColor]];
     //[self.commentViewLabel setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     //设置位置
     [self.videoView makeConstraints:^(MASConstraintMaker *make) {
@@ -692,7 +696,7 @@
             return 1;
         }
         else {
-            return self.commentsListSecond.count + 1;
+            return self.commentsListSecond.count;
         }
     }
 }
@@ -742,7 +746,7 @@
         }
     }
     else {
-        if(indexPath.row == self.commentsList.count) {
+        if(indexPath.row == self.commentsListSecond.count) {
             cellType = 0;
         }
         else if(indexPath.section == 0) {
@@ -756,8 +760,8 @@
         if(cell == nil) {
             if(cellType == 0){
                 cell = [[LoadingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-                ((LoadingTableViewCell*) cell).status = self.status;
-                cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
+                ((LoadingTableViewCell*) cell).status = self.status2;
+                cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
             }
             else if(cellType == 2) {
                 cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
@@ -770,8 +774,8 @@
             }
         } else {
             if(cellType == 0){
-                ((LoadingTableViewCell*) cell).status = self.status;
-                cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
+                ((LoadingTableViewCell*) cell).status = self.status2;
+                cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
             }
             else if(cellType == 2) {
                 [(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
@@ -785,33 +789,37 @@
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if(indexPath.row == self.commentsList.count) {
+    if(indexPath.row == self.commentsList.count && [tableView isEqual:self.commentTableView]) {
         self.status = LoadingStatusLoding;
         [tableView reloadData]; // 从默认态切换到加载状态，需要更新
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if([tableView isEqual:self.commentTableView]) {
-                self.pageIndex++;
-                if (self.pageIndex < 5) {
-                    self.status = LoadingStatusDefault;
-                } else {
-                    self.status = LoadingStatusNoMore;
-                }
-                
-                NSArray *newPage = [self loadComment:0];
-                [self.commentsList addObjectsFromArray:newPage];
+            self.pageIndex++;
+            if (self.pageIndex < 5) {
+                self.status = LoadingStatusDefault;
+            } else {
+                self.status = LoadingStatusNoMore;
             }
-            else {
-                self.pageIndexSecond++;
-                if (self.pageIndexSecond < 5) {
-                    self.status = LoadingStatusDefault;
-                } else {
-                    self.status = LoadingStatusNoMore;
-                }
-                
-                NSArray *newPage = [self loadComment:1];
-                [self.commentsListSecond addObjectsFromArray:newPage];
+            
+            NSArray *newPage = [self loadComment:0];
+            [self.commentsList addObjectsFromArray:newPage];
+            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
+        });
+    }
+    else if (indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
+        self.status2 = LoadingStatusLoding;
+        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.pageIndexSecond++;
+            if (self.pageIndexSecond < 5) {
+                self.status2 = LoadingStatusDefault;
+            } else {
+                self.status2 = LoadingStatusNoMore;
             }
+            
+            NSArray *newPage = [self loadComment:1];
+            [self.commentsListSecond addObjectsFromArray:newPage];
             [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
         });
     }
@@ -847,6 +855,7 @@
                 [self.commentTwoView addSubview:self.commentViewTableView];
                 [self.commentTwoView addSubview:self.closeCommentViewBtn];
                 [self.commentTwoView addSubview:self.line];
+                [self.commentTwoView addSubview:self.line1];
                 [self.view addSubview:self.commentTwoView];
                 self.commentViewLabel.textAlignment = NSTextAlignmentCenter;
                 [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -872,6 +881,12 @@
                     make.right.equalTo(self.commentTwoView);
                     make.height.equalTo(1);
                 }];
+                [self.line1 mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    make.bottom.equalTo(self.commentViewLabel.top);
+                    make.left.equalTo(self.commentTwoView);
+                    make.right.equalTo(self.commentTwoView);
+                    make.height.equalTo(1);
+                }];
                 /*[self.commentViewTableView makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(self.commentViewLabel.bottom).with.offset(10);
                     make.left.equalTo(self.commentTwoView);
@@ -889,7 +904,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == self.commentsList.count) {
+    if(indexPath.row == self.commentsList.count && [tableView isEqual:self.commentTableView]) {
+        return 30;
+    }
+    else if(indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
         return 30;
     }
     else {
@@ -901,7 +919,7 @@
         }
         else {
             if(indexPath.section == 0) {
-                self.choosenComment.height;
+                return self.choosenComment.height;
             }
             return self.commentsListSecond[indexPath.row].height;
         }
