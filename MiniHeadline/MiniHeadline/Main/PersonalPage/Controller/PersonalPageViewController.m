@@ -15,7 +15,7 @@
 #import "nextPage_2/ChildPage2ViewController.h"
 #import "UserLoginController.h"
 
-@interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource, sender>
 
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSArray<NSString*> *items;
@@ -35,6 +35,8 @@
 @property(nonatomic, strong) UIImageView* photoImageView;
 @property(nonatomic, strong) UIImageView* toUserInfoImageView;
 
+@property(nonatomic) BOOL isLogin;
+
 - (void)LoginButtonClick;
 - (void)MarkButtonClick;
 - (void)LikeButtonClick;
@@ -45,9 +47,16 @@
 
 @implementation PersonalPageViewController
 
+
+
+- (void)send:(BOOL)isLogin {
+    self.isLogin = isLogin;
+}
+
 - (void)LoginButtonClick {
     NSLog(@"LoginClick");
     UserLoginController *controller = [[UserLoginController alloc] init];
+    controller.delegate = self;
     [self.navigationController pushViewController:controller animated:NO];
 }
 
@@ -339,6 +348,12 @@
         tableView.rowHeight = itemHeight;
         tableView;
     });
+    
+    // 去除多余的分割线
+    UIView *footer = [[UIView alloc] init];
+    footer.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = footer;
+    
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.markButton];
@@ -346,17 +361,20 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    /*
-    [self.view addSubview:self.photoImageView];
-    [self.view addSubview:self.userNameLabel];
-    [self.view addSubview:self.toUserInfoImageView];
-    [self.view addSubview:self.numOfHeadlineLabel];
-    [self.view addSubview:self.numOfAttentionLabel];
-    [self.view addSubview:self.numOfFansLabel];
-    [self.view addSubview:self.numOfLikeLabel];
-    [self.view addSubview:grayline2];
-    */
-    [self.view addSubview:self.loginButton];
+    if(self.isLogin){
+        [self.view addSubview:self.photoImageView];
+        [self.view addSubview:self.userNameLabel];
+        [self.view addSubview:self.toUserInfoImageView];
+        [self.view addSubview:self.numOfHeadlineLabel];
+        [self.view addSubview:self.numOfAttentionLabel];
+        [self.view addSubview:self.numOfFansLabel];
+        [self.view addSubview:self.numOfLikeLabel];
+        [self.view addSubview:grayline2];
+    }
+    else{
+        [self.view addSubview:self.loginButton];
+    }
+    
     
     
 }

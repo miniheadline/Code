@@ -82,7 +82,11 @@
         tableView.rowHeight = itemHeight;
         tableView;
     });
-   
+    // 去除多余的分割线
+    UIView *footer = [[UIView alloc] init];
+    footer.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = footer;
+    
     [self.view addSubview:self.tableView];
     
 }

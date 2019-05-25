@@ -9,6 +9,7 @@
 #import "UserLoginController.h"
 #import "UIColor+Hex.h"
 #import "UserInfoModel.h"
+#import "MBProgressHUD.h"
 
 @interface UserLoginController ()
 
@@ -25,10 +26,26 @@
 
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;
-
 @end
 
 @implementation UserLoginController
+
+// Toast 函数
+- (void)showAllTextDialog:(NSString *)str
+{
+    
+    MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    [HUD.label setText:str];
+    HUD.mode = MBProgressHUDModeText;
+    
+    //指定距离中心点的X轴和Y轴的位置，不指定则在屏幕中间显示
+    //    HUD.yOffset = 100.0f;
+    //    HUD.xOffset = 100.0f;
+    
+    [HUD showAnimated:YES];
+    
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
@@ -48,8 +65,11 @@
 
 - (void)confirmClick{
     NSLog(@"Confirm Click");
-    
-    
+    //[self showAllTextDialog:@"Test"];
+    if(self.delegate && [self.delegate conformsToProtocol:@protocol(sender)]){
+        [self.delegate send:YES];
+    }
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void) usernameTextFieldChange:(UITextField*) sender {
