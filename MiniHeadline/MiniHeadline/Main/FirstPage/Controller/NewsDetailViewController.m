@@ -56,6 +56,8 @@
     
     NSLog(@"%@", _groupID);
     
+    
+    // for test
     NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
     [newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
         NSLog(@"content:%@", content);

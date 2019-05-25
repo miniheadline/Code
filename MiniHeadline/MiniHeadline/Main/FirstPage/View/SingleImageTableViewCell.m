@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *firstImageView;
 
+@property (nonatomic, strong) NSMutableDictionary *attrDict;
 
 @end
 
@@ -27,7 +28,14 @@
     // Initialization code
     
     self.titleLabel.numberOfLines = 0;
-    self.titleLabel.font = [UIFont systemFontOfSize:20.0];
+//    self.titleLabel.layer.borderColor = [UIColor blackColor].CGColor;
+//    self.titleLabel.layer.borderWidth = 1;
+    // 设置行距
+    self.attrDict = [NSMutableDictionary dictionary];
+    self.attrDict[NSFontAttributeName] = [UIFont systemFontOfSize:20.0];
+    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+    paraStyle.lineSpacing = 10.0;
+    self.attrDict[NSParagraphStyleAttributeName] = paraStyle;
     
     self.publisherLabel.textColor = [UIColor grayColor];
     self.publisherLabel.font = [UIFont systemFontOfSize:10.0];
@@ -60,7 +68,7 @@
 - (void)setCellData:(NewsModel *)cellData {
     _cellData = cellData;
     self.firstImageView.image = [[UIImage alloc] initWithContentsOfFile:cellData.firstImagePath];
-    self.titleLabel.text = cellData.title;
+    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:cellData.title attributes:self.attrDict];
     self.publisherLabel.text = cellData.publisher;
     self.commentsLabel.text = cellData.comments;
     self.timeLabel.text = cellData.time;
