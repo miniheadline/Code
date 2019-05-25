@@ -361,7 +361,7 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    if(self.isLogin){
+    if(!self.isLogin){
         [self.view addSubview:self.photoImageView];
         [self.view addSubview:self.userNameLabel];
         [self.view addSubview:self.toUserInfoImageView];

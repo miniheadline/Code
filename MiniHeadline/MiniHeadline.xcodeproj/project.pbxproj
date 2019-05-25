@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */; };
 		1B043DE52298C04000EB0F3A /* MultiImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */; };
+		1B043DE72298D13A00EB0F3A /* tianjiahaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */; };
 		1B09A34D228E5B5E00A0AFF5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09A34C228E5B5D00A0AFF5 /* logo.png */; };
 		1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D181226AFF7B00BB7480 /* AppDelegate.m */; };
 		1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D184226AFF7B00BB7480 /* ViewController.m */; };
@@ -113,6 +114,7 @@
 		1B043DE12298C04000EB0F3A /* MultiImageTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultiImageTableViewCell.h; sourceTree = "<group>"; };
 		1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultiImageTableViewCell.m; sourceTree = "<group>"; };
 		1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MultiImageTableViewCell.xib; sourceTree = "<group>"; };
+		1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tianjiahaoyou.png; sourceTree = "<group>"; };
 		1B09A34C228E5B5D00A0AFF5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1B09D17D226AFF7B00BB7480 /* MiniHeadline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniHeadline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B09D180226AFF7B00BB7480 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */,
 				E81158F22297F6E6002BA4CD /* jiantou.png */,
 				1B09A34C228E5B5D00A0AFF5 /* logo.png */,
 				D6AC51F62283F1B600318629 /* share_white.png */,
@@ -863,6 +866,7 @@
 				D6BC8B4322799423001AFD60 /* like_25.png in Resources */,
 				D6BC8B66227A2F5D001AFD60 /* back_white.png in Resources */,
 				D6BC8B472279949C001AFD60 /* link.png in Resources */,
+				1B043DE72298D13A00EB0F3A /* tianjiahaoyou.png in Resources */,
 				1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */,
 				1B7F82DE2270AAAB000165F6 /* star_selected.png in Resources */,
 				D6BC8B102273F524001AFD60 /* icon_1.png in Resources */,
