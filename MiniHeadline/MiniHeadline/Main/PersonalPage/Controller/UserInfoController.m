@@ -10,6 +10,9 @@
 #import "UIColor+Hex.h"
 #import "UserInfoModel.h"
 #import "EditInfoController.h"
+#import "nextPage_1/InfoTableViewCell.h"
+#import "nextPage_1/InfoTableViewCellWithPicture.h"
+#import "nextPage_1/NSComment.h"
 
 @interface UserInfoController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -20,8 +23,8 @@
 @property (nonatomic, strong) UIImageView *searchImageView;
 @property (nonatomic, strong) UIImageView *moreImageView;
 
-@property(nonatomic, strong) UITableView *publishTableView;
-@property (nonatomic, copy) NSMutableArray *tableDataArray;
+@property(nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray<NSComment*> *items;
 
 @property(nonatomic, strong) UILabel* numOfHeadlineLabel;
 @property(nonatomic, strong) UILabel* numOfAttentionLabel;
@@ -83,6 +86,18 @@
     NSLog(@"editInfoSingleTap");
     EditInfoController *controller = [[EditInfoController alloc] init];
     [self.navigationController pushViewController:controller animated:NO];
+}
+
+- (void)tableLoad {
+    
+    NSString* icon = [[NSString alloc] initWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558155437522&di=d98c8427648c6c4b4a38316d524dc4b2&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F01%2F37%2F86%2F37573c65819a30c.jpg"];
+    
+    NSComment* first = [[NSComment alloc] initWithDict:@"本故事纯属虚构，如有雷同，纯属瞎搞，是否继续阅读？" iconUrl:icon username:@"用户1号" picture:@"" share:3 comment:12 like:11];
+    NSComment* second = [[NSComment alloc] initWithDict:@"小学每天会发一袋牛奶，他特别希望上学，小学午饭不好吃，所以来出初中吃午饭，后来他对大学的食堂也充满了期待，呵呵呵，毕竟民以食为天。" iconUrl:icon username:@"用户2号" picture:@"" share:4 comment:12 like:11];
+    NSComment* thrid = [[NSComment alloc] initWithDict:@"这篇文章的详细信息为..." iconUrl:icon username:@"用户3号" picture:icon share:10 comment:12 like:11];
+    
+    self.items = [[NSMutableArray alloc] initWithArray:@[first, second, thrid]];
+    
 }
 
 - (void)viewDidLoad {
@@ -277,39 +292,95 @@
         label.textAlignment = NSTextAlignmentCenter;
         label;
     });
-    [self.view addSubview:self.emptyDataLabel];
+    //[self.view addSubview:self.emptyDataLabel];
+    
+    [self tableLoad];
+    
+    int itemHeight = 175;
+    self.tableView = ({
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height - height)];
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.rowHeight = itemHeight;
+        tableView;
+    });
+    
+    [self.view addSubview: self.tableView];
 }
 
 #pragma mark ------------ UITableViewDataSource ------------------
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.tableDataArray.count;
+    return [self.items count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellID = [NSString stringWithFormat:@"cellID:%zd", indexPath.section];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
-    if (nil == cell) {
-        if((indexPath.section == 0&&(indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 4 || indexPath.row == 5))||(indexPath.section == 3&&indexPath.row==1)){
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+    
+    NSComment* comment = self.items[indexPath.row];
+    BOOL cellType = (comment.pictureUrl.length < 1); //为空代表无插图；
+    
+    if (cellType) {
+        NSLog(@"No picture cell.");
+        
+        static NSString *identifier = @"MyCell";
+        BOOL nibsRegistered = NO;
+        
+        if (!nibsRegistered) {
+            UINib *nib = [UINib nibWithNibName:NSStringFromClass([InfoTableViewCell class]) bundle:nil];
+            [tableView registerNib:nib forCellReuseIdentifier:identifier];
+            nibsRegistered = YES;
         }
-        else cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        
+        InfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        
+        NSData *urlAddress1 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.iconUrl]];
+        UIImage* image1 = [UIImage imageWithData:urlAddress1];
+        
+        [cell.username setTitle:comment.name forState:UIControlStateNormal];
+        [cell.label1 setText: [NSString stringWithFormat:@"%d", comment.shareNums]];
+        [cell.label2 setText: [NSString stringWithFormat:@"%d", comment.commentNums]];
+        [cell.label3 setText: [NSString stringWithFormat:@"%d", comment.likeNums]];
+        [cell.text setText:comment.text];
+        [cell.person setImage:image1];
+        
+        return cell;
+    }
+    else {
+        
+        static NSString *identifier = @"MyCellWithPIcture";
+        BOOL nibsRegistered = NO;
+        
+        if (!nibsRegistered) {
+            UINib *nib = [UINib nibWithNibName:NSStringFromClass([InfoTableViewCellWithPicture class]) bundle:nil];
+            [tableView registerNib:nib forCellReuseIdentifier:identifier];
+            nibsRegistered = YES;
+        }
+        
+        InfoTableViewCellWithPicture *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        
+        NSData *urlAddress1 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.iconUrl]];
+        NSData *urlAddress2 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.pictureUrl]];
+        UIImage* image1 = [UIImage imageWithData:urlAddress1];
+        UIImage* image2 = [UIImage imageWithData:urlAddress2];
+        
+        [cell.username setTitle:comment.name forState:UIControlStateNormal];
+        [cell.shareNums setText: [NSString stringWithFormat:@"%d", comment.shareNums]];
+        [cell.commentNums setText: [NSString stringWithFormat:@"%d", comment.commentNums]];
+        [cell.likeNums setText: [NSString stringWithFormat:@"%d", comment.likeNums]];
+        [cell.text setText:comment.text];
+        [cell.person setImage:image1];
+        [cell.picture setImage:image2];
+        
+        return cell;
     }
     
-    return cell;
 }
 
+#pragma mark ------------ UITableViewDelegate ------------------
 
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+}
 
 @end
+
