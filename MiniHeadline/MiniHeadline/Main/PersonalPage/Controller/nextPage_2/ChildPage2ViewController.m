@@ -58,6 +58,7 @@
     
     self.items = self.itemsOfbt1;
     self.select = 1;
+    self.tableView.hidden = FALSE;
     
     if ( self.itemsOfbt1.count == 0 ) {
         self.tableView.hidden = TRUE;
@@ -84,6 +85,7 @@
     
     self.items = self.itemsOfbt2;
     self.select = 2;
+    self.tableView.hidden = FALSE;
     
     if ( self.itemsOfbt2.count == 0 ) {
         self.tableView.hidden = TRUE;
