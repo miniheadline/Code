@@ -14,8 +14,9 @@
 #import "nextPage_1/ChildPageViewController.h"
 #import "nextPage_2/ChildPage2ViewController.h"
 #import "UserLoginController.h"
+#import "Toast.h"
 
-@interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource, sender>
+@interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource, UserLoginControllerDelegate>
 
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSArray<NSString*> *items;
@@ -48,10 +49,23 @@
 @implementation PersonalPageViewController
 
 
-
-- (void)send:(BOOL)isLogin {
+- (void)userLoginController:(UserLoginController *)userLoginController goBackWithIsLogin:(BOOL)isLogin {
     self.isLogin = isLogin;
+    NSLog(@"%@",isLogin?@"YES":@"NO");
+    NSArray *subviews = [self.view subviews];
+    if(subviews.count > 0){
+        for(UIView *sub in subviews){
+            [sub removeFromSuperview];
+        }
+    }
+    [self viewWillDisappear:YES];
+    [self viewDidDisappear:YES];
+    [self viewDidLoad];
+    [self viewWillAppear:YES];
+    [self viewDidAppear:YES];
+    [self viewWillLayoutSubviews];
 }
+
 
 - (void)LoginButtonClick {
     NSLog(@"LoginClick");
@@ -361,7 +375,7 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    if(!self.isLogin){
+    if(self.isLogin){
         [self.view addSubview:self.photoImageView];
         [self.view addSubview:self.userNameLabel];
         [self.view addSubview:self.toUserInfoImageView];
@@ -404,6 +418,9 @@
     if([self.items[indexPath.row] isEqual:@"系统设置"]) {
         SettingViewController *controller = [[SettingViewController alloc] init];
         [self.navigationController pushViewController:controller animated:NO];
+    }
+    if([self.items[indexPath.row] isEqual:@"用户反馈"]){
+        [[[Toast alloc] init] popUpToastWithMessage:@"Toast Testing"];
     }
 }
 

@@ -10,15 +10,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol sender <NSObject>
+@class UserLoginController;
 
-- (void)send:(BOOL)isLogin;
+@protocol UserLoginControllerDelegate <NSObject>
+
+@optional
+
+- (void)userLoginController:(UserLoginController *)userLoginController goBackWithIsLogin:(BOOL)isLogin;
 
 @end
 
 @interface UserLoginController : UIViewController
 
-@property(nonatomic, weak)id <sender>delegate;
+@property(nonatomic, weak)id <UserLoginControllerDelegate>delegate;
 
 @end
 
