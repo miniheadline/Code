@@ -10,6 +10,7 @@
 #import "SearchViewController.h"
 #import "NewsDetailViewController.h"
 #import "SingleImageTableViewCell.h"
+#import "MultiImageTableViewCell.h"
 #import "NewsModel.h"
 #import "UIColor+Hex.h"
 #import "FirstPageViewModel.h"
@@ -46,6 +47,7 @@
     
     [self addSubViews];
     
+    // for test
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithSuccess:^(NSMutableArray * _Nonnull dataArray) {
         [self.tableDataArray removeAllObjects];
@@ -250,9 +252,20 @@
 // 创建每一个单元格
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([tableView isEqual:self.newsTableView]) {
-        SingleImageTableViewCell *cell = [SingleImageTableViewCell cellWithTableView:tableView];
         NewsModel *cellData = self.tableDataArray[indexPath.row];
-        cell.cellData = cellData;
+        NSLog(@"%d", cellData.type);
+        if (cellData.type == 1) {
+            SingleImageTableViewCell *cell = [SingleImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
+        }
+        else if (cellData.type == 2) {
+            MultiImageTableViewCell *cell = [MultiImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
+        }
+        
+        UITableViewCell *cell;
         return cell;
     }
     else {

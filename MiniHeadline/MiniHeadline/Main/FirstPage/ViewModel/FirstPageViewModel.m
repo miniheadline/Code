@@ -47,32 +47,59 @@
             NSString *title = [dataArr[i] objectForKey:@"title"];
             NSLog(@"%@", title);
             
+            // urlencode
             NSString *groupID = [dataArr[i] objectForKey:@"group_id"];
             NSString *charaters = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\| ";
             NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:charaters] invertedSet];
             NSString *encodedGroupID = [groupID stringByAddingPercentEncodingWithAllowedCharacters:characterSet];
-            NSLog(@"%@", groupID);
-            NSLog(@"%@", encodedGroupID);
+//            NSLog(@"%@", groupID);
+//            NSLog(@"%@", encodedGroupID);
             
             NSMutableArray *imageInfos = [dataArr[i] objectForKey:@"image_infos"];
             NSLog(@"%lu", imageInfos.count);
-            NSString *urlPrefix = [imageInfos[0] objectForKey:@"url_prefix"];
-            NSString *webUri = [imageInfos[0] objectForKey:@"web_uri"];
-            NSString *imageType = [[[imageInfos[0] objectForKey:@"mime_type"] substringFromIndex:5] stringByReplacingOccurrencesOfString:@"/" withString:@"."];
-            NSString *url = [[urlPrefix stringByAppendingString:webUri] stringByAppendingString:imageType];
+            dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            NSMutableArray *imagesArray = [NSMutableArray array];
+            for (int j = 0; j < 3 && j < imageInfos.count; j++) {
+                NSString *urlPrefix = [imageInfos[j] objectForKey:@"url_prefix"];
+                NSString *webUri = [imageInfos[j] objectForKey:@"web_uri"];
+                NSString *imageType = [[[imageInfos[j] objectForKey:@"mime_type"] substringFromIndex:5] stringByReplacingOccurrencesOfString:@"/" withString:@"."];
+                NSString *url = [[urlPrefix stringByAppendingString:webUri] stringByAppendingString:imageType];
+//                NSLog(@"%@", url);
+                
+                dispatch_group_enter(imagesDownloadTaskGroup);
+                NSString *index = [NSString stringWithFormat:@"%d_%d", i, j];
+                [self downloadImageWithURL:url index:index success:^(NSString * _Nonnull imagePath) {
+                    NSLog(@"%@", imagePath);
+                    [imagesArray addObject:imagePath];
+                    dispatch_group_leave(imagesDownloadTaskGroup);
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@", error.description);
+                    dispatch_group_leave(imagesDownloadTaskGroup);
+                }];
+            }
             
             dispatch_group_enter(downloadTaskGroup);
-            [self downloadImageWithURL:url index:i success:^(NSString * _Nonnull imagePath) {
-                NewsModel *news = [NewsModel initWithTitle:title imagePath:imagePath groupID:encodedGroupID];
-                [arr addObject:news];
-                dispatch_group_leave(downloadTaskGroup);
-            } failure:^(NSError * _Nonnull error) {
-                NSLog(@"请求失败 error:%@",error.description);
-                dispatch_group_leave(downloadTaskGroup);
-            }];
+            dispatch_group_notify(imagesDownloadTaskGroup, queue, ^{
+                if (imageInfos.count == 0) {
+                    NSLog(@"Feed without image");
+                }
+                else if (imageInfos.count == 1) {
+                    NSLog(@"Feed with one image");
+                    NewsModel *model = [NewsModel initWithTitle:title type:1 imagePath:imagesArray[0] groupID:encodedGroupID];
+                    [arr addObject:model];
+                    dispatch_group_leave(downloadTaskGroup);
+                }
+                else if (imageInfos.count >= 3) {
+                    NSLog(@"Feed with more than two images");
+                    NewsModel *model = [NewsModel initWithTitle:title type:2 firstImagePath:imagesArray[0] secondImagePath:imagesArray[1] thirdImagePath:imagesArray[2] groupID:encodedGroupID];
+                    [arr addObject:model];
+                    dispatch_group_leave(downloadTaskGroup);
+                }
+            });
         }
         dispatch_group_notify(downloadTaskGroup, dispatch_get_main_queue(), ^{
-            NSLog(@"%@", @"完成");
+            NSLog(@"Success");
             success(arr);
         });
     }];
@@ -81,14 +108,14 @@
     [dataTask resume];
 }
 
-- (void)downloadImageWithURL:(NSString *)url index:(int)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
+- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
     NSLog(@"%@", url);
     NSURLSession *session = [NSURLSession sharedSession];
     
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         //下载完成后文件位于location处，我们需要移到沙盒中
         NSString *dirPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-        NSString *imagePath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.jpg", index]];
+        NSString *imagePath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", index]];
         // NSLog(@"%@", imagePath);
         
         NSFileManager *manager = [NSFileManager defaultManager];
