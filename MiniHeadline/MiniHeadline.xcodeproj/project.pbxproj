@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */; };
+		1B043DE52298C04000EB0F3A /* MultiImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */; };
 		1B09A34D228E5B5E00A0AFF5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09A34C228E5B5D00A0AFF5 /* logo.png */; };
 		1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D181226AFF7B00BB7480 /* AppDelegate.m */; };
 		1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D184226AFF7B00BB7480 /* ViewController.m */; };
@@ -108,6 +110,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B043DE12298C04000EB0F3A /* MultiImageTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultiImageTableViewCell.h; sourceTree = "<group>"; };
+		1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultiImageTableViewCell.m; sourceTree = "<group>"; };
+		1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MultiImageTableViewCell.xib; sourceTree = "<group>"; };
 		1B09A34C228E5B5D00A0AFF5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1B09D17D226AFF7B00BB7480 /* MiniHeadline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniHeadline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B09D180226AFF7B00BB7480 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -439,6 +444,9 @@
 				1B69A99D226F5900008B5A16 /* SingleImageTableViewCell.h */,
 				1B69A994226EF424008B5A16 /* SingleImageTableViewCell.m */,
 				1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */,
+				1B043DE12298C04000EB0F3A /* MultiImageTableViewCell.h */,
+				1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */,
+				1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -806,6 +814,7 @@
 				D6BC8B6C227B5E97001AFD60 /* Share_25.png in Resources */,
 				D6BC8BB52282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib in Resources */,
 				1B7F82DF2270AAAB000165F6 /* find.png in Resources */,
+				1B043DE52298C04000EB0F3A /* MultiImageTableViewCell.xib in Resources */,
 				1B09D1BD226B013700BB7480 /* video_unselected.png in Resources */,
 				D6BC8B4422799423001AFD60 /* unlike-fill_25.png in Resources */,
 				1B7F82E22270AAAB000165F6 /* write.png in Resources */,
@@ -928,6 +937,7 @@
 				E81158DC2297F61F002BA4CD /* InfoTableViewCellWithPicture.m in Sources */,
 				E81158EB2297F628002BA4CD /* AddFreindPageViewController.m in Sources */,
 				E81158EF2297F628002BA4CD /* NSPerson.m in Sources */,
+				1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */,
 				1B7485AA229536AB00E508A8 /* FirstPageViewModel.m in Sources */,
 				E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */,
 			);
