@@ -696,7 +696,7 @@
             return 1;
         }
         else {
-            return self.commentsListSecond.count;
+            return self.commentsListSecond.count+1;
         }
     }
 }
@@ -753,7 +753,7 @@
             cellType = 3;
         }
         else {
-            cellType = self.commentsList[indexPath.row].cellType;
+            cellType = self.commentsListSecond[indexPath.row].cellType;
         }
         NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
         cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
