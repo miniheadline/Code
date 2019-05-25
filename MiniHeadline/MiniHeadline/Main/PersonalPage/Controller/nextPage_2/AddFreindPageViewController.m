@@ -43,12 +43,29 @@
 
 - (void)tableLoad {
     
-    NSPerson* person1 = [[NSPerson alloc] initWithDict:@"用户1号" introduction:@"中山大学本科生" Fans:@"125" picture:@""];
-    NSPerson* person2 = [[NSPerson alloc] initWithDict:@"用户2号" introduction:@"中山大学本科生" Fans:@"1287" picture:@""];
-    NSPerson* person3 = [[NSPerson alloc] initWithDict:@"用户3号" introduction:@"中山大学本科生" Fans:@"45" picture:@""];
+    NSPerson* person1 = [[NSPerson alloc] initWithDict:@"儿科医生鲍秀兰" introduction:@"知名医师" Fans:@"12万粉丝" picture:@""];
+    NSPerson* person2 = [[NSPerson alloc] initWithDict:@"家常菜日记" introduction:@"优秀美食领域创作者" Fans:@"93万粉丝" picture:@""];
+    NSPerson* person3 = [[NSPerson alloc] initWithDict:@"金莎" introduction:@"歌手 演员" Fans:@"61万粉丝" picture:@""];
     
     self.items = [[NSMutableArray alloc] initWithArray:@[person1, person2, person3]];
     
+    CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
+    CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
+    CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
+    
+    int width = 0;
+    int height = screenBound.size.height/4;
+    
+    int itemHeight = 165;
+    self.tableView = ({
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height*0.75) style:UITableViewStylePlain];
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.rowHeight = itemHeight;
+        tableView;
+    });
+    
+    [self.view addSubview:self.tableView];
 }
 
 - (void)viewDidLoad {

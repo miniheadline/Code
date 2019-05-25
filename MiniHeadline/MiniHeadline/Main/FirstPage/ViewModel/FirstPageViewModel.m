@@ -48,7 +48,11 @@
             NSLog(@"%@", title);
             
             NSString *groupID = [dataArr[i] objectForKey:@"group_id"];
+            NSString *charaters = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\| ";
+            NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:charaters] invertedSet];
+            NSString *encodedGroupID = [groupID stringByAddingPercentEncodingWithAllowedCharacters:characterSet];
             NSLog(@"%@", groupID);
+            NSLog(@"%@", encodedGroupID);
             
             NSMutableArray *imageInfos = [dataArr[i] objectForKey:@"image_infos"];
             NSLog(@"%lu", imageInfos.count);
@@ -59,7 +63,7 @@
             
             dispatch_group_enter(downloadTaskGroup);
             [self downloadImageWithURL:url index:i success:^(NSString * _Nonnull imagePath) {
-                NewsModel *news = [NewsModel initWithTitle:title imagePath:imagePath groupID:groupID];
+                NewsModel *news = [NewsModel initWithTitle:title imagePath:imagePath groupID:encodedGroupID];
                 [arr addObject:news];
                 dispatch_group_leave(downloadTaskGroup);
             } failure:^(NSError * _Nonnull error) {
