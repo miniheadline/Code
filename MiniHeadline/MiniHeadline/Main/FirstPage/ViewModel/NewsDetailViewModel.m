@@ -44,11 +44,27 @@
         NSString *content = [[res objectForKey:@"data"] objectForKey:@"article_content"];
         NSLog(@"%@", content);
         content = [self replaceImageSrcWithString:content UrlPrefix:imageUrlPrefix];
-        NSString *bodyTagPre = @"<body>";
-        NSString *bodyTagSuf = @"</body>";
-        content = [bodyTagPre stringByAppendingString:content];
-        content = [content stringByAppendingString:bodyTagSuf];
-        success(content);
+        
+        // 设置图片宽度
+        NSString *htmlString = [NSString stringWithFormat:@"<html> \n"
+                           "<head> \n"
+                           "<style type=\"text/css\"> \n"
+                           "body {font-size:50px;}\n"
+                           "</style> \n"
+                           "</head> \n"
+                           "<body>"
+                           "<script type='text/javascript'>"
+                           "window.onload = function(){\n"
+                           "var $img = document.getElementsByTagName('img');\n"
+                           "for(var p in $img){\n"
+                           "$img[p].style.width = '100%%';\n"
+                           "$img[p].style.height ='auto'\n"
+                           "}\n"
+                           "}"
+                           "</script>%@"
+                           "</body>"
+                           "</html>", content];
+        success(htmlString);
     }];
     
     //7.执行任务
@@ -131,5 +147,9 @@
     
     return res;
 }
+
+//- (NSString *)replaceVideoSrcWithString:(NSString *)content {
+//    
+//}
 
 @end

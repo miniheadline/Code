@@ -10,6 +10,17 @@
 
 @implementation NewsModel
 
++ (instancetype)initWithTitle:(NSString *)title type:(int)type groupID:(NSString *)groupID {
+    NewsModel *cellModel = [[NewsModel alloc] init];
+    cellModel.title = title;
+    cellModel.publisher = @"中山大学";
+    cellModel.comments = @"432评论";
+    cellModel.time = @"5小时前";
+    cellModel.groupID = groupID;
+    cellModel.type = type;
+    return cellModel;
+}
+
 + (instancetype)initWithTitle:(NSString *)title type:(int)type imagePath:(NSString *)imagePath groupID:(NSString *)groupID {
     NewsModel *cellModel = [[NewsModel alloc] init];
     cellModel.title = title;

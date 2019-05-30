@@ -9,11 +9,13 @@
 #import "FirstPageViewController.h"
 #import "SearchViewController.h"
 #import "NewsDetailViewController.h"
+#import "NoImageTableViewCell.h"
 #import "SingleImageTableViewCell.h"
 #import "MultiImageTableViewCell.h"
 #import "NewsModel.h"
 #import "UIColor+Hex.h"
 #import "FirstPageViewModel.h"
+#import "MJRefresh.h"
 
 @interface FirstPageViewController ()<UITableViewDelegate,
                                       UITableViewDataSource,
@@ -37,6 +39,10 @@
 @property (nonatomic, copy) NSArray *publishChoiceArray;
 
 @property (nonatomic) BOOL clickOnce;
+@property (nonatomic) BOOL isFirstLoading;
+@property (nonatomic) BOOL isLoading;
+
+@property (nonatomic) int offset;
 
 @end
 
@@ -45,20 +51,76 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self initVar];
+    
     [self addSubViews];
     
-    // for test
+    [self loadMoreData];
+}
+
+- (void)initVar {
+    self.offset = 0;
+    self.isLoading = NO;
+    self.isFirstLoading = YES;
+}
+
+- (void)setupUpRefresh {
+    self.newsTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+}
+
+- (void)setupDownRefresh {
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
+    self.newsTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+}
+
+- (void)loadNewData {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
-    [viewModel getFeedsListWithSuccess:^(NSMutableArray * _Nonnull dataArray) {
-        [self.tableDataArray removeAllObjects];
+    [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
+        NSRange range = NSMakeRange(0, 20);
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.newsTableView reloadData];
+            [self.newsTableView.mj_header endRefreshing];
+            self.offset = self.offset + 20;
+            self.isLoading = NO;
+            NSLog(@"reload tableview");
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        [self.newsTableView.mj_header endRefreshing];
+        self.isLoading = NO;
+    }];
+}
+
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
         [self.tableDataArray addObjectsFromArray:dataArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
+            [self.newsTableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.offset + 20;
+            if (self.isFirstLoading == YES) {
+                // 集成下拉刷新控件
+                [self setupDownRefresh];
+                // 集成上拉刷新控件
+                [self setupUpRefresh];
+            }
+            NSLog(@"reload tableview");
         });
-    } andFailure:^(NSError * _Nonnull error) {
+    } failure:^(NSError * _Nonnull error) {
         NSLog(@"请求失败 error:%@",error.description);
+        [self.newsTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
     }];
 }
+
 
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
@@ -253,8 +315,13 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([tableView isEqual:self.newsTableView]) {
         NewsModel *cellData = self.tableDataArray[indexPath.row];
-        NSLog(@"%d", cellData.type);
-        if (cellData.type == 1) {
+        if (cellData.type == 0) {
+            NSLog(@"%d", cellData.type);
+            NoImageTableViewCell *cell = [NoImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
+        }
+        else if (cellData.type == 1) {
             SingleImageTableViewCell *cell = [SingleImageTableViewCell cellWithTableView:tableView];
             cell.cellData = cellData;
             return cell;
@@ -264,9 +331,11 @@
             cell.cellData = cellData;
             return cell;
         }
-        
-        UITableViewCell *cell;
-        return cell;
+        else {
+            NSLog(@"error-cellForRowAtIndexPath:%lu", indexPath.row);
+            UITableViewCell *cell;
+            return cell;
+        }
     }
     else {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
@@ -280,6 +349,13 @@
 
 
 #pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    if (indexPath.row == self.tableDataArray.count - 5 && self.isLoading == NO) {
+        [self loadMoreData];
+    }
+}
 
 // 通知委托指定行将要被选中，返回响应行的索引
 - (nullable NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
