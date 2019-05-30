@@ -21,7 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *thirdImagePath;
 @property (nonatomic, copy) NSString *groupID;
 
-@property (nonatomic) int type; // 1 - singleImage, 2 - multiImgae
+@property (nonatomic) int type; // 0 - noImage, 1 - singleImage, 2 - multiImgae
+
++ (instancetype)initWithTitle:(NSString *)title type:(int)type groupID:(NSString *)groupID;
 
 + (instancetype)initWithTitle:(NSString *)title type:(int)type imagePath:(NSString *)imagePath groupID:(NSString *)groupID;
 

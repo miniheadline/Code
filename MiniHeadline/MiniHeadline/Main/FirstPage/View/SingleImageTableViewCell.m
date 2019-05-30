@@ -28,13 +28,11 @@
     // Initialization code
     
     self.titleLabel.numberOfLines = 0;
-//    self.titleLabel.layer.borderColor = [UIColor blackColor].CGColor;
-//    self.titleLabel.layer.borderWidth = 1;
     // 设置行距
     self.attrDict = [NSMutableDictionary dictionary];
     self.attrDict[NSFontAttributeName] = [UIFont systemFontOfSize:20.0];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
-    paraStyle.lineSpacing = 10.0;
+    paraStyle.lineSpacing = 5.0;
     self.attrDict[NSParagraphStyleAttributeName] = paraStyle;
     
     self.publisherLabel.textColor = [UIColor grayColor];
