@@ -11,8 +11,10 @@
 #import "NewsDetailViewController.h"
 #import "UIColor+Hex.h"
 #import "NewsDetailViewModel.h"
+#import "UIImageView+WebCache.h"
 
-@interface NewsDetailViewController ()<WKNavigationDelegate>
+@interface NewsDetailViewController ()<WKNavigationDelegate,
+                                       WKScriptMessageHandler>
 
 @property (nonatomic, strong) UIView *header;
 @property (nonatomic, strong) UIView *footer;
@@ -38,6 +40,7 @@
 @property (nonatomic, strong) UILabel *feedTitleLabel;
 @property (nonatomic, strong) UITextView *feedContentTextView;
 @property (nonatomic, strong) WKWebView *feeeContentWebView;
+@property (nonatomic, strong) UIImageView *previewImageView;
 
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
@@ -198,22 +201,27 @@
     [self.shareImageView addGestureRecognizer:share];
     
     // 内容
-    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(5, statusBound.size.height + self.header.frame.size.height + 5, screenBound.size.width - 10, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height - statusBound.size.height - 10)];
+    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, statusBound.size.height + self.header.frame.size.height, screenBound.size.width, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height - statusBound.size.height)];
     self.detailScrollView.backgroundColor = [UIColor whiteColor];
     self.detailScrollView.showsVerticalScrollIndicator = NO;
     self.detailScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:self.detailScrollView];
     
-//    self.feedContentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
-//    self.feedContentTextView.editable = NO;
-//    [self.detailScrollView addSubview:self.feedContentTextView];
-    
-    self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
+    self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(5, 5, self.detailScrollView.frame.size.width - 10, self.detailScrollView.frame.size.height - 10)];
     self.feeeContentWebView.navigationDelegate = self;
     self.feeeContentWebView.scrollView.showsVerticalScrollIndicator = NO;
     self.feeeContentWebView.scrollView.showsHorizontalScrollIndicator = NO;
     [self.detailScrollView addSubview:self.feeeContentWebView];
-
+    [[self.feeeContentWebView configuration].userContentController addScriptMessageHandler:self name:@"imageClick"]; // 配置控制器
+    
+    self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height)];
+    self.previewImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.previewImageView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.previewImageView];
+    self.previewImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *endPreview = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewSingleTap:)];
+    [self.previewImageView addGestureRecognizer:endPreview];
+    [self.view sendSubviewToBack:self.previewImageView];
 }
 
 #pragma mark - TapFunctionDefinition
@@ -269,16 +277,34 @@
     NSLog(@"shareSingleTap");
 }
 
+- (void)previewSingleTap:(UITapGestureRecognizer *)gestureRecognizer {
+    NSLog(@"previewSingleTap");
+    self.previewImageView.backgroundColor = [UIColor whiteColor];
+    [self.view sendSubviewToBack:self.previewImageView];
+}
+
 
 #pragma mark - WKNavigationDelegate
 
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
-//    // 禁止用户选择
-//    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
-//    [webView evaluateJavaScript:@"document.activeElement.blur();" completionHandler:nil];
-    // 适当增大字体大小
-    NSLog(@"webView didFinishNavigation");
-    //[webView evaluateJavaScript:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '300%'" completionHandler:nil];    
+// JS调用OC
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    [webView evaluateJavaScript:@"function assignImageClickAction(){var imgs=document.getElementsByTagName('img');var length=imgs.length;for(var i=0;i<length;i++){img=imgs[i];img.onclick=function(){window.webkit.messageHandlers.imageClick.postMessage(this.src)}}}" completionHandler:nil];
+    [webView evaluateJavaScript:@"assignImageClickAction();" completionHandler:nil];
+    
+}
+
+#pragma mark - WKScriptMessageHandler
+
+// OC调用JS
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"imageClick"]) {
+        NSLog(@"%@", message.body);
+        [self.previewImageView sd_setImageWithURL:message.body completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            NSLog(@"error:%@", error);
+            self.previewImageView.backgroundColor = [UIColor blackColor];
+            [self.view bringSubviewToFront:self.previewImageView];
+        }];
+    }
 }
 
 
