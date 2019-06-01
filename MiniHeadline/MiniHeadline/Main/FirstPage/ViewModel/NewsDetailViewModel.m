@@ -45,25 +45,28 @@
         NSLog(@"%@", content);
         content = [self replaceImageSrcWithString:content UrlPrefix:imageUrlPrefix];
         
+        // 设置文字两端对齐
+        content = [content stringByReplacingOccurrencesOfString:@"<div>" withString:@"<div style=\"text-align:justify; text-justify:inter-ideograph;\">"];
+        
         // 设置图片宽度
         NSString *htmlString = [NSString stringWithFormat:@"<html> \n"
-                           "<head> \n"
-                           "<style type=\"text/css\"> \n"
-                           "body {font-size:50px;}\n"
-                           "</style> \n"
-                           "</head> \n"
-                           "<body>"
-                           "<script type='text/javascript'>"
-                           "window.onload = function(){\n"
-                           "var $img = document.getElementsByTagName('img');\n"
-                           "for(var p in $img){\n"
-                           "$img[p].style.width = '100%%';\n"
-                           "$img[p].style.height ='auto'\n"
-                           "}\n"
-                           "}"
-                           "</script>%@"
-                           "</body>"
-                           "</html>", content];
+                                                           "<head> \n"
+                                                           "<style type=\"text/css\"> \n"
+                                                           "body {font-size:50px;}\n"
+                                                           "</style> \n"
+                                                           "</head> \n"
+                                                           "<body>"
+                                                           "<script type='text/javascript'>"
+                                                           "window.onload = function(){\n"
+                                                           "var $img = document.getElementsByTagName('img');\n"
+                                                           "for(var p in $img){\n"
+                                                           "$img[p].style.width = '100%%';\n"
+                                                           "$img[p].style.height = 'auto'\n"
+                                                           "}\n"
+                                                           "}"
+                                                           "</script>%@"
+                                                           "</body>"
+                                                           "</html>", content];
         success(htmlString);
     }];
     
