@@ -50,6 +50,9 @@
 		1BE182C122967B7100343F83 /* SingleImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */; };
 		1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BEBE322226CBA200003C151 /* NewsDetailViewController.m */; };
 		45B703B5988019F06A193B19 /* libPods-MiniHeadline.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 698AD5FBF61BFBE0EF3E660D /* libPods-MiniHeadline.a */; };
+		D62F5D212296F321009F66AD /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D202296F320009F66AD /* close.png */; };
+		D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */; };
+		D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */; };
 		D6AC51F72283F1B700318629 /* share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6AC51F62283F1B600318629 /* share_white.png */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
 		D6BC8B102273F524001AFD60 /* icon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B0A2273F524001AFD60 /* icon_1.png */; };
@@ -175,6 +178,10 @@
 		1BEBE322226CBA200003C151 /* NewsDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewController.m; sourceTree = "<group>"; };
 		4124A5849560543821FC1812 /* Pods-MiniHeadline.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MiniHeadline.debug.xcconfig"; path = "Target Support Files/Pods-MiniHeadline/Pods-MiniHeadline.debug.xcconfig"; sourceTree = "<group>"; };
 		698AD5FBF61BFBE0EF3E660D /* libPods-MiniHeadline.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MiniHeadline.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D62F5D202296F320009F66AD /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
+		D62F5D2222971104009F66AD /* ChoosenCommentTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChoosenCommentTableViewCell.h; sourceTree = "<group>"; };
+		D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChoosenCommentTableViewCell.m; sourceTree = "<group>"; };
+		D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChoosenCommentTableViewCell.xib; sourceTree = "<group>"; };
 		D6AC51F62283F1B600318629 /* share_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_white.png; sourceTree = "<group>"; };
 		D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8B012273F23A001AFD60 /* LoadingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingTableViewCell.h; sourceTree = "<group>"; };
@@ -379,6 +386,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				D62F5D202296F320009F66AD /* close.png */,
 				1B043DE82298EA3A00EB0F3A /* next_black.png */,
 				1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */,
 				E81158F22297F6E6002BA4CD /* jiantou.png */,
@@ -531,6 +539,9 @@
 				D6BC8BB12282AE5F001AFD60 /* RecommendationVideoTableViewCell.h */,
 				D6BC8BB22282AE5F001AFD60 /* RecommendationVideoTableViewCell.m */,
 				D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */,
+				D62F5D2222971104009F66AD /* ChoosenCommentTableViewCell.h */,
+				D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */,
+				D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -842,8 +853,10 @@
 				D6BC8B3322798CDB001AFD60 /* View.xib in Resources */,
 				E81158EC2297F628002BA4CD /* AddFreindPageViewController.xib in Resources */,
 				1B7F82DD2270AAAB000165F6 /* edit_label.png in Resources */,
+				D62F5D212296F321009F66AD /* close.png in Resources */,
 				D6BC8B4522799423001AFD60 /* unlike_25.png in Resources */,
 				D6BC8B142273F524001AFD60 /* icon_2.png in Resources */,
+				D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */,
 				1B7F82DC2270AAAB000165F6 /* camera.png in Resources */,
 				1BB8DD82229FB3D300FFECFA /* NoImageTableViewCell.xib in Resources */,
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
@@ -960,6 +973,7 @@
 				E81158BD2297F575002BA4CD /* EditInfoController.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
+				D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */,
 				D6BC8B212276B3B1001AFD60 /* VideoTableViewCell.m in Sources */,
 				E81158BF2297F575002BA4CD /* UserLoginController.m in Sources */,
 				E81158D82297F61F002BA4CD /* ChildPageViewController.m in Sources */,
