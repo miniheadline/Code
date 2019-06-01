@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */; };
 		1B043DE52298C04000EB0F3A /* MultiImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */; };
 		1B043DE72298D13A00EB0F3A /* tianjiahaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */; };
+		1B043DE92298EA3A00EB0F3A /* next_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B043DE82298EA3A00EB0F3A /* next_black.png */; };
 		1B09A34D228E5B5E00A0AFF5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B09A34C228E5B5D00A0AFF5 /* logo.png */; };
 		1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D181226AFF7B00BB7480 /* AppDelegate.m */; };
 		1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D184226AFF7B00BB7480 /* ViewController.m */; };
@@ -43,6 +44,8 @@
 		1B7F82E42270AAAB000165F6 /* star_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D72270AAAB000165F6 /* star_unselected.png */; };
 		1B7F82E52270AAAB000165F6 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D82270AAAB000165F6 /* share.png */; };
 		1B7F82E62270AAAB000165F6 /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7F82D92270AAAB000165F6 /* more.png */; };
+		1BB8DD81229FB3D300FFECFA /* NoImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB8DD7F229FB3D300FFECFA /* NoImageTableViewCell.m */; };
+		1BB8DD82229FB3D300FFECFA /* NoImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BB8DD80229FB3D300FFECFA /* NoImageTableViewCell.xib */; };
 		1BE182BF22967B2C00343F83 /* NewsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE182BE22967B2C00343F83 /* NewsDetailViewModel.m */; };
 		1BE182C122967B7100343F83 /* SingleImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */; };
 		1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BEBE322226CBA200003C151 /* NewsDetailViewController.m */; };
@@ -118,6 +121,7 @@
 		1B043DE22298C04000EB0F3A /* MultiImageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultiImageTableViewCell.m; sourceTree = "<group>"; };
 		1B043DE32298C04000EB0F3A /* MultiImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MultiImageTableViewCell.xib; sourceTree = "<group>"; };
 		1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tianjiahaoyou.png; sourceTree = "<group>"; };
+		1B043DE82298EA3A00EB0F3A /* next_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next_black.png; sourceTree = "<group>"; };
 		1B09A34C228E5B5D00A0AFF5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		1B09D17D226AFF7B00BB7480 /* MiniHeadline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniHeadline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B09D180226AFF7B00BB7480 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -164,6 +168,9 @@
 		1B7F82D72270AAAB000165F6 /* star_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_unselected.png; sourceTree = "<group>"; };
 		1B7F82D82270AAAB000165F6 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
 		1B7F82D92270AAAB000165F6 /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more.png; sourceTree = "<group>"; };
+		1BB8DD7E229FB3D300FFECFA /* NoImageTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoImageTableViewCell.h; sourceTree = "<group>"; };
+		1BB8DD7F229FB3D300FFECFA /* NoImageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoImageTableViewCell.m; sourceTree = "<group>"; };
+		1BB8DD80229FB3D300FFECFA /* NoImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoImageTableViewCell.xib; sourceTree = "<group>"; };
 		1BE182BD22967B2C00343F83 /* NewsDetailViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewModel.h; sourceTree = "<group>"; };
 		1BE182BE22967B2C00343F83 /* NewsDetailViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewModel.m; sourceTree = "<group>"; };
 		1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SingleImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -380,6 +387,7 @@
 			isa = PBXGroup;
 			children = (
 				D62F5D202296F320009F66AD /* close.png */,
+				1B043DE82298EA3A00EB0F3A /* next_black.png */,
 				1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */,
 				E81158F22297F6E6002BA4CD /* jiantou.png */,
 				1B09A34C228E5B5D00A0AFF5 /* logo.png */,
@@ -452,6 +460,9 @@
 		1BCE6426226DB38D0078E11B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1BB8DD7E229FB3D300FFECFA /* NoImageTableViewCell.h */,
+				1BB8DD7F229FB3D300FFECFA /* NoImageTableViewCell.m */,
+				1BB8DD80229FB3D300FFECFA /* NoImageTableViewCell.xib */,
 				1B69A99D226F5900008B5A16 /* SingleImageTableViewCell.h */,
 				1B69A994226EF424008B5A16 /* SingleImageTableViewCell.m */,
 				1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */,
@@ -773,6 +784,7 @@
 				1B09D179226AFF7B00BB7480 /* Sources */,
 				1B09D17A226AFF7B00BB7480 /* Frameworks */,
 				1B09D17B226AFF7B00BB7480 /* Resources */,
+				A49A4FF4A630959024605822 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -846,6 +858,7 @@
 				D6BC8B142273F524001AFD60 /* icon_2.png in Resources */,
 				D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */,
 				1B7F82DC2270AAAB000165F6 /* camera.png in Resources */,
+				1BB8DD82229FB3D300FFECFA /* NoImageTableViewCell.xib in Resources */,
 				1B09D18D226AFF7C00BB7480 /* LaunchScreen.storyboard in Resources */,
 				E81158F32297F6E7002BA4CD /* jiantou.png in Resources */,
 				E81158F12297F628002BA4CD /* PersonInfoCell.xib in Resources */,
@@ -882,6 +895,7 @@
 				1B043DE72298D13A00EB0F3A /* tianjiahaoyou.png in Resources */,
 				1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */,
 				1B7F82DE2270AAAB000165F6 /* star_selected.png in Resources */,
+				1B043DE92298EA3A00EB0F3A /* next_black.png in Resources */,
 				D6BC8B102273F524001AFD60 /* icon_1.png in Resources */,
 				1BE182C122967B7100343F83 /* SingleImageTableViewCell.xib in Resources */,
 				D6BC8B6A227B5BAA001AFD60 /* star_25.png in Resources */,
@@ -914,6 +928,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		A49A4FF4A630959024605822 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MiniHeadline/Pods-MiniHeadline-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MiniHeadline/Pods-MiniHeadline-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MiniHeadline/Pods-MiniHeadline-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -943,8 +974,6 @@
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
 				D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */,
-				E87DDA052296905A00744E93 /* AddFreindPageViewController.m in Sources */,
-				E87DD9F82296904C00744E93 /* NSComment.m in Sources */,
 				D6BC8B212276B3B1001AFD60 /* VideoTableViewCell.m in Sources */,
 				E81158BF2297F575002BA4CD /* UserLoginController.m in Sources */,
 				E81158D82297F61F002BA4CD /* ChildPageViewController.m in Sources */,
@@ -959,6 +988,7 @@
 				1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */,
 				E8913EE32298D401007C16CA /* Toast.m in Sources */,
 				1B7485AA229536AB00E508A8 /* FirstPageViewModel.m in Sources */,
+				1BB8DD81229FB3D300FFECFA /* NoImageTableViewCell.m in Sources */,
 				E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1109,6 +1139,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Masonry\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"UIKit\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Booooby.MiniHeadline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1126,6 +1165,15 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Masonry\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"UIKit\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Booooby.MiniHeadline;
 				PRODUCT_NAME = "$(TARGET_NAME)";

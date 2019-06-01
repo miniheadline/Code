@@ -56,6 +56,8 @@
     
     NSLog(@"%@", _groupID);
     
+    
+    // for test
     NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
     [newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
         NSLog(@"content:%@", content);
@@ -196,8 +198,10 @@
     [self.shareImageView addGestureRecognizer:share];
     
     // 内容
-    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, statusBound.size.height + self.header.frame.size.height, screenBound.size.width, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height - statusBound.size.height)];
+    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(5, statusBound.size.height + self.header.frame.size.height + 5, screenBound.size.width - 10, screenBound.size.height - self.header.frame.size.height - self.footer.frame.size.height - statusBound.size.height - 10)];
     self.detailScrollView.backgroundColor = [UIColor whiteColor];
+    self.detailScrollView.showsVerticalScrollIndicator = NO;
+    self.detailScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:self.detailScrollView];
     
 //    self.feedContentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
@@ -206,6 +210,8 @@
     
     self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.detailScrollView.frame.size.width, self.detailScrollView.frame.size.height)];
     self.feeeContentWebView.navigationDelegate = self;
+    self.feeeContentWebView.scrollView.showsVerticalScrollIndicator = NO;
+    self.feeeContentWebView.scrollView.showsHorizontalScrollIndicator = NO;
     [self.detailScrollView addSubview:self.feeeContentWebView];
 
 }
@@ -271,7 +277,8 @@
 //    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
 //    [webView evaluateJavaScript:@"document.activeElement.blur();" completionHandler:nil];
     // 适当增大字体大小
-    [webView evaluateJavaScript:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '200%'" completionHandler:nil];
+    NSLog(@"webView didFinishNavigation");
+    //[webView evaluateJavaScript:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '300%'" completionHandler:nil];    
 }
 
 

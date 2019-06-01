@@ -12,7 +12,7 @@
 
 + (instancetype)testUser {
     UserInfoModel *model = [[UserInfoModel alloc] init];
-    model.username = @"testUser";
+    model.username = @"TestUser";
     model.password = @"123";
     model.numOfHeadline = 10;
     model.numOfAttention = 100;

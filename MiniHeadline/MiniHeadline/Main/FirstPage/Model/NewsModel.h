@@ -17,9 +17,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *comments;
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, copy) NSString *firstImagePath;
+@property (nonatomic, copy) NSString *secondImagePath;
+@property (nonatomic, copy) NSString *thirdImagePath;
 @property (nonatomic, copy) NSString *groupID;
 
-+ (instancetype)initWithTitle:(NSString *)title imagePath:(NSString *)imagePath groupID:(NSString *)groupID;
+@property (nonatomic) int type; // 0 - noImage, 1 - singleImage, 2 - multiImgae
+
++ (instancetype)initWithTitle:(NSString *)title type:(int)type groupID:(NSString *)groupID;
+
++ (instancetype)initWithTitle:(NSString *)title type:(int)type imagePath:(NSString *)imagePath groupID:(NSString *)groupID;
+
++ (instancetype)initWithTitle:(NSString *)title type:(int)type firstImagePath:(NSString *)firstImagePath secondImagePath:(NSString *)secondImagePath thirdImagePath:(NSString *)thirdImagePath groupID:(NSString *)groupID;
 
 @end
 

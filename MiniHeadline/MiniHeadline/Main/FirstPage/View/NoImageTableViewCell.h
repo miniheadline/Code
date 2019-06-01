@@ -1,8 +1,8 @@
 //
-//  SingleImageTableViewCell.h
+//  NoImageTableViewCell.h
 //  MiniHeadline
 //
-//  Created by Booooby on 2019/4/23.
+//  Created by Booooby on 2019/5/30.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SingleImageTableViewCell : UITableViewCell
+@interface NoImageTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) NewsModel *cellData;
 

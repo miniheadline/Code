@@ -22,9 +22,9 @@
 @property (nonatomic, retain)IBOutlet UIImageView *backImageView;
 
 @property int select;
-@property (nonatomic, strong) NSMutableArray<NSString*> *items;
-@property (nonatomic, strong) NSMutableArray<NSString*> *itemsOfbt1;
-@property (nonatomic, strong) NSMutableArray<NSString*> *itemsOfbt2;
+@property (nonatomic, strong) NSMutableArray<NSPerson*> *items;
+@property (nonatomic, strong) NSMutableArray<NSPerson*> *itemsOfbt1;
+@property (nonatomic, strong) NSMutableArray<NSPerson*> *itemsOfbt2;
 @property (nonatomic, retain)IBOutlet UITableView* tableView;
 
 
@@ -59,6 +59,8 @@
     self.items = self.itemsOfbt1;
     self.select = 1;
     self.tableView.hidden = FALSE;
+
+    [self.tableView reloadData];
     
     if ( self.itemsOfbt1.count == 0 ) {
         self.tableView.hidden = TRUE;
@@ -86,6 +88,8 @@
     self.items = self.itemsOfbt2;
     self.select = 2;
     self.tableView.hidden = FALSE;
+    
+    [self.tableView reloadData];
     
     if ( self.itemsOfbt2.count == 0 ) {
         self.tableView.hidden = TRUE;
@@ -121,15 +125,15 @@
     self.itemsOfbt1 = [[NSMutableArray alloc] initWithArray:@[person1, person2, person3]];
     self.itemsOfbt1 = [[NSMutableArray alloc] initWithArray:@[person1, person3]];
     
-    self.items = self.itemsOfbt2;
-    self.select = 2;
+    self.items = self.itemsOfbt1;
+    self.select = 1;
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
     CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
     
     int width = 0;
-    int height = screenBound.size.height/4;
+    int height = 130;
     
     int itemHeight = 165;
     self.tableView = ({

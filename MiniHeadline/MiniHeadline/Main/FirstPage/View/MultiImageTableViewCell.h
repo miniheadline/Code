@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+#import "NewsModel.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MultiImageTableViewCell : UITableViewCell
+
+@property (nonatomic, strong) NewsModel *cellData;
+
++ (instancetype)cellWithTableView:(UITableView *)tableView;
 
 @end
 
