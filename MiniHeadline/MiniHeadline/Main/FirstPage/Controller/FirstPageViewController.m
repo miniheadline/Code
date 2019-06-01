@@ -78,6 +78,7 @@
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
+        // 返回的数据插入在前面
         NSRange range = NSMakeRange(0, 20);
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
         [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
@@ -100,6 +101,7 @@
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
+        // 返回的数据插入在后面
         [self.tableDataArray addObjectsFromArray:dataArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
@@ -351,7 +353,6 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     if (indexPath.row == self.tableDataArray.count - 5 && self.isLoading == NO) {
         [self loadMoreData];
     }
