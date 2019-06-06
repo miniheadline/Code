@@ -291,7 +291,6 @@
     [self.navigationController pushViewController:searchVC animated:NO];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
     [super viewWillAppear:animated];
