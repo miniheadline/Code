@@ -18,6 +18,7 @@
 #import "../ViewModel/RecommendationVideoTableViewCell.h"
 #import "../ViewModel/CommentTableViewCell.h"
 #import "../ViewModel/ChoosenCommentTableViewCell.h"
+#import "../ViewModel/CommentsView.h"
 #import "Masonry.h"
 
 @interface VideoDetailViewController ()
@@ -58,7 +59,7 @@
 @property (nonatomic, strong) NSTimer *videoTimer;
 @property (nonatomic, strong) UIButton *backFullScreenBtn;
 
-@property (nonatomic, strong) UIView *commentTwoView;
+@property (nonatomic, strong) CommentsView *commentTwoView;
 @property (nonatomic, strong) UILabel *commentViewLabel;
 @property (nonatomic, strong) UITableView *commentViewTableView;
 @property (nonatomic, strong) UIButton *closeCommentViewBtn;
@@ -232,7 +233,7 @@
     [self.duraTime setText:result];
     [self.videoView addSubview:self.duraTime];
     self.editCommentField = [[UITextField alloc] init];
-    self.commentTwoView = [[UIView alloc] init];
+    //self.commentTwoView = [[UIView alloc] init];
     self.closeCommentViewBtn = [[UIButton alloc] init];
     [self.closeCommentViewBtn setBackgroundImage:[UIImage imageNamed:@"close.png"] forState:UIControlStateNormal];
     //[self.closeCommentViewBtn setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
@@ -839,7 +840,7 @@
                 }
             }
             else {
-                CGRect screenBound = [UIScreen mainScreen].bounds;
+                /*CGRect screenBound = [UIScreen mainScreen].bounds;
                 [self.commentTwoView setBackgroundColor:[UIColor whiteColor]];
                 if(!self.commentViewTableView) {
                     self.commentViewTableView = ({
@@ -895,9 +896,18 @@
                 }];*/
                 CommentTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                 _choosenComment = cell.data;
-                NSArray* commentPart = [self loadComment:1];
+                /*NSArray* commentPart = [self loadComment:1];
                 self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
-                self.pageIndexSecond = 0;
+                self.pageIndexSecond = 0;*/
+                self.commentTwoView = [[CommentsView alloc] init];
+                [self.commentTwoView setCommentData:self.choosenComment];
+                [self.view addSubview:self.commentTwoView];
+                [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(self.likeBtn.bottom).with.offset(10);
+                    make.bottom.equalTo(self.footToolBar.top);
+                    make.left.equalTo(self.view);
+                    make.right.equalTo(self.view);
+                }];
             }
         }
     }

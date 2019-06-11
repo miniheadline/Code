@@ -53,6 +53,7 @@
 		D62F5D212296F321009F66AD /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D202296F320009F66AD /* close.png */; };
 		D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */; };
 		D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */; };
+		D692DF0122A26B5500BF5C2F /* CommentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = D692DF0022A26B5400BF5C2F /* CommentsView.m */; };
 		D6AC51F72283F1B700318629 /* share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6AC51F62283F1B600318629 /* share_white.png */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
 		D6BC8B102273F524001AFD60 /* icon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B0A2273F524001AFD60 /* icon_1.png */; };
@@ -182,6 +183,8 @@
 		D62F5D2222971104009F66AD /* ChoosenCommentTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChoosenCommentTableViewCell.h; sourceTree = "<group>"; };
 		D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChoosenCommentTableViewCell.m; sourceTree = "<group>"; };
 		D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChoosenCommentTableViewCell.xib; sourceTree = "<group>"; };
+		D692DEFF22A26B5400BF5C2F /* CommentsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommentsView.h; path = MiniHeadline/Main/VideoPage/ViewModel/CommentsView.h; sourceTree = SOURCE_ROOT; };
+		D692DF0022A26B5400BF5C2F /* CommentsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CommentsView.m; path = MiniHeadline/Main/VideoPage/ViewModel/CommentsView.m; sourceTree = SOURCE_ROOT; };
 		D6AC51F62283F1B600318629 /* share_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_white.png; sourceTree = "<group>"; };
 		D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8B012273F23A001AFD60 /* LoadingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingTableViewCell.h; sourceTree = "<group>"; };
@@ -522,6 +525,8 @@
 		1BCE642B226DB3F40078E11B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D692DEFF22A26B5400BF5C2F /* CommentsView.h */,
+				D692DF0022A26B5400BF5C2F /* CommentsView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -974,6 +979,7 @@
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
 				D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */,
+				D692DF0122A26B5500BF5C2F /* CommentsView.m in Sources */,
 				D6BC8B212276B3B1001AFD60 /* VideoTableViewCell.m in Sources */,
 				E81158BF2297F575002BA4CD /* UserLoginController.m in Sources */,
 				E81158D82297F61F002BA4CD /* ChildPageViewController.m in Sources */,
