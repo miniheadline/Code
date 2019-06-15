@@ -55,6 +55,9 @@
 		D62F5D212296F321009F66AD /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D202296F320009F66AD /* close.png */; };
 		D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */; };
 		D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */; };
+		D64E44C422AF58000065E673 /* VideoDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D64E44C222AF58000065E673 /* VideoDetailTableViewCell.m */; };
+		D64E44C522AF58000065E673 /* VideoDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64E44C322AF58000065E673 /* VideoDetailTableViewCell.xib */; };
+		D692DF0122A26B5500BF5C2F /* CommentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = D692DF0022A26B5400BF5C2F /* CommentsView.m */; };
 		D6AC51F72283F1B700318629 /* share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = D6AC51F62283F1B600318629 /* share_white.png */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
 		D6BC8B102273F524001AFD60 /* icon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = D6BC8B0A2273F524001AFD60 /* icon_1.png */; };
@@ -188,6 +191,11 @@
 		D62F5D2222971104009F66AD /* ChoosenCommentTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChoosenCommentTableViewCell.h; sourceTree = "<group>"; };
 		D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChoosenCommentTableViewCell.m; sourceTree = "<group>"; };
 		D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChoosenCommentTableViewCell.xib; sourceTree = "<group>"; };
+		D64E44C122AF58000065E673 /* VideoDetailTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoDetailTableViewCell.h; sourceTree = "<group>"; };
+		D64E44C222AF58000065E673 /* VideoDetailTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoDetailTableViewCell.m; sourceTree = "<group>"; };
+		D64E44C322AF58000065E673 /* VideoDetailTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoDetailTableViewCell.xib; sourceTree = "<group>"; };
+		D692DEFF22A26B5400BF5C2F /* CommentsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommentsView.h; path = MiniHeadline/Main/VideoPage/ViewModel/CommentsView.h; sourceTree = SOURCE_ROOT; };
+		D692DF0022A26B5400BF5C2F /* CommentsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CommentsView.m; path = MiniHeadline/Main/VideoPage/ViewModel/CommentsView.m; sourceTree = SOURCE_ROOT; };
 		D6AC51F62283F1B600318629 /* share_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_white.png; sourceTree = "<group>"; };
 		D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8B012273F23A001AFD60 /* LoadingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingTableViewCell.h; sourceTree = "<group>"; };
@@ -532,6 +540,8 @@
 		1BCE642B226DB3F40078E11B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D692DEFF22A26B5400BF5C2F /* CommentsView.h */,
+				D692DF0022A26B5400BF5C2F /* CommentsView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -552,6 +562,9 @@
 				D62F5D2222971104009F66AD /* ChoosenCommentTableViewCell.h */,
 				D62F5D2322971104009F66AD /* ChoosenCommentTableViewCell.m */,
 				D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */,
+				D64E44C122AF58000065E673 /* VideoDetailTableViewCell.h */,
+				D64E44C222AF58000065E673 /* VideoDetailTableViewCell.m */,
+				D64E44C322AF58000065E673 /* VideoDetailTableViewCell.xib */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -854,6 +867,7 @@
 				1B09D1BD226B013700BB7480 /* video_unselected.png in Resources */,
 				D6BC8B4422799423001AFD60 /* unlike-fill_25.png in Resources */,
 				1B7F82E22270AAAB000165F6 /* write.png in Resources */,
+				D64E44C522AF58000065E673 /* VideoDetailTableViewCell.xib in Resources */,
 				E81158EE2297F628002BA4CD /* ChildPage2ViewController.xib in Resources */,
 				E8893892227AB8F0003C8FB7 /* shoucang.png in Resources */,
 				E81158D92297F61F002BA4CD /* ChildPageViewController.xib in Resources */,
@@ -984,9 +998,11 @@
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
 				D62F5D2522971104009F66AD /* ChoosenCommentTableViewCell.m in Sources */,
+				D692DF0122A26B5500BF5C2F /* CommentsView.m in Sources */,
 				D6BC8B212276B3B1001AFD60 /* VideoTableViewCell.m in Sources */,
 				E81158BF2297F575002BA4CD /* UserLoginController.m in Sources */,
 				E81158D82297F61F002BA4CD /* ChildPageViewController.m in Sources */,
+				D64E44C422AF58000065E673 /* VideoDetailTableViewCell.m in Sources */,
 				1B17BCF7227197C300F30CEF /* UIColor+Hex.m in Sources */,
 				1B09D182226AFF7B00BB7480 /* AppDelegate.m in Sources */,
 				1B09D1A4226B005500BB7480 /* PersonalPageViewController.m in Sources */,
