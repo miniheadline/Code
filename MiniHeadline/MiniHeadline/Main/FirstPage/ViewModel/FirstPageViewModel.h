@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FirstPageViewModel : NSObject
 
-- (void)getFeedsListWithOffset:(int)offset success:(void (^)(NSMutableArray *dataArray))success failure:(void (^)(NSError *error))failure;
+- (void)getFeedsListWithOffset:(NSInteger)offset count:(NSInteger)count success:(void (^)(NSMutableArray *dataArray))success failure:(void (^)(NSError *error))failure;
 - (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure;
 
 @end

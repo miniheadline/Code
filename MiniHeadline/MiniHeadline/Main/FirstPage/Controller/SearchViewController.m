@@ -20,11 +20,42 @@
 
 @implementation SearchViewController
 
+#pragma mark - LifeCycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     [self addSubViews];
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // 隐藏navigationBar
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // 获取第一响应，调出键盘
+    if (!_searchBar.isFirstResponder) {
+        [self.searchBar becomeFirstResponder];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // 放弃第一响应
+    [self.searchBar resignFirstResponder];
+    
+    // 隐藏navigationBar
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+
+#pragma mark - Init
 
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
@@ -71,54 +102,35 @@
     self.recommendLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.frame.size.height, screenBound.size.width, 100)];
     self.recommendLabel.text = @"推荐";
     self.recommendLabel.textAlignment = NSTextAlignmentCenter;
-    self.recommendLabel.layer.borderWidth = 1;
-    self.recommendLabel.layer.borderColor = [UIColor blackColor].CGColor;
+//    self.recommendLabel.layer.borderWidth = 1;
+//    self.recommendLabel.layer.borderColor = [UIColor blackColor].CGColor;
     [self.view addSubview:self.recommendLabel];
     
     // 历史记录
     self.historyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.frame.size.height + self.recommendLabel.frame.size.height, screenBound.size.width, 100)];
     self.historyLabel.text = @"搜索历史";
     self.historyLabel.textAlignment = NSTextAlignmentCenter;
-    self.historyLabel.layer.borderColor = [UIColor blackColor].CGColor;
-    self.historyLabel.layer.borderWidth = 1;
+//    self.historyLabel.layer.borderColor = [UIColor blackColor].CGColor;
+//    self.historyLabel.layer.borderWidth = 1;
     [self.view addSubview:self.historyLabel];
 }
+
+
+#pragma mark - TapGesture
 
 - (void)cancelSingleTap:(UIGestureRecognizer *)gestureRecognizer {
     [self.navigationController popViewControllerAnimated:NO];
     NSLog(@"cancelSingleTap");
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // 隐藏navigationBar
-    self.navigationController.navigationBar.hidden = YES;
-}
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // 获取第一响应，调出键盘
-    if (!_searchBar.isFirstResponder) {
-        [self.searchBar becomeFirstResponder];
-    }
-}
+#pragma mark - TouchEvent
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     NSLog(@"touch");
     [self.searchBar resignFirstResponder];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    // 放弃第一响应
-    [self.searchBar resignFirstResponder];
-    
-    // 隐藏navigationBar
-    self.navigationController.navigationBar.hidden = YES;
-}
 
 #pragma mark - UISearchBarDelegate
 

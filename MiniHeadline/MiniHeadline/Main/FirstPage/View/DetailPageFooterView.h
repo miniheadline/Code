@@ -16,13 +16,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void(^commentBtnClick)(void);
 @property (nonatomic, copy) BOOL(^starBtnClick)(void);
 @property (nonatomic, copy) BOOL(^likeBtnClick)(void);
-@property (nonatomic, copy) void(^shareBtnClick)(void);
 
 - (void)setWriteViewClick:(void (^)(void))writeViewClickBlock;
 - (void)setCommentBtnClick:(void (^)(void))commentBtnClickBlock;
 - (void)setStarBtnClick:(BOOL (^)(void))starBtnClickBlock;
 - (void)setLikeBtnClick:(BOOL (^)(void))likeBtnClickBlock;
-- (void)setShareBtnClick:(void (^)(void))shareBtnClickBlock;
+
+- (void)setStarBtnStateWithIsStar:(BOOL)isStar;
+- (void)setLikeBtnStateWithIsLike:(BOOL)isLike;
 
 @end
 

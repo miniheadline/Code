@@ -9,11 +9,14 @@
 #import <WebKit/WebKit.h>
 
 #import "NewsDetailViewController.h"
+#import "SearchViewController.h"
 #import "UIColor+Hex.h"
 #import "NewsDetailViewModel.h"
 #import "UIImageView+WebCache.h"
 #import "DetailPageHeaderView.h"
 #import "DetailPageFooterView.h"
+#import "CommentsView.h"
+#import "Masonry.h"
 
 
 // 静态全局变量
@@ -29,10 +32,12 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 @property (nonatomic, strong) UIScrollView *detailScrollView;
 @property (nonatomic, strong) UILabel *feedTitleLabel;
-@property (nonatomic, strong) UITextView *feedContentTextView;
-@property (nonatomic, strong) WKWebView *feeeContentWebView;
+@property (nonatomic, strong) WKWebView *feedContentWebView;
 @property (nonatomic, strong) UIImageView *previewImageView;
 
+@property (nonatomic, strong) CommentsView *commentsView;
+
+@property (nonatomic) NewsDetailViewModel *newsDetailViewModel;
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
 
@@ -45,32 +50,15 @@ static CGRect statusBound; // 获取状态栏尺寸
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    screenBound = [UIScreen mainScreen].bounds;
-    statusBound = [[UIApplication sharedApplication] statusBarFrame];
-    
+    [self initVar];
+
     [self addSubViews];
     
-    self.isStar = NO;
-    self.isLike = NO;
+    [self loadNewsData];
+    [self loadIsStar];
+    [self loadIsLike];
     
-    NSLog(@"%@", _groupID);
-    
-    
-    // for test
-    NewsDetailViewModel *newsDetailViewModel = [[NewsDetailViewModel alloc] init];
-    [newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
-        NSLog(@"content:%@", content);
-        // 使用富文本
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithData:[content dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
-        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, attributedString.length)];
-        // 需要回到主线程更新UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-//            self.feedContentTextView.attributedText = attributedString;
-            [self.feeeContentWebView loadHTMLString:content baseURL:nil];
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    [self addBrowsingHistory];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -83,6 +71,19 @@ static CGRect statusBound; // 获取状态栏尺寸
     [super viewWillDisappear:animated];
 }
 
+
+#pragma mark - Init
+
+- (void)initVar {
+    screenBound = [UIScreen mainScreen].bounds;
+    statusBound = [[UIApplication sharedApplication] statusBarFrame];
+    
+    self.newsDetailViewModel = [[NewsDetailViewModel alloc] init];
+    
+    self.isLike = NO;
+    self.isStar = NO;
+}
+
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -93,12 +94,13 @@ static CGRect statusBound; // 获取状态栏尺寸
     self.detailScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:self.detailScrollView];
     
-    self.feeeContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(5, 5, self.detailScrollView.frame.size.width - 10, self.detailScrollView.frame.size.height - 10)];
-    self.feeeContentWebView.navigationDelegate = self;
-    self.feeeContentWebView.scrollView.showsVerticalScrollIndicator = NO;
-    self.feeeContentWebView.scrollView.showsHorizontalScrollIndicator = NO;
-    [self.detailScrollView addSubview:self.feeeContentWebView];
-    [[self.feeeContentWebView configuration].userContentController addScriptMessageHandler:self name:@"imageClick"]; // 配置控制器
+    self.feedContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(5, 5, self.detailScrollView.frame.size.width - 10, self.detailScrollView.frame.size.height - 10)];
+//    self.feedContentWebView = [[WKWebView alloc] init];
+    self.feedContentWebView.navigationDelegate = self;
+    self.feedContentWebView.scrollView.showsVerticalScrollIndicator = NO;
+    self.feedContentWebView.scrollView.showsHorizontalScrollIndicator = NO;
+    [self.detailScrollView addSubview:self.feedContentWebView];
+    [[self.feedContentWebView configuration].userContentController addScriptMessageHandler:self name:@"imageClick"]; // 配置控制器
     
     self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height)];
     self.previewImageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -108,6 +110,58 @@ static CGRect statusBound; // 获取状态栏尺寸
     UITapGestureRecognizer *endPreview = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewSingleTap:)];
     [self.previewImageView addGestureRecognizer:endPreview];
     [self.view sendSubviewToBack:self.previewImageView];
+    
+//    self.commentsView = [[CommentsView alloc] init];
+//    [self.detailScrollView addSubview:self.commentsView];
+}
+
+- (void)updateViewConstraints {
+    [self.feedContentWebView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(self.detailScrollView);
+        make.height.equalTo(self.detailScrollView);
+        make.top.equalTo(self.detailScrollView.mas_top).with.offset(10);
+        //        make.bottom.equalTo(self.detailScrollView.mas_bottom).with.offset(10);
+    }];
+    
+    [self.commentsView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.feedContentWebView.mas_bottom).with.offset(20);
+    }];
+}
+
+
+#pragma mark - LoadData
+
+- (void)loadNewsData {
+    [self.newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
+        NSLog(@"content:%@", content);
+        // 使用富文本
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithData:[content dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, attributedString.length)];
+        // 需要回到主线程更新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.feedContentWebView loadHTMLString:content baseURL:nil];
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+}
+
+- (void)loadIsStar {
+    [self.newsDetailViewModel getIsStarWithUid:1 nid:1 success:^(BOOL isStar) {
+        self.isStar = isStar;
+        [self.footerView setStarBtnStateWithIsStar:isStar];
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
+- (void)loadIsLike {
+    [self.newsDetailViewModel getIsLikeWithUid:1 nid:1 success:^(BOOL isLike) {
+        self.isLike = isLike;
+        [self.footerView setLikeBtnStateWithIsLike:isLike];
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
 }
 
 
@@ -127,10 +181,26 @@ static CGRect statusBound; // 获取状态栏尺寸
         
         [header setSearchBtnClickWithBlock:^{
             NSLog(@"searchBtnClick");
+            SearchViewController *searchVC = [[SearchViewController alloc] init];
+            [self.navigationController pushViewController:searchVC animated:NO];
         }];
         
         [header setMoreBtnClickWithBlock:^{
             NSLog(@"moreBtnClick");
+            NSString *titleToShare = self.newsTitle;
+            NSArray *activityItems = @[titleToShare];
+            UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
+            // 不出现在活动项目
+            activityVC.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
+            [self presentViewController:activityVC animated:YES completion:nil];
+            // 分享之后的回调
+            activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
+                if (completed) {
+                    NSLog(@"completed");
+                } else  {
+                    NSLog(@"cancled");
+                }
+            };
         }];
         
         [self.view addSubview:header];
@@ -154,6 +224,7 @@ static CGRect statusBound; // 获取状态栏尺寸
         
         [footer setStarBtnClick:^{
             NSLog(@"starBtnClick");
+            
             self.isStar = !self.isStar;
             return self.isStar;
         }];
@@ -162,10 +233,6 @@ static CGRect statusBound; // 获取状态栏尺寸
             NSLog(@"likeBtnClick");
             self.isLike = !self.isLike;
             return self.isLike;
-        }];
-        
-        [footer setShareBtnClick:^{
-            NSLog(@"shareBtnClick");
         }];
         
         [self.view addSubview:footer];
@@ -181,6 +248,17 @@ static CGRect statusBound; // 获取状态栏尺寸
     NSLog(@"previewSingleTap");
     self.previewImageView.backgroundColor = [UIColor whiteColor];
     [self.view sendSubviewToBack:self.previewImageView];
+}
+
+
+#pragma mark - AuxiliaryFunction
+
+- (void)addBrowsingHistory {
+    [self.newsDetailViewModel readNewsWithUid:1 nid:1 success:^{
+        
+    } failure:^(NSError * _Nonnull error) {
+        
+    }];
 }
 
 

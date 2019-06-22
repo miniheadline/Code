@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NewsDetailViewController : UIViewController
 
 @property (nonatomic, copy) NSString *groupID;
+@property (nonatomic, copy) NSString *newsTitle;
+@property (nonatomic) NSInteger nid;
 
 @end
 
