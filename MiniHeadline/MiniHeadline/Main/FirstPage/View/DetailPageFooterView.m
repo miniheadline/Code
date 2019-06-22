@@ -18,7 +18,6 @@
 @property (nonatomic, strong) UIImageView *commentImageView;
 @property (nonatomic, strong) UIImageView *starImageView;
 @property (nonatomic, strong) UIImageView *likeImageView;
-@property (nonatomic, strong) UIImageView *shareImageView;
 
 @end
 
@@ -37,16 +36,15 @@
     
     // 在layoutSubviews里才设置subviews的frame
     CGFloat width = self.frame.size.width;
-    CGFloat height = self.frame.size.height;
+//    CGFloat height = self.frame.size.height;
     
     self.separatorLine.frame = CGRectMake(0, 0, width, 0.5);
     self.writeCommentView.frame = CGRectMake(10, 5, 150, 40);
     self.writeCommentLabel.frame = CGRectMake(45, 5, 100, 30);
     self.writeImageView.frame = CGRectMake(10, 5, 30, 30);
-    self.commentImageView.frame = CGRectMake(width - 220, 10, 30, 30);
-    self.starImageView.frame = CGRectMake(width - 160, 10, 30, 30);
-    self.likeImageView.frame = CGRectMake(width - 100, 10, 30, 30);
-    self.shareImageView.frame = CGRectMake(width - 40, 10, 30, 30);
+    self.commentImageView.frame = CGRectMake(width - 160, 10, 30, 30);
+    self.starImageView.frame = CGRectMake(width - 100, 10, 30, 30);
+    self.likeImageView.frame = CGRectMake(width - 40, 10, 30, 30);
 }
 
 
@@ -137,19 +135,6 @@
     return _likeImageView;
 }
 
-- (UIImageView *)shareImageView {
-    if (_shareImageView == nil) {
-        UIImage *image = [UIImage imageNamed:@"share.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shareTapGesture:)];
-        [imageView addGestureRecognizer:tap];
-        [self addSubview:imageView];
-        _shareImageView = imageView;
-    }
-    return _shareImageView;
-}
-
 
 #pragma mark - TapGesture
 
@@ -179,12 +164,6 @@
     }
 }
 
-- (void)shareTapGesture:(UITapGestureRecognizer *)gestureRecognizer {
-    if (self.shareBtnClick) {
-        self.shareBtnClick();
-    }
-}
-
 
 #pragma mark - BlcokSetting
 
@@ -204,8 +183,21 @@
     _likeBtnClick = likeBtnClickBlock;
 }
 
-- (void)setShareBtnClick:(void (^)(void))shareBtnClickBlock {
-    _shareBtnClick = shareBtnClickBlock;
+
+#pragma mark - AuxiliaryFunction
+
+- (void)setStarBtnStateWithIsStar:(BOOL)isStar {
+    NSString *imageName = isStar ? @"star_selected.png" : @"star_unselected.png";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.starImageView.image = [UIImage imageNamed:imageName];
+    });
+}
+
+- (void)setLikeBtnStateWithIsLike:(BOOL)isLike {
+    NSString *imageName = isLike ? @"like_selected.png" : @"like_unselected.png";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.likeImageView.image = [UIImage imageNamed:imageName];
+    });
 }
 
 

@@ -11,7 +11,7 @@
 
 @implementation FirstPageViewModel
 
-- (void)getFeedsListWithOffset:(int)offset success:(void (^)(NSMutableArray *dataArray))success failure:(void (^)(NSError *error))failure {
+- (void)getFeedsListWithOffset:(NSInteger)offset count:(NSInteger)count success:(void (^)(NSMutableArray *dataArray))success failure:(void (^)(NSError *error))failure {
     //1.创建会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -25,7 +25,7 @@
     request.HTTPMethod = @"POST";
     
     //5.设置请求体
-    NSString *body = [NSString stringWithFormat:@"uid=4822&offset=%d&count=20", offset];
+    NSString *body = [NSString stringWithFormat:@"uid=4822&offset=%ld&count=%ld", offset, count];
     request.HTTPBody = [body dataUsingEncoding:NSUTF8StringEncoding];
     
     //6.根据会话对象创建一个Task(发送请求）
@@ -42,7 +42,7 @@
         
         // 为了确保返回的数据和加载的顺序一致
         NSMutableArray *arr = [NSMutableArray array];
-        for (int i = 0; i < 20; i++) {
+        for (NSInteger i = 0; i < count; i++) {
             NewsModel *temp = [[NewsModel alloc] init];
             [arr addObject:temp];
         }
@@ -50,20 +50,16 @@
         NSMutableArray *dataArr = [[res objectForKey:@"data"] objectForKey:@"article_feed"];
         
         dispatch_group_t downloadTaskGroup = dispatch_group_create();
-        for (int i = 0; i < 20; i++) {
+        for (NSInteger i = 0; i < count; i++) {
             NSString *title = [dataArr[i] objectForKey:@"title"];
-//            NSLog(@"%@", title);
             
             // urlencode
             NSString *groupID = [dataArr[i] objectForKey:@"group_id"];
             NSString *charaters = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\| ";
             NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:charaters] invertedSet];
             NSString *encodedGroupID = [groupID stringByAddingPercentEncodingWithAllowedCharacters:characterSet];
-//            NSLog(@"%@", groupID);
-//            NSLog(@"%@", encodedGroupID);
             
             NSMutableArray *imageInfos = [dataArr[i] objectForKey:@"image_infos"];
-//            NSLog(@"%lu", imageInfos.count);
             dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
             NSMutableArray *imagesArray = [NSMutableArray array];
             for (int j = 0; j < 3; j++) {
@@ -75,12 +71,10 @@
                 NSString *webUri = [imageInfos[j] objectForKey:@"web_uri"];
                 NSString *imageType = [[[imageInfos[j] objectForKey:@"mime_type"] substringFromIndex:5] stringByReplacingOccurrencesOfString:@"/" withString:@"."];
                 NSString *url = [[urlPrefix stringByAppendingString:webUri] stringByAppendingString:imageType];
-//                NSLog(@"%@", url);
                 
                 dispatch_group_enter(imagesDownloadTaskGroup);
-                NSString *index = [NSString stringWithFormat:@"%d_%d", i, j];
+                NSString *index = [NSString stringWithFormat:@"%ld_%d", (long)i, j];
                 [self downloadImageWithURL:url index:index success:^(NSString * _Nonnull imagePath) {
-//                    NSLog(@"%@", imagePath);
                     [imagesArray replaceObjectAtIndex:j withObject:imagePath];
                     dispatch_group_leave(imagesDownloadTaskGroup);
                 } failure:^(NSError * _Nonnull error) {
@@ -92,20 +86,20 @@
             dispatch_group_enter(downloadTaskGroup);
             dispatch_group_notify(imagesDownloadTaskGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 if (imageInfos.count == 0) {
-                    NSLog(@"%d:Feed without image", i);
-                    NewsModel *model = [NewsModel initWithTitle:title type:0 groupID:encodedGroupID];
+                    NSLog(@"%ld:Feed without image", (long)i);
+                    NewsModel *model = [NewsModel initWithTitle:title type:0 groupID:encodedGroupID offset:(offset + i)];
                     [arr replaceObjectAtIndex:i withObject:model];
                     dispatch_group_leave(downloadTaskGroup);
                 }
                 else if (imageInfos.count == 1 || imageInfos.count == 2) {
-                    NSLog(@"%d:Feed with one image", i);
-                    NewsModel *model = [NewsModel initWithTitle:title type:1 imagePath:imagesArray[0] groupID:encodedGroupID];
+                    NSLog(@"%ld:Feed with one image", (long)i);
+                    NewsModel *model = [NewsModel initWithTitle:title type:1 imagePath:imagesArray[0] groupID:encodedGroupID offset:(offset + i)];
                     [arr replaceObjectAtIndex:i withObject:model];
                     dispatch_group_leave(downloadTaskGroup);
                 }
                 else if (imageInfos.count >= 3) {
-                    NSLog(@"%d:Feed with more than two images", i);
-                    NewsModel *model = [NewsModel initWithTitle:title type:2 firstImagePath:imagesArray[0] secondImagePath:imagesArray[1] thirdImagePath:imagesArray[2] groupID:encodedGroupID];
+                    NSLog(@"%ld:Feed with more than two images", (long)i);
+                    NewsModel *model = [NewsModel initWithTitle:title type:2 firstImagePath:imagesArray[0] secondImagePath:imagesArray[1] thirdImagePath:imagesArray[2] groupID:encodedGroupID offset:(offset + i)];
                     [arr replaceObjectAtIndex:i withObject:model];
                     dispatch_group_leave(downloadTaskGroup);
                 }
@@ -122,17 +116,16 @@
 }
 
 - (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
-//    NSLog(@"%@", url);
     NSURLSession *session = [NSURLSession sharedSession];
     
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         //下载完成后文件位于location处，我们需要移到沙盒中
         NSString *dirPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
         NSString *imagePath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", index]];
-        // NSLog(@"%@", imagePath);
         
         NSFileManager *manager = [NSFileManager defaultManager];
-        if ([manager fileExistsAtPath:imagePath isDirectory:NO]) {
+        BOOL isDirectory;
+        if ([manager fileExistsAtPath:imagePath isDirectory:&isDirectory]) {
             [manager removeItemAtPath:imagePath error:nil];
         }
         
