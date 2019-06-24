@@ -24,22 +24,28 @@ static CGRect screenBound; // 获取屏幕尺寸（包括状态栏）
 static CGRect statusBound; // 获取状态栏尺寸
 
 
-@interface NewsDetailViewController ()<WKNavigationDelegate,
+@interface NewsDetailViewController ()<UITableViewDelegate,
+                                       UITableViewDataSource,
+                                       WKUIDelegate,
+                                       WKNavigationDelegate,
                                        WKScriptMessageHandler>
 
 @property (nonatomic, strong) DetailPageHeaderView *headerView;
 @property (nonatomic, strong) DetailPageFooterView *footerView;
 
-@property (nonatomic, strong) UIScrollView *detailScrollView;
+@property (nonatomic, strong) UITableView *detailTableView;
 @property (nonatomic, strong) UILabel *feedTitleLabel;
+@property (nonatomic, strong) UIScrollView *tempScrollView;
 @property (nonatomic, strong) WKWebView *feedContentWebView;
 @property (nonatomic, strong) UIImageView *previewImageView;
-
 @property (nonatomic, strong) CommentsView *commentsView;
+@property (nonatomic, strong) UILabel *testLabel;
 
 @property (nonatomic) NewsDetailViewModel *newsDetailViewModel;
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
+@property (nonatomic, assign) CGFloat webViewHeight;
+@property (nonatomic, assign) CGFloat titleLabelHeight;
 
 @end
 
@@ -71,6 +77,10 @@ static CGRect statusBound; // 获取状态栏尺寸
     [super viewWillDisappear:animated];
 }
 
+- (void)dealloc {
+    [self.feedContentWebView.scrollView removeObserver:self forKeyPath:@"contentSize"]; // 移除观察者
+}
+
 
 #pragma mark - Init
 
@@ -82,25 +92,42 @@ static CGRect statusBound; // 获取状态栏尺寸
     
     self.isLike = NO;
     self.isStar = NO;
+    
+    self.webViewHeight = 0.0;
+    
+    UILabel *testLabel = [[UILabel alloc] init];
+    testLabel.text = self.newsTitle;
+    testLabel.numberOfLines = 0;
+    testLabel.lineBreakMode = 0;
+    testLabel.font = [UIFont systemFontOfSize:25];
+    CGSize size = [testLabel.text boundingRectWithSize:CGSizeMake(screenBound.size.width - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:testLabel.font} context:nil].size;
+    self.titleLabelHeight = size.height;
 }
 
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
     
     // 内容
-    self.detailScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, statusBound.size.height + self.headerView.frame.size.height, screenBound.size.width, screenBound.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - statusBound.size.height)];
-    self.detailScrollView.backgroundColor = [UIColor whiteColor];
-    self.detailScrollView.showsVerticalScrollIndicator = NO;
-    self.detailScrollView.showsHorizontalScrollIndicator = NO;
-    [self.view addSubview:self.detailScrollView];
+    self.detailTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, statusBound.size.height + self.headerView.frame.size.height, screenBound.size.width, screenBound.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - statusBound.size.height) style:UITableViewStylePlain];
+    self.detailTableView.delegate = self;
+    self.detailTableView.dataSource = self;
+    self.detailTableView.showsVerticalScrollIndicator = NO;
+    self.detailTableView.showsHorizontalScrollIndicator = NO;
+    self.detailTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.detailTableView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.detailTableView];
     
-    self.feedContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(5, 5, self.detailScrollView.frame.size.width - 10, self.detailScrollView.frame.size.height - 10)];
-//    self.feedContentWebView = [[WKWebView alloc] init];
+    self.tempScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, 1)];
+    
+    self.feedContentWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, 1)];
+    self.feedContentWebView.UIDelegate = self;
     self.feedContentWebView.navigationDelegate = self;
+    self.feedContentWebView.scrollView.bounces = NO;
     self.feedContentWebView.scrollView.showsVerticalScrollIndicator = NO;
     self.feedContentWebView.scrollView.showsHorizontalScrollIndicator = NO;
-    [self.detailScrollView addSubview:self.feedContentWebView];
+    [self.tempScrollView addSubview:self.feedContentWebView];
     [[self.feedContentWebView configuration].userContentController addScriptMessageHandler:self name:@"imageClick"]; // 配置控制器
+    [self.feedContentWebView.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil]; // 添加观察者
     
     self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height)];
     self.previewImageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -110,22 +137,6 @@ static CGRect statusBound; // 获取状态栏尺寸
     UITapGestureRecognizer *endPreview = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewSingleTap:)];
     [self.previewImageView addGestureRecognizer:endPreview];
     [self.view sendSubviewToBack:self.previewImageView];
-    
-//    self.commentsView = [[CommentsView alloc] init];
-//    [self.detailScrollView addSubview:self.commentsView];
-}
-
-- (void)updateViewConstraints {
-    [self.feedContentWebView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(self.detailScrollView);
-        make.height.equalTo(self.detailScrollView);
-        make.top.equalTo(self.detailScrollView.mas_top).with.offset(10);
-        //        make.bottom.equalTo(self.detailScrollView.mas_bottom).with.offset(10);
-    }];
-    
-    [self.commentsView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.feedContentWebView.mas_bottom).with.offset(20);
-    }];
 }
 
 
@@ -255,10 +266,26 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 - (void)addBrowsingHistory {
     [self.newsDetailViewModel readNewsWithUid:1 nid:1 success:^{
-        
+        NSLog(@"success");
     } failure:^(NSError * _Nonnull error) {
-        
+        NSLog(@"error:%@", error);
     }];
+}
+
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"contentSize"]) {
+        NSLog(@"observe value: contentSize");
+        UIScrollView *scrollView = (UIScrollView *)object;
+        CGFloat height = scrollView.contentSize.height;
+        self.webViewHeight = height;
+        self.feedContentWebView.frame = CGRectMake(0, 0, self.view.frame.size.width, height);
+        self.tempScrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, height);
+        self.tempScrollView.contentSize = CGSizeMake(self.view.frame.size.width, height);
+        [self.detailTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
+    }
 }
 
 
@@ -283,6 +310,73 @@ static CGRect statusBound; // 获取状态栏尺寸
             self.previewImageView.backgroundColor = [UIColor blackColor];
             [self.view bringSubviewToFront:self.previewImageView];
         }];
+    }
+}
+
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 3;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.row) {
+        case 0:
+            return self.titleLabelHeight + 20;
+            break;
+        case 1:
+            return 50;
+            break;
+        case 2:
+            return self.webViewHeight;
+            break;
+        default:
+            return 50;
+            break;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.row) {
+        case 0: {
+            UITableViewCell *titleCell = [[UITableViewCell alloc] init];
+            titleCell.textLabel.text = self.newsTitle;
+            titleCell.textLabel.font = [UIFont systemFontOfSize:25];
+            titleCell.textLabel.numberOfLines = 0;
+            titleCell.textLabel.lineBreakMode = 0;
+            titleCell.userInteractionEnabled = NO;
+            return titleCell;
+            break;
+        }
+        case 1: {
+            UITableViewCell *publisherCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cellID"];
+            publisherCell.imageView.image = [UIImage imageNamed:@"university_logo.jpeg"];
+            CGSize itemSize = CGSizeMake(40, 40);
+            UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+            CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+            [publisherCell.imageView.image drawInRect:imageRect];
+            publisherCell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            publisherCell.textLabel.text = @"中山大学";
+            publisherCell.detailTextLabel.text = @"5小时前";
+            publisherCell.detailTextLabel.textColor = [UIColor grayColor];
+            publisherCell.userInteractionEnabled = NO;
+            return publisherCell;
+            break;
+        }
+        case 2: {
+            UITableViewCell *webCell = [[UITableViewCell alloc] init];
+            [webCell.contentView addSubview:self.tempScrollView];
+            return webCell;
+            break;
+        }
+        default: {
+            UITableViewCell *defaultCell = [[UITableViewCell alloc] init];
+            NSLog(@"default");
+            return defaultCell;
+            break;
+        }
     }
 }
 
