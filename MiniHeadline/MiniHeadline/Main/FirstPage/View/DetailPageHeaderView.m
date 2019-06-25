@@ -16,8 +16,7 @@
 @property (nonatomic, strong) UIImageView *backImageView;
 @property (nonatomic, strong) UIImageView *searchImageView;
 @property (nonatomic, strong) UIImageView *moreImageView;
-@property (nonatomic, strong) UIView *writeCommentView;
-@property (nonatomic, strong) UILabel *writeCommentLabel;
+@property (nonatomic, strong) UIButton *followButton;
 
 @end
 
@@ -42,6 +41,7 @@
     self.backImageView.frame = CGRectMake(10, 10, 30, 30);
     self.searchImageView.frame = CGRectMake(width - 100, 10, 30, 30);
     self.moreImageView.frame = CGRectMake(width - 50, 10, 30, 30);
+    self.followButton.frame = CGRectMake(width - 120, 10, 60, 30);
     self.separatorLine.frame = CGRectMake(0, height - 0.5, width, 0.5);
 }
 
@@ -103,6 +103,21 @@
     return _moreImageView;
 }
 
+- (UIButton *)followButton {
+    if (_followButton == nil) {
+        // 初始化时不需要设置frame
+        UIButton *button = [[UIButton alloc] init];
+        button.backgroundColor = [UIColor colorWithHexString:@"#EE4000"];
+        [button setTitle:@"关注" forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        button.layer.cornerRadius = 5.0;
+        button.hidden = YES;
+        [self addSubview:button];
+        _followButton = button;
+    }
+    return _followButton;
+}
+
 - (UIView *)separatorLine {
     if (_separatorLine == nil) {
         // 初始化时不需要设置frame
@@ -148,6 +163,21 @@
 
 - (void)setMoreBtnClickWithBlock:(void (^)(void))moreBtnClickBlock {
     _moreBtnClick = moreBtnClickBlock;
+}
+
+
+#pragma mark - AuxiliaryFunction
+
+- (void)changeTitleWithPublisher:(NSString *)publisher {
+    self.titleLabel.text = publisher;
+    self.followButton.hidden = NO;
+    self.searchImageView.hidden = YES;
+}
+
+- (void)resetTitle {
+    self.titleLabel.text = @"微头条";
+    self.followButton.hidden = YES;
+    self.searchImageView.hidden = NO;
 }
 
 

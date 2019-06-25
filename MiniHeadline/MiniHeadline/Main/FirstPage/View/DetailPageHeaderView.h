@@ -16,10 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void(^searchBtnClick)(void);
 @property (nonatomic, copy) void(^moreBtnClick)(void);
 
-
 - (void)setBackBtnClickWithBlock:(void(^)(void)) backBtnClickBlock;
 - (void)setSearchBtnClickWithBlock:(void(^)(void)) searchBtnClickBlock;
 - (void)setMoreBtnClickWithBlock:(void(^)(void)) moreBtnClickBlock;
+
+- (void)changeTitleWithPublisher:(NSString *)publisher;
+- (void)resetTitle;
 
 @end
 

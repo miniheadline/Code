@@ -17,6 +17,7 @@
 #import "DetailPageFooterView.h"
 #import "CommentsView.h"
 #import "Masonry.h"
+#import "PublisherInfoTableViewCell.h"
 
 
 // 静态全局变量
@@ -28,7 +29,8 @@ static CGRect statusBound; // 获取状态栏尺寸
                                        UITableViewDataSource,
                                        WKUIDelegate,
                                        WKNavigationDelegate,
-                                       WKScriptMessageHandler>
+                                       WKScriptMessageHandler,
+                                       UIScrollViewDelegate>
 
 @property (nonatomic, strong) DetailPageHeaderView *headerView;
 @property (nonatomic, strong) DetailPageFooterView *footerView;
@@ -44,6 +46,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 @property (nonatomic) NewsDetailViewModel *newsDetailViewModel;
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
+@property (nonatomic) BOOL isTitleBeyond;
 @property (nonatomic, assign) CGFloat webViewHeight;
 @property (nonatomic, assign) CGFloat titleLabelHeight;
 
@@ -92,6 +95,7 @@ static CGRect statusBound; // 获取状态栏尺寸
     
     self.isLike = NO;
     self.isStar = NO;
+    self.isTitleBeyond = NO;
     
     self.webViewHeight = 0.0;
     
@@ -350,17 +354,7 @@ static CGRect statusBound; // 获取状态栏尺寸
             break;
         }
         case 1: {
-            UITableViewCell *publisherCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cellID"];
-            publisherCell.imageView.image = [UIImage imageNamed:@"university_logo.jpeg"];
-            CGSize itemSize = CGSizeMake(40, 40);
-            UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-            CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-            [publisherCell.imageView.image drawInRect:imageRect];
-            publisherCell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            publisherCell.textLabel.text = @"中山大学";
-            publisherCell.detailTextLabel.text = @"5小时前";
-            publisherCell.detailTextLabel.textColor = [UIColor grayColor];
+            PublisherInfoTableViewCell *publisherCell = [PublisherInfoTableViewCell cellWithTableView:tableView];
             publisherCell.userInteractionEnabled = NO;
             return publisherCell;
             break;
@@ -377,6 +371,22 @@ static CGRect statusBound; // 获取状态栏尺寸
             return defaultCell;
             break;
         }
+    }
+}
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.y > self.titleLabelHeight + 70 && self.isTitleBeyond == NO) {
+        [self.headerView changeTitleWithPublisher:@"中山大学"];
+        self.isTitleBeyond = YES;
+        NSLog(@"changeTitle");
+    }
+    else if (scrollView.contentOffset.y < self.titleLabelHeight + 70 && self.isTitleBeyond == YES) {
+        [self.headerView resetTitle];
+        self.isTitleBeyond = NO;
+        NSLog(@"resetTitle");
     }
 }
 
