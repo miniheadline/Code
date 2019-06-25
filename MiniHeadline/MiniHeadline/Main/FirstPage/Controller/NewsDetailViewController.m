@@ -16,8 +16,8 @@
 #import "DetailPageHeaderView.h"
 #import "DetailPageFooterView.h"
 #import "CommentsView.h"
-#import "Masonry.h"
 #import "PublisherInfoTableViewCell.h"
+#import "UserInfoModel.h"
 
 
 // 静态全局变量
@@ -44,9 +44,13 @@ static CGRect statusBound; // 获取状态栏尺寸
 @property (nonatomic, strong) UILabel *testLabel;
 
 @property (nonatomic) NewsDetailViewModel *newsDetailViewModel;
+
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
 @property (nonatomic) BOOL isTitleBeyond;
+@property (nonatomic) BOOL isLogin;
+@property (nonatomic) NSInteger uid;
+
 @property (nonatomic, assign) CGFloat webViewHeight;
 @property (nonatomic, assign) CGFloat titleLabelHeight;
 
@@ -96,6 +100,10 @@ static CGRect statusBound; // 获取状态栏尺寸
     self.isLike = NO;
     self.isStar = NO;
     self.isTitleBeyond = NO;
+    
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
     
     self.webViewHeight = 0.0;
     
@@ -211,9 +219,9 @@ static CGRect statusBound; // 获取状态栏尺寸
             // 分享之后的回调
             activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
                 if (completed) {
-                    NSLog(@"completed");
+                    NSLog(@"share completed");
                 } else  {
-                    NSLog(@"cancled");
+                    NSLog(@"share cancled");
                 }
             };
         }];
