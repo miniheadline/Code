@@ -9,16 +9,27 @@
 #import "UserInfoModel.h"
 
 @implementation UserInfoModel
-
+static UserInfoModel * model;
 + (instancetype)testUser {
-    UserInfoModel *model = [[UserInfoModel alloc] init];
-    model.username = @"TestUser";
-    model.password = @"123";
-    model.numOfHeadline = 10;
-    model.numOfAttention = 100;
-    model.numOfFans = 20;
-    model.numOfLike = 30;
-    model.photo = [UIImage imageNamed:@"logo.png"];
+    
+    static dispatch_once_t predicate;
+    
+    dispatch_once(&predicate, ^{
+        NSLog(@"testssssss");
+        model=[[UserInfoModel alloc] init];
+        model.uid = -1;
+        model.isLogin = NO;
+        model.username = @"TestUser";
+        model.password = @"123";
+        model.birthday = @"yyyy-mm-dd";
+        model._description = @"...";
+        model.address = @"address";
+        model.numOfHeadline = -10;
+        model.numOfAttention = -100;
+        model.numOfFans = -20;
+        model.numOfLike = -30;
+        model.pic_url = @"";
+    });
     return model;
 }
 

@@ -13,6 +13,7 @@
 #import "nextPage_1/InfoTableViewCell.h"
 #import "nextPage_1/InfoTableViewCellWithPicture.h"
 #import "nextPage_1/NSComment.h"
+#import "UIImageView+WebCache.h"
 
 @interface UserInfoController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -34,6 +35,8 @@
 @property(nonatomic, strong) UIImageView* photoImageView;
 @property(nonatomic, strong) UIButton* editInfoButton;
 @property(nonatomic, strong) UILabel* emptyDataLabel;
+
+@property(nonatomic, strong) UserInfoModel* user;
 
 @end
 
@@ -104,7 +107,7 @@
     [super viewDidLoad];
     // 获取屏幕尺寸（包括状态栏）
     
-    UserInfoModel *myUser = [UserInfoModel testUser];
+    self.user = [UserInfoModel testUser];
     
     CGRect screenBound = [UIScreen mainScreen].bounds;
     // 获取状态栏尺寸
@@ -117,7 +120,7 @@
     [self.header addSubview:self.headerLine];
     // 标题
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((screenBound.size.width - 160) / 2, 10, 160, 30)];
-    self.titleLabel.text = myUser.username;
+    self.titleLabel.text = self.user.username;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20.0];
     [self.header addSubview:self.titleLabel];
@@ -154,8 +157,13 @@
     int extra = 10;
     
     self.photoImageView = ({
-        UIImageView *imageView =  [[UIImageView alloc] initWithImage:myUser.photo];
+        UIImageView *imageView =  [[UIImageView alloc] init];
         imageView.frame = CGRectMake(width + extra, height, screenBound.size.width/3 - 2*extra, screenBound.size.width/3 - 2*extra);
+        NSLog(@"%@",self.user.pic_url);
+        NSURL *url = [NSURL URLWithString:self.user.pic_url];
+        [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            NSLog(@"error:%@", error);
+        }];
         
         imageView.clipsToBounds = YES;
         imageView.layer.cornerRadius = imageView.frame.size.width/2;
@@ -173,7 +181,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfHeadline] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfHeadline] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"头条" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -196,7 +204,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfAttention] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfAttention] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"关注" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -219,7 +227,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfFans] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfFans] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"粉丝" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -242,7 +250,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfLike] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfLike] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"获赞" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];

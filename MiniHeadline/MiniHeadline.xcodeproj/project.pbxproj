@@ -118,6 +118,8 @@
 		E8893894227AB8F0003C8FB7 /* pinglun.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893890227AB8EF003C8FB7 /* pinglun.png */; };
 		E8893895227AB8F0003C8FB7 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8893891227AB8EF003C8FB7 /* dianzan.png */; };
 		E8913EE32298D401007C16CA /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE12298D401007C16CA /* Toast.m */; };
+		E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE422B48DBD007C16CA /* UserRegisterController.m */; };
+		E8913EE822B49105007C16CA /* zhuce.png in Resources */ = {isa = PBXBuildFile; fileRef = E8913EE722B49105007C16CA /* zhuce.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -303,6 +305,9 @@
 		E8893891227AB8EF003C8FB7 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
 		E8913EE12298D401007C16CA /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
 		E8913EE22298D401007C16CA /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
+		E8913EE422B48DBD007C16CA /* UserRegisterController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserRegisterController.m; sourceTree = "<group>"; };
+		E8913EE622B48DE0007C16CA /* UserRegisterController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserRegisterController.h; sourceTree = "<group>"; };
+		E8913EE722B49105007C16CA /* zhuce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhuce.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -398,6 +403,7 @@
 		1BCE641F226DB24D0078E11B /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				E8913EE722B49105007C16CA /* zhuce.png */,
 				D62F5D202296F320009F66AD /* close.png */,
 				1B043DE82298EA3A00EB0F3A /* next_black.png */,
 				1B043DE62298D13900EB0F3A /* tianjiahaoyou.png */,
@@ -632,6 +638,8 @@
 				E8893880227AAFCD003C8FB7 /* SettingViewController.m */,
 				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
 				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
+				E8913EE422B48DBD007C16CA /* UserRegisterController.m */,
+				E8913EE622B48DE0007C16CA /* UserRegisterController.h */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -898,6 +906,7 @@
 				1B09D1BC226B013700BB7480 /* personal_selected.png in Resources */,
 				D6BC8B602279EC49001AFD60 /* video.mp4 in Resources */,
 				1B7F82E42270AAAB000165F6 /* star_unselected.png in Resources */,
+				E8913EE822B49105007C16CA /* zhuce.png in Resources */,
 				1B7F82E12270AAAB000165F6 /* like_unselected.png in Resources */,
 				1B09D1C2226B013700BB7480 /* personal_unselected.png in Resources */,
 				D6BC8B4B2279C113001AFD60 /* play_white.png in Resources */,
@@ -1010,6 +1019,7 @@
 				1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */,
 				E8913EE32298D401007C16CA /* Toast.m in Sources */,
 				1B846D6222A6193900378CD5 /* DetailPageFooterView.m in Sources */,
+				E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */,
 				1B7485AA229536AB00E508A8 /* FirstPageViewModel.m in Sources */,
 				1B3677E122A4BAAD00B0D458 /* DetailPageHeaderView.m in Sources */,
 				1BB8DD81229FB3D300FFECFA /* NoImageTableViewCell.m in Sources */,
