@@ -1,19 +1,17 @@
 //
-//  UserLoginController.m
+//  UserRegisterController.m
 //  MiniHeadline
 //
-//  Created by Vicent Zhang on 2019/5/15.
+//  Created by Vicent Zhang on 2019/6/14.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
-#import "UserLoginController.h"
-#import "UIColor+Hex.h"
+#import "UserRegisterController.h"
 #import "UserInfoModel.h"
 #import "Toast.h"
-#import "UserRegisterController.h"
-#import "UIButton+ImageTitleStyle.h"
+#import "UIColor+Hex.h"
 
-@interface UserLoginController ()
+@interface UserRegisterController ()
 
 @property (nonatomic, strong) UIView *header;
 @property (nonatomic, strong) UIView *headerLine;
@@ -24,16 +22,17 @@
 @property (nonatomic, strong) UILabel *smallHintLabel;
 @property (nonatomic, strong) UITextField *usernameTextField;
 @property (nonatomic, strong) UITextField *passwordTextField;
+@property (nonatomic, strong) UITextField *confirmTextField;
 @property (nonatomic, strong) UIButton *confirmButton;
-@property (nonatomic, strong) UIButton *registerButton;
 
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;
-@property (nonatomic, strong) UserInfoModel *user;
+@property (nonatomic, copy) NSString *confirm;
+@property (nonatomic, copy) NSString *error_code;
 
 @end
 
-@implementation UserLoginController
+@implementation UserRegisterController
 
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
@@ -50,86 +49,41 @@
     [self.navigationController popViewControllerAnimated:NO];
 }
 
-- (void)registerClick{
-    NSLog(@"Register Click");
-    UserRegisterController *controller = [[UserRegisterController alloc] init];
-    [self.navigationController pushViewController:controller animated:NO];
-}
-
 - (void)confirmClick{
     NSLog(@"Confirm Click");
+    
     //UserInfoModel *myUser = [UserInfoModel testUser];
-    if([self.username isEqualToString:@""]||[self.password isEqualToString:@""]){
+    if([self.username isEqualToString:@""]||[self.password isEqualToString:@""]||[self.confirm isEqualToString:@""]){
         [[[Toast alloc] init] popUpToastWithMessage:@"输入框不能为空"];
     }
+    else if(![self.password isEqualToString:self.confirm]){
+        [[[Toast alloc] init] popUpToastWithMessage:@"两次密码输入不一致"];
+    }
     else{
-        [self sendLoginPost];
+        [self sendrRegisterPost];
     }
 }
 
-- (void) sendLoginSuccessGet{
-    
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getUser?uid=%ld",(long)self.user.uid]];
+- (void) sendrRegisterPost{
 
-    NSURLSessionDataTask *dataTask = [delegateFreeSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if(error == nil){
-            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            
-            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"%@",str);
-            NSLog(@"%@",dict);
-            self.user.username = [dict objectForKey:@"username"];
-            self.user.password = [dict objectForKey:@"password"];
-            self.user.birthday = [dict objectForKey:@"birthday"];
-            self.user.address = [dict objectForKey:@"address"];
-            self.user._description = [dict objectForKey:@"description"];
-            self.user.pic_url = [dict objectForKey:@"pic_url"];
-            
-            NSLog(@"%@,%@",self.user.username,self.user.pic_url);
-            
-            if(self.delegate && [self.delegate respondsToSelector:@selector(userLoginController:goBackWithUser:)]){
-                [self.delegate userLoginController:self goBackWithUser:self.user];
-            }
-            
-            [self.navigationController popViewControllerAnimated:NO];
-        }
-    }];
-    [dataTask resume];
-}
-
-- (void) sendLoginPost{
-    
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
     NSURL *url = [NSURL URLWithString:@"http://149.28.26.98:8082/miniheadline/Login"];
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    NSString *param = [NSString stringWithFormat:@"{\"post_type\":0, \"username\":\"%@\", \"password\":\"%@\"}",self.username,self.password];
+    NSString *param = [NSString stringWithFormat:@"{\"post_type\":1, \"username\":\"%@\", \"password\":\"%@\"}",self.username,self.password];
     NSLog(@"%@",param);
     [urlRequest setHTTPMethod:@"POST"];
     [urlRequest setHTTPBody:[param dataUsingEncoding:NSUTF8StringEncoding]];
     NSURLSessionDataTask *dataTask = [delegateFreeSession dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if(error == nil){
-            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            int error_code = [[dict objectForKey:@"error_code"]intValue];
-            int uid = [[dict objectForKey:@"uid"]intValue];
-            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-
-            NSLog(@"%d, %d",error_code,uid);
-            NSLog(@"%@",str);
-            if(error_code == -2){
-                [[[Toast alloc] init] popUpToastWithMessage:@"用户不存在"];
-                self.user.isLogin = NO;
+            self.error_code = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"%@",self.error_code);
+            if([self.error_code isEqualToString:@"{\"error_code\":1}"]){
+                [[[Toast alloc] init] popUpToastWithMessage:@"用户名已存在"];
             }
-            else if(error_code == -1){
-                [[[Toast alloc] init] popUpToastWithMessage:@"密码错误"];
-                self.user.isLogin = NO;
-            }
-            else if(error_code == 0){
-                self.user.uid = uid;
-                self.user.isLogin = YES;
-                [self sendLoginSuccessGet];
+            else if([self.error_code isEqualToString:@"{\"error_code\":0}"]){
+                [[[Toast alloc] init] popUpToastWithMessage:@"注册成功"];
+                [self.navigationController popViewControllerAnimated:NO];
             }
         }
     }];
@@ -145,13 +99,19 @@
     self.password = sender.text;
 }
 
+- (void) confirmTextFieldChange:(UITextField *)sender{
+    self.confirm = sender.text;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // 获取屏幕尺寸（包括状态栏）
     
-    self.user = [UserInfoModel testUser];
+    
     self.username = @"";
     self.password = @"";
+    self.confirm = @"";
+    self.error_code = @"";
     
     CGRect screenBound = [UIScreen mainScreen].bounds;
     // 获取状态栏尺寸
@@ -185,7 +145,7 @@
     
     self.titleLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(150, 100, screenBound.size.width - 150, 80)];
-        label.text = @"账号登录";
+        label.text = @"账号注册";
         UIFont *bigFont = [UIFont systemFontOfSize:32];
         label.font = bigFont;
         label;
@@ -194,7 +154,7 @@
     
     self.smallHintLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 200, screenBound.size.width - 50, 20)];
-        label.text = @"登录表示同意“用户协议”和“隐私政策”";
+        label.text = @"注册表示同意“用户协议”和“隐私政策”";
         UIFont *smallFont = [UIFont systemFontOfSize:12];
         label.font = smallFont;
         label;
@@ -209,7 +169,6 @@
         textField.font = bigFont;
         [textField addTarget:self action:@selector(usernameTextFieldChange:) forControlEvents:UIControlEventEditingChanged];
         textField;
-        
     });
     [self.view addSubview:self.usernameTextField];
     
@@ -238,9 +197,27 @@
     });
     [self.view addSubview:grayline2];
     
+    self.confirmTextField = ({
+        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(50, 450, screenBound.size.width - 50, 100)];
+        textField.placeholder = @"确认密码";
+        textField.secureTextEntry = YES;
+        textField.keyboardType = UIKeyboardTypeDefault;
+        UIFont *bigFont = [UIFont systemFontOfSize:28];
+        textField.font = bigFont;
+        [textField addTarget:self action:@selector(confirmTextFieldChange:) forControlEvents:UIControlEventEditingChanged];
+        textField;
+    });
+    [self.view addSubview:self.confirmTextField];
+    UILabel *grayline3 = ({
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(50, 528, screenBound.size.width - 100, 2)];
+        line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
+        line;
+    });
+    [self.view addSubview:grayline3];
+    
     self.confirmButton = ({
         UIImage *image = [UIImage imageNamed:@"jiantou.png"];
-        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(screenBound.size.width/2-40, 500, 80, 80)];
+        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(screenBound.size.width/2-40, 600, 80, 80)];
         button.clipsToBounds = YES;
         button.layer.cornerRadius = button.frame.size.width/2;
         [button setImage:image forState:UIControlStateNormal];
@@ -249,32 +226,5 @@
         button;
     });
     [self.view addSubview:self.confirmButton];
-    
-    self.registerButton = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(screenBound.size.width/2-100, 600, 200, 50);
-        [button setImage:[UIImage imageNamed:@"zhuce.png"] forState:UIControlStateNormal];
-        // 添加下划线
-        NSMutableAttributedString* str0 = [[NSMutableAttributedString alloc] initWithString:@"没有账号？注册"];
-        [str0 addAttribute:NSUnderlineStyleAttributeName
-                          value:@(NSUnderlineStyleSingle)
-                          range:(NSRange){0,[str0 length]}];
-        
-        [str0 addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]  range:NSMakeRange(0,[str0 length])];
-        [button setAttributedTitle:str0 forState:UIControlStateNormal];
-        // 添加下划线
-        NSMutableAttributedString* str1 = [[NSMutableAttributedString alloc] initWithString:@"没有账号？注册"];
-        [str1 addAttribute:NSUnderlineStyleAttributeName
-                    value:@(NSUnderlineStyleSingle)
-                    range:(NSRange){0,[str1 length]}];
-        
-        [str1 addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor]  range:NSMakeRange(0,[str1 length])];
-        [button setAttributedTitle:str1 forState:UIControlStateSelected];
-        button.backgroundColor = [UIColor whiteColor];
-        [button horizontalCenterImageAndTitle];
-        [button addTarget:self action:@selector(registerClick) forControlEvents:UIControlEventTouchUpInside];
-        button;
-    });
-    [self.view addSubview:self.registerButton];
 }
 @end

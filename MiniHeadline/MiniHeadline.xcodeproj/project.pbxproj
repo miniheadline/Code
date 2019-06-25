@@ -57,7 +57,6 @@
 		1B0F354D22C0CC1B00449F42 /* dianzan.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351822C0CC1B00449F42 /* dianzan.png */; };
 		1B0F354E22C0CC1B00449F42 /* mainpage_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351922C0CC1B00449F42 /* mainpage_unselected.png */; };
 		1B0F354F22C0CC1B00449F42 /* back_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351A22C0CC1B00449F42 /* back_white.png */; };
-		1B0F355022C0CC1B00449F42 /* logo.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351B22C0CC1B00449F42 /* logo.jpeg */; };
 		1B0F355122C0CC1B00449F42 /* full-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351C22C0CC1B00449F42 /* full-screen.png */; };
 		1B0F355222C0CC1B00449F42 /* jiantou.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351D22C0CC1B00449F42 /* jiantou.png */; };
 		1B0F355322C0CC1B00449F42 /* like-fill_23.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F351E22C0CC1B00449F42 /* like-fill_23.png */; };
@@ -126,6 +125,7 @@
 		E8893882227AAFCD003C8FB7 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893880227AAFCD003C8FB7 /* SettingViewController.m */; };
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8913EE32298D401007C16CA /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE12298D401007C16CA /* Toast.m */; };
+		E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE422B48DBD007C16CA /* UserRegisterController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -187,7 +187,6 @@
 		1B0F351822C0CC1B00449F42 /* dianzan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dianzan.png; sourceTree = "<group>"; };
 		1B0F351922C0CC1B00449F42 /* mainpage_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainpage_unselected.png; sourceTree = "<group>"; };
 		1B0F351A22C0CC1B00449F42 /* back_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_white.png; sourceTree = "<group>"; };
-		1B0F351B22C0CC1B00449F42 /* logo.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo.jpeg; sourceTree = "<group>"; };
 		1B0F351C22C0CC1B00449F42 /* full-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full-screen.png"; sourceTree = "<group>"; };
 		1B0F351D22C0CC1B00449F42 /* jiantou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jiantou.png; sourceTree = "<group>"; };
 		1B0F351E22C0CC1B00449F42 /* like-fill_23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "like-fill_23.png"; sourceTree = "<group>"; };
@@ -320,6 +319,9 @@
 		E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ImageTitleStyle.m"; sourceTree = "<group>"; };
 		E8913EE12298D401007C16CA /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
 		E8913EE22298D401007C16CA /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
+		E8913EE422B48DBD007C16CA /* UserRegisterController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserRegisterController.m; sourceTree = "<group>"; };
+		E8913EE622B48DE0007C16CA /* UserRegisterController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserRegisterController.h; sourceTree = "<group>"; };
+		E8913EE722B49105007C16CA /* zhuce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhuce.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +343,7 @@
 				1B09D17E226AFF7B00BB7480 /* Products */,
 				D6BC8B7D227CA915001AFD60 /* Frameworks */,
 				EA0CB16E84F5087DBD226475 /* Pods */,
+				1B0F356422C20B8700449F42 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -427,7 +430,6 @@
 				1B0F351822C0CC1B00449F42 /* dianzan.png */,
 				1B0F351922C0CC1B00449F42 /* mainpage_unselected.png */,
 				1B0F351A22C0CC1B00449F42 /* back_white.png */,
-				1B0F351B22C0CC1B00449F42 /* logo.jpeg */,
 				1B0F351C22C0CC1B00449F42 /* full-screen.png */,
 				1B0F351D22C0CC1B00449F42 /* jiantou.png */,
 				1B0F351E22C0CC1B00449F42 /* like-fill_23.png */,
@@ -442,6 +444,14 @@
 				1B0F352722C0CC1B00449F42 /* close.png */,
 			);
 			path = icon;
+			sourceTree = "<group>";
+		};
+		1B0F356422C20B8700449F42 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				E8913EE722B49105007C16CA /* zhuce.png */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		1BCE641D226DB0F40078E11B /* AppEntry */ = {
@@ -658,6 +668,8 @@
 				E8893880227AAFCD003C8FB7 /* SettingViewController.m */,
 				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
 				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
+				E8913EE422B48DBD007C16CA /* UserRegisterController.m */,
+				E8913EE622B48DE0007C16CA /* UserRegisterController.h */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -904,7 +916,6 @@
 				D6BC8B142273F524001AFD60 /* icon_2.png in Resources */,
 				1B0F354222C0CC1B00449F42 /* pause.png in Resources */,
 				1B0F352B22C0CC1B00449F42 /* play_white.png in Resources */,
-				1B0F355022C0CC1B00449F42 /* logo.jpeg in Resources */,
 				1B0F352D22C0CC1B00449F42 /* unlike_25.png in Resources */,
 				1B0F352F22C0CC1B00449F42 /* link.png in Resources */,
 				D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */,
@@ -1043,6 +1054,7 @@
 				1B043DE42298C04000EB0F3A /* MultiImageTableViewCell.m in Sources */,
 				E8913EE32298D401007C16CA /* Toast.m in Sources */,
 				1B846D6222A6193900378CD5 /* DetailPageFooterView.m in Sources */,
+				E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */,
 				1B7485AA229536AB00E508A8 /* FirstPageViewModel.m in Sources */,
 				1B3677E122A4BAAD00B0D458 /* DetailPageHeaderView.m in Sources */,
 				1B0F356022C0CEAF00449F42 /* PublisherInfoTableViewCell.m in Sources */,

@@ -12,14 +12,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UserInfoModel : NSObject
-
+@property (nonatomic) NSInteger uid;
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;
+@property (nonatomic, copy) NSString *birthday;
+@property (nonatomic, copy) NSString *_description;
+@property (nonatomic, copy) NSString *address;
+@property (nonatomic, copy) NSString *pic_url;
 @property (nonatomic) NSInteger numOfHeadline;
 @property (nonatomic) NSInteger numOfAttention;
 @property (nonatomic) NSInteger numOfFans;
 @property (nonatomic) NSInteger numOfLike;
-@property (nonatomic, strong) UIImage *photo;
+@property (nonatomic) Boolean isLogin;
+
 
 + (instancetype)testUser;
 

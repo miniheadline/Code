@@ -10,6 +10,12 @@
 #import "InfoTableViewCell.h"
 #import "InfoTableViewCellWithPicture.h"
 #import "NSComment.h"
+#import "FirstPageViewModel.h"
+#import "NoImageTableViewCell.h"
+#import "SingleImageTableViewCell.h"
+#import "MultiImageTableViewCell.h"
+#import "VideoTableViewCell.h"
+#import "NewsDetailViewController.h"
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -26,12 +32,16 @@
 @property (nonatomic, strong) UITableView *tableView;
 
 @property int select;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *items;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *itemsOfbt1;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *itemsOfbt2;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *itemsOfbt3;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *itemsOfbt4;
-@property (nonatomic, strong) NSMutableArray<NSComment*> *itemsOfbt5;
+@property (nonatomic, retain) NSMutableArray *items;
+@property (nonatomic, copy) NSMutableArray *itemsOfbt1;
+@property (nonatomic, copy) NSMutableArray *itemsOfbt2;
+@property (nonatomic, copy) NSMutableArray *itemsOfbt3;
+@property (nonatomic, copy) NSMutableArray *itemsOfbt4;
+@property (nonatomic, copy) NSMutableArray *itemsOfbt5;
+
+@property (nonatomic) BOOL isLoading;
+
+@property (nonatomic) int offset;
 
 @end
 
@@ -118,50 +128,80 @@
 }
 
 - (void)tableLoad {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
+    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
+        // 返回的数据插入在前面
+        NSRange range = NSMakeRange(0, 20);
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+        NSLog(@"%@",self.items);
+        
+        [self.items insertObjects:dataArray atIndexes:indexSet];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            //[self.tableView.mj_header endRefreshing];
+            //self.offset = self.offset + 20;
+            self.isLoading = NO;
+           // NSLog(@"reload tableview");
+        });
+        NSLog(@"%@",dataArray);
+        NSLog(@"%@",self.items);
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        //[self.newsTableView.mj_header endRefreshing];
+        self.isLoading = NO;
+    }];
     
-    NSString* icon = [[NSString alloc] initWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558155437522&di=d98c8427648c6c4b4a38316d524dc4b2&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F01%2F37%2F86%2F37573c65819a30c.jpg"];
+    // 加载视频
+    NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
+    for(int i=0; i<3; i++){
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
+        [result addObject:myVideo];
+    }
+    [self.items addObjectsFromArray:result];
     
-    NSComment* first = [[NSComment alloc] initWithDict:@"本故事纯属虚构，如有雷同，纯属瞎搞，是否继续阅读？" iconUrl:icon username:@"用户1号" picture:@"" share:3 comment:12 like:11];
-    NSComment* second = [[NSComment alloc] initWithDict:@"小学每天会发一袋牛奶，他特别希望上学，小学午饭不好吃，所以来出初中吃午饭，后来他对大学的食堂也充满了期待，呵呵呵，毕竟民以食为天。" iconUrl:icon username:@"用户2号" picture:@"" share:4 comment:12 like:11];
-    NSComment* thrid = [[NSComment alloc] initWithDict:@"这篇文章的详细信息为..." iconUrl:icon username:@"用户3号" picture:icon share:10 comment:12 like:11];
-    
-    self.itemsOfbt1 = [[NSMutableArray alloc] initWithArray:@[first, second, thrid]];
-    self.itemsOfbt2 = [[NSMutableArray alloc] initWithArray:@[first]];
-    self.itemsOfbt3 = [[NSMutableArray alloc] initWithArray:@[second]];
-    self.itemsOfbt4 = [[NSMutableArray alloc] initWithArray:@[thrid]];
-    self.itemsOfbt5 = [[NSMutableArray alloc] initWithArray:@[second, thrid]];
     
 }
 
 
 - (void)viewDidLoad {
     
-    
-    [self tableLoad];
-
-    self.items = self.itemsOfbt1;
-    self.select = 1;
-    
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    //[self.tableView registerNib:[UINib nibWithNibName:@"TableCellView" //bundle:nil] forCellReuseIdentifier:@"TableCellView"];
+    //[self.tableView registerNib:[UINib nibWithNibName:@"TableCellView" //bundle:nil] forCellReuseIdentifier:@"TableCellView"];\
+
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
     CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
     
     int width = 0;
-    int height = screenBound.size.height/4 - 40;
-    
-    int itemHeight = 175;
+    int height = screenBound.size.height/4;
+
     self.tableView = ({
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height*0.75) style:UITableViewStylePlain];
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height*0.85) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.rowHeight = itemHeight;
+        UIView *footer = [[UIView alloc] init];
+        footer.backgroundColor = [UIColor clearColor];
+        tableView.tableFooterView = footer;
+        // tableView分割线
+        tableView.separatorInset = UIEdgeInsetsMake(1, 0, 1, 0);
+        tableView.separatorColor = [UIColor lightGrayColor];
+        tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView.estimatedRowHeight = 180;
         tableView;
     });
+
     
+    self.items =  [[NSMutableArray alloc]init];
+    //self.items = self.itemsOfbt1;
+    self.select = 1;
+    self.offset = 0;
+    [self tableLoad];
     [self.view addSubview: self.tableView];
     
     [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
@@ -246,73 +286,60 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSComment* comment = self.items[indexPath.row];
-    BOOL cellType = (comment.pictureUrl.length < 1); //为空代表无插图；
-    
-    if (cellType) {
-        NSLog(@"No picture cell.");
-        
-        static NSString *identifier = @"MyCell";
-        BOOL nibsRegistered = NO;
-        
-        if (!nibsRegistered) {
-            UINib *nib = [UINib nibWithNibName:NSStringFromClass([InfoTableViewCell class]) bundle:nil];
-            [tableView registerNib:nib forCellReuseIdentifier:identifier];
-            nibsRegistered = YES;
+    if([self.items[indexPath.row] isKindOfClass:[NewsModel class]]){
+        NewsModel* cellData = self.items[indexPath.row];
+        if (cellData.type == 0) {
+            NSLog(@"%d", cellData.type);
+            NoImageTableViewCell *cell = [NoImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
         }
+        else if (cellData.type == 1) {
+            SingleImageTableViewCell *cell = [SingleImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
+        }
+        else if (cellData.type == 2) {
+            MultiImageTableViewCell *cell = [MultiImageTableViewCell cellWithTableView:tableView];
+            cell.cellData = cellData;
+            return cell;
+        }
+        else {
+            NSLog(@"error-cellForRowAtIndexPath:%lu", indexPath.row);
+            UITableViewCell *cell;
+            return cell;
+        }
+    }
+    else{
+        MyVideo* cellData = self.items[indexPath.row];
         
-        InfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        
-        NSData *urlAddress1 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.iconUrl]];
-        UIImage* image1 = [UIImage imageWithData:urlAddress1];
-
-        [cell.username setTitle:comment.name forState:UIControlStateNormal];
-        [cell.label1 setText: [NSString stringWithFormat:@"%d", comment.shareNums]];
-        [cell.label2 setText: [NSString stringWithFormat:@"%d", comment.commentNums]];
-        [cell.label3 setText: [NSString stringWithFormat:@"%d", comment.likeNums]];
-        [cell.text setText:comment.text];
-        [cell.person setImage:image1];
-        
+        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"1"];
+        cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"1"];
+        [(VideoTableViewCell*)cell setCellData:cellData];
         return cell;
     }
-    else {
-
-        static NSString *identifier = @"MyCellWithPIcture";
-        BOOL nibsRegistered = NO;
-        
-        if (!nibsRegistered) {
-            UINib *nib = [UINib nibWithNibName:NSStringFromClass([InfoTableViewCellWithPicture class]) bundle:nil];
-            [tableView registerNib:nib forCellReuseIdentifier:identifier];
-            nibsRegistered = YES;
-        }
-        
-        InfoTableViewCellWithPicture *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    
-        NSData *urlAddress1 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.iconUrl]];
-        NSData *urlAddress2 = [NSData dataWithContentsOfURL:[NSURL URLWithString:comment.pictureUrl]];
-        UIImage* image1 = [UIImage imageWithData:urlAddress1];
-        UIImage* image2 = [UIImage imageWithData:urlAddress2];
-        
-        [cell.username setTitle:comment.name forState:UIControlStateNormal];
-        [cell.shareNums setText: [NSString stringWithFormat:@"%d", comment.shareNums]];
-        [cell.commentNums setText: [NSString stringWithFormat:@"%d", comment.commentNums]];
-        [cell.likeNums setText: [NSString stringWithFormat:@"%d", comment.likeNums]];
-        [cell.text setText:comment.text];
-        [cell.person setImage:image1];
-        [cell.picture setImage:image1];
-        
-        return cell;
-    }
-    
 }
 
 #pragma mark ------------ UITableViewDelegate ------------------
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+// 通知委托指定行将要被选中，返回响应行的索引
+- (nullable NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    return indexPath;
 }
 
+// 通知委托指定行被选中
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+        // 跳转
+    NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
+    NewsModel *temp = self.items[indexPath.row];
+    newsDetailVC.groupID = temp.groupID;
+    [self.navigationController pushViewController:newsDetailVC animated:NO];
+    
+}
 
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {

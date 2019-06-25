@@ -9,6 +9,7 @@
 #import "EditInfoController.h"
 #import "UIColor+Hex.h"
 #import "UserInfoModel.h"
+#import "UIImageView+WebCache.h"
 
 @interface EditInfoController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -21,7 +22,7 @@
 @property(nonatomic, strong) NSArray<NSString*> *section1;
 @property(nonatomic, strong) NSArray<NSString*> *section2;
 
-@property(nonatomic, strong) UserInfoModel *myUser;
+@property(nonatomic, strong) UserInfoModel *user;
 
 @end
 
@@ -70,7 +71,7 @@
     UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
     [self.backImageView addGestureRecognizer:back];
     
-    self.myUser = [UserInfoModel testUser];
+    self.user = [UserInfoModel testUser];
     
     self.section1 = @[@"头像", @"用户名", @"介绍"];
     self.section2 = @[@"性别", @"生日", @"地区"];
@@ -125,7 +126,11 @@
     if(indexPath.section == 0){
         cell.textLabel.text = self.section1[indexPath.row];
         if(indexPath.row == 0){
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:self.myUser.photo];
+            UIImageView *imageView = [[UIImageView alloc] init];
+            NSURL *url = [NSURL URLWithString:self.user.pic_url];
+            [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+                NSLog(@"error:%@", error);
+            }];
             CGRect cellBound = cell.bounds;
             int extra = 10;
             imageView.frame = CGRectMake(cellBound.size.width - 50, cellBound.origin.y + extra, cellBound.size.height - 2 * extra,cellBound.size.height - 2 * extra);
@@ -134,7 +139,7 @@
             cell.accessoryView = imageView;
         }
         else if(indexPath.row == 1){
-            cell.detailTextLabel.text = self.myUser.username;
+            cell.detailTextLabel.text = self.user.username;
         }
     }
     else if(indexPath.section == 1){
