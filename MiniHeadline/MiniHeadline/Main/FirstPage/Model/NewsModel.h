@@ -20,14 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *secondImagePath;
 @property (nonatomic, copy) NSString *thirdImagePath;
 @property (nonatomic, copy) NSString *groupID;
+@property (nonatomic) NSInteger offset;
 
 @property (nonatomic) int type; // 0 - noImage, 1 - singleImage, 2 - multiImgae
 
-+ (instancetype)initWithTitle:(NSString *)title type:(int)type groupID:(NSString *)groupID;
++ (instancetype)initWithTitle:(NSString *)title type:(int)type groupID:(NSString *)groupID offset:(NSInteger)offset;
 
-+ (instancetype)initWithTitle:(NSString *)title type:(int)type imagePath:(NSString *)imagePath groupID:(NSString *)groupID;
++ (instancetype)initWithTitle:(NSString *)title type:(int)type imagePath:(NSString *)imagePath groupID:(NSString *)groupID offset:(NSInteger)offset;
 
-+ (instancetype)initWithTitle:(NSString *)title type:(int)type firstImagePath:(NSString *)firstImagePath secondImagePath:(NSString *)secondImagePath thirdImagePath:(NSString *)thirdImagePath groupID:(NSString *)groupID;
++ (instancetype)initWithTitle:(NSString *)title type:(int)type firstImagePath:(NSString *)firstImagePath secondImagePath:(NSString *)secondImagePath thirdImagePath:(NSString *)thirdImagePath groupID:(NSString *)groupID offset:(NSInteger)offset;
 
 @end
 

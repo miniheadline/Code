@@ -18,20 +18,22 @@
 #import "../ViewModel/RecommendationVideoTableViewCell.h"
 #import "../ViewModel/CommentTableViewCell.h"
 #import "../ViewModel/ChoosenCommentTableViewCell.h"
+#import "../ViewModel/CommentsView.h"
 #import "Masonry.h"
+#import "../ViewModel/VideoDetailTableViewCell.h"
 
 @interface VideoDetailViewController ()
 
 @property (nonatomic, strong) UIButton *backBtn;
 @property (nonatomic, strong) UILabel *titleLabel;
 
-@property (nonatomic, strong) UIButton *icon;
-@property (nonatomic, strong) UILabel *name;
-@property (nonatomic, strong) UIButton *followBtn;
-@property (nonatomic, strong) UILabel *moreDetail;
-@property (nonatomic, strong) UIButton *likeBtn;
-@property (nonatomic, strong) UIButton *unlikeBtn;
-@property (nonatomic, strong) UIButton *moreBtn;
+//@property (nonatomic, strong) UIButton *icon;
+//@property (nonatomic, strong) UILabel *name;
+//@property (nonatomic, strong) UIButton *followBtn;
+//@property (nonatomic, strong) UILabel *moreDetail;
+//@property (nonatomic, strong) UIButton *likeBtn;
+//@property (nonatomic, strong) UIButton *unlikeBtn;
+//@property (nonatomic, strong) UIButton *moreBtn;
 @property (nonatomic, strong) UITableView *commentTableView;
 
 @property (nonatomic, strong) UIView *footToolBar;
@@ -58,7 +60,7 @@
 @property (nonatomic, strong) NSTimer *videoTimer;
 @property (nonatomic, strong) UIButton *backFullScreenBtn;
 
-@property (nonatomic, strong) UIView *commentTwoView;
+@property (nonatomic, strong) CommentsView *commentTwoView;
 @property (nonatomic, strong) UILabel *commentViewLabel;
 @property (nonatomic, strong) UITableView *commentViewTableView;
 @property (nonatomic, strong) UIButton *closeCommentViewBtn;
@@ -103,7 +105,7 @@
     CGRect statusBound = [[UIApplication sharedApplication] statusBarFrame];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    self.icon = [[UIButton alloc] init];
+    /*self.icon = [[UIButton alloc] init];
     
     //self.icon = [[UIButton alloc] initWithFrame:CGRectMake(19, 311, 35, 35)];
     [self.icon setBackgroundImage:self.myVideo.icon forState:UIControlStateNormal];
@@ -154,7 +156,7 @@
     [self.moreBtn setImage:[UIImage imageNamed:@"link.png"] forState:UIControlStateNormal];
     [self.moreBtn setTitle:@" 了解更多" forState:UIControlStateNormal];
     [self.moreBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:self.moreBtn];
+    [self.view addSubview:self.moreBtn];*/
     self.footToolBar = [[UIView alloc] init];
     //self.footToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, 818, 414, 44)];
     [self.footToolBar setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
@@ -232,7 +234,7 @@
     [self.duraTime setText:result];
     [self.videoView addSubview:self.duraTime];
     self.editCommentField = [[UITextField alloc] init];
-    self.commentTwoView = [[UIView alloc] init];
+    //self.commentTwoView = [[UIView alloc] init];
     self.closeCommentViewBtn = [[UIButton alloc] init];
     [self.closeCommentViewBtn setBackgroundImage:[UIImage imageNamed:@"close.png"] forState:UIControlStateNormal];
     //[self.closeCommentViewBtn setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
@@ -280,7 +282,7 @@
         make.centerY.equalTo(self.currTime.centerY);
         make.centerX.equalTo(self.view.centerX);
     }];
-    [self.icon makeConstraints:^(MASConstraintMaker *make) {
+    /*[self.icon makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.videoView.bottom).with.offset(20);
         make.left.equalTo(self.view).with.offset(20);
         make.width.and.height.equalTo(30);
@@ -317,7 +319,7 @@
     [self.moreBtn makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.view).with.offset(-20);
         make.centerY.equalTo(self.likeBtn.centerY);
-    }];
+    }];*/
     [self.footToolBar makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view).with.offset(-44);
         make.left.equalTo(self.view);
@@ -359,7 +361,7 @@
     });
     [self.view addSubview:self.commentTableView];
     [self.commentTableView makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.likeBtn.bottom).with.offset(10);
+        make.top.equalTo(self.videoView.bottom).with.offset(10);
         make.left.equalTo(self.view);
         make.bottom.equalTo(self.footToolBar.top);
         make.width.equalTo(screenBound.size.width);
@@ -679,12 +681,15 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if([tableView isEqual:self.commentTableView]) {
-        if(section == 0){
+        if(section == 0) {
+            return 1;
+        }
+        else if(section == 1){
             return self.recommendationVideoList.count;
         }
         else {
@@ -708,8 +713,11 @@
         if(indexPath.row == self.commentsList.count) {
             cellType = 0;
         }
-        else if(indexPath.section == 0) {
+        else if(indexPath.section == 1) {
             cellType = self.recommendationVideoList[indexPath.row].cellType;
+        }
+        else if(indexPath.section == 0) {
+            cellType = 3;
         }
         else {
             cellType = self.commentsList[indexPath.row].cellType;
@@ -732,6 +740,10 @@
                 cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
                 [(CommentTableViewCell*)cell setCellData:self.commentsList[indexPath.row]];
             }
+            else if(cellType == 3) {
+                cell = [[VideoDetailTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+                [(VideoDetailTableViewCell*)cell setCellData:self.myVideo];
+            }
         } else {
             if(cellType == 0){
                 ((LoadingTableViewCell*) cell).status = self.status;
@@ -742,6 +754,9 @@
             }
             else if(cellType == 2) {
                 [(CommentTableViewCell*)cell setCellData:self.commentsList[indexPath.row]];
+            }
+            else if(cellType == 3) {
+                [(VideoDetailTableViewCell*)cell setCellData:self.myVideo];
             }
         }
     }
@@ -839,7 +854,7 @@
                 }
             }
             else {
-                CGRect screenBound = [UIScreen mainScreen].bounds;
+                /*CGRect screenBound = [UIScreen mainScreen].bounds;
                 [self.commentTwoView setBackgroundColor:[UIColor whiteColor]];
                 if(!self.commentViewTableView) {
                     self.commentViewTableView = ({
@@ -895,9 +910,18 @@
                 }];*/
                 CommentTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                 _choosenComment = cell.data;
-                NSArray* commentPart = [self loadComment:1];
+                /*NSArray* commentPart = [self loadComment:1];
                 self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
-                self.pageIndexSecond = 0;
+                self.pageIndexSecond = 0;*/
+                self.commentTwoView = [[CommentsView alloc] init];
+                [self.commentTwoView setCommentData:self.choosenComment];
+                [self.view addSubview:self.commentTwoView];
+                [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(self.videoView.bottom).with.offset(10);
+                    make.bottom.equalTo(self.footToolBar.top);
+                    make.left.equalTo(self.view);
+                    make.right.equalTo(self.view);
+                }];
             }
         }
     }
@@ -912,14 +936,20 @@
     }
     else {
         if([tableView isEqual:self.commentTableView]) {
-            if(indexPath.section == 0) {
+            if(indexPath.section == 1) {
                 return 110;
+            }
+            else if(indexPath.section == 0){
+                return 150;
             }
             return self.commentsList[indexPath.row].height;
         }
         else {
-            if(indexPath.section == 0) {
+            if(indexPath.section == 1) {
                 return self.choosenComment.height;
+            }
+            else if(indexPath.section == 0){
+                return 300;
             }
             return self.commentsListSecond[indexPath.row].height;
         }
