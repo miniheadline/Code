@@ -131,7 +131,7 @@
     NSLog(@"loadNewData");
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
-    [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
+    [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
         // 返回的数据插入在前面
         NSRange range = NSMakeRange(0, 20);
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
