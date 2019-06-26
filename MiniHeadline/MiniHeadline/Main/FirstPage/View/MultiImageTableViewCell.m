@@ -58,7 +58,7 @@
 }
 
 + (instancetype)cellWithTableView:(UITableView *)tableView {
-    static NSString *cellID = @"cell";
+    static NSString *cellID = @"MultiImageTableViewCell";
     MultiImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID]; // 先从缓存中取
     if (cell == nil) { // IB中创建cell
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MultiImageTableViewCell" owner:self options:nil] lastObject];

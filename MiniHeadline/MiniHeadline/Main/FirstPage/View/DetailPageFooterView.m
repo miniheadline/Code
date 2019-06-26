@@ -152,15 +152,13 @@
 
 - (void)starTapGesture:(UITapGestureRecognizer *)gestureRecognizer {
     if (self.starBtnClick) {
-        NSString *imageName = self.starBtnClick() ? @"star_selected.png" : @"star_unselected.png";
-        self.starImageView.image = [UIImage imageNamed:imageName];
+        [self setStarBtnStateWithIsStar:self.starBtnClick()];
     }
 }
 
 - (void)likeTapGesture:(UITapGestureRecognizer *)gestureRecognizer {
     if (self.likeBtnClick) {
-        NSString *imageName = self.likeBtnClick() ? @"like_selected.png" : @"like_unselected.png";
-        self.likeImageView.image = [UIImage imageNamed:imageName];
+        [self setLikeBtnStateWithIsLike:self.likeBtnClick()];
     }
 }
 

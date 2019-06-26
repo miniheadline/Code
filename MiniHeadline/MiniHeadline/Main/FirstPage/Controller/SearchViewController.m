@@ -102,16 +102,12 @@
     self.recommendLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.frame.size.height, screenBound.size.width, 100)];
     self.recommendLabel.text = @"推荐";
     self.recommendLabel.textAlignment = NSTextAlignmentCenter;
-//    self.recommendLabel.layer.borderWidth = 1;
-//    self.recommendLabel.layer.borderColor = [UIColor blackColor].CGColor;
     [self.view addSubview:self.recommendLabel];
     
     // 历史记录
     self.historyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.frame.size.height + self.recommendLabel.frame.size.height, screenBound.size.width, 100)];
     self.historyLabel.text = @"搜索历史";
     self.historyLabel.textAlignment = NSTextAlignmentCenter;
-//    self.historyLabel.layer.borderColor = [UIColor blackColor].CGColor;
-//    self.historyLabel.layer.borderWidth = 1;
     [self.view addSubview:self.historyLabel];
 }
 
