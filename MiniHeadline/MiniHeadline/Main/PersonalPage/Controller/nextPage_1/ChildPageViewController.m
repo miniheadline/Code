@@ -23,7 +23,6 @@
 @property (nonatomic, retain)IBOutlet UIButton *bt2;
 @property (nonatomic, retain)IBOutlet UIButton *bt3;
 @property (nonatomic, retain)IBOutlet UIButton *bt4;
-@property (nonatomic, retain)IBOutlet UIButton *bt5;
 
 @property (nonatomic, retain)IBOutlet UIButton *editor;
 @property (nonatomic, retain)IBOutlet UIButton *search;
@@ -37,7 +36,6 @@
 @property (nonatomic, copy) NSMutableArray *itemsOfbt2;
 @property (nonatomic, copy) NSMutableArray *itemsOfbt3;
 @property (nonatomic, copy) NSMutableArray *itemsOfbt4;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt5;
 
 @property (nonatomic) BOOL isLoading;
 
@@ -76,7 +74,6 @@
     [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 - (void)CommentButtonClick {
@@ -91,7 +88,6 @@
     [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 - (void)LikeButtonClick {
@@ -106,7 +102,6 @@
     [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 
@@ -124,11 +119,12 @@
     [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 - (void)tableLoad {
     NSLog(@"loadNewData");
+    
+    
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
@@ -231,8 +227,6 @@
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            
             break;
             
         case 2:
@@ -241,7 +235,6 @@
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             
             break;
             
@@ -251,7 +244,6 @@
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             
             break;
             
@@ -261,8 +253,6 @@
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            
             break;
     }
     
@@ -371,10 +361,6 @@
                 
             case 4:
                 [self.itemsOfbt4 removeObjectAtIndex:indexPath.row];
-                break;
-                
-            case 5:
-                [self.itemsOfbt5 removeObjectAtIndex:indexPath.row];
                 break;
         }
         
