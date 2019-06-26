@@ -53,19 +53,20 @@
 
 
 - (void)userLoginController:(UserLoginController *)userLoginController goBackWithUser:(UserInfoModel*)_user {
-    self.user = _user;
-    NSArray *subviews = [self.view subviews];
-    if(subviews.count > 0){
-        for(UIView *sub in subviews){
-            [sub removeFromSuperview];
+    
+        self.user = _user;
+        NSArray *subviews = [self.view subviews];
+        if(subviews.count > 0){
+            for(UIView *sub in subviews){
+                [sub removeFromSuperview];
+            }
         }
-    }
-    [self viewWillDisappear:YES];
-    [self viewDidDisappear:YES];
-    [self viewDidLoad];
-    [self viewWillAppear:YES];
-    [self viewDidAppear:YES];
-    [self viewWillLayoutSubviews];
+        [self viewWillDisappear:YES];
+        [self viewDidDisappear:YES];
+        [self viewDidLoad];
+        [self viewWillAppear:YES];
+        [self viewDidAppear:YES];
+        [self viewWillLayoutSubviews];
 }
 
 
