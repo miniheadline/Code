@@ -13,6 +13,7 @@
 #import "Masonry.h"
 #import "../../../Common/UIColor+Hex.h"
 #import "PostViewModel.h"
+#import "../../PersonalPage/Model/UserInfoModel.h"
 
 @interface VideoDetailTableViewCell()
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -23,6 +24,8 @@
 @property (nonatomic, strong) UIButton *likeBtn;
 @property (nonatomic, strong) UIButton *moreBtn;
 @property (nonatomic, strong) MyVideo *myVideo;
+@property (nonatomic, assign) BOOL isLogin;
+@property (nonatomic, assign) int uid;
 @end
 
 @implementation VideoDetailTableViewCell
@@ -49,16 +52,18 @@
 
 - (void)setData {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
-        self.myVideo.isLike = isLike;
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
-    [viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
-     self.myVideo.likeNum = likeNumGet;
-     } failure:^(NSError * _Nonnull error) {
-     NSLog(@"请求失败 error:%@",error.description);
-     }];
+    if(self.isLogin){
+        [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
+            self.myVideo.isLike = isLike;
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+        [viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
+            self.myVideo.likeNum = likeNumGet;
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
 }
 
 - (void)initSubView {
@@ -142,6 +147,10 @@
     }];
     
     [self.likeBtn addTarget:self action:@selector(likeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
 }
 
 - (void)setCellData:(MyVideo*) data {
@@ -165,26 +174,28 @@
 
 - (void) likeBtnClick:(UIButton *)button {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel likeVideoWithUid:3 vid:self.myVideo.vid success:^(BOOL isLikeGet, int likeNumGet) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isLikeGet) {
-                [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-            }
-            [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
-        });
-        [viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
+    if(self.isLogin) {
+        [viewModel likeVideoWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLikeGet, int likeNumGet) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLikeGet) {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
                 [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
             });
+            [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+                });
+            } failure:^(NSError * _Nonnull error) {
+                NSLog(@"请求失败 error:%@",error.description);
+            }];
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    }
     
     if (_delegate && [_delegate respondsToSelector:@selector(videoLikeBtnDelegate:)]){
         //[self.startBtn removeFromSuperview];
@@ -194,24 +205,26 @@
 
 - (void)videoLikeBarBtnDelegate:(VideoDetailViewController *)controller {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
-        self.myVideo.isLike = isLike;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isLike) {
-                [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
-    [viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
-        self.myVideo.likeNum = likeNumGet;
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    if(self.isLogin) {
+        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+            self.myVideo.isLike = isLike;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLike) {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+        [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+            self.myVideo.likeNum = likeNumGet;
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
 }
 
 

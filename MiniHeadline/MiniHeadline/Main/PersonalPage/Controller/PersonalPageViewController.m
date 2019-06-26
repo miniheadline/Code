@@ -14,7 +14,10 @@
 #import "nextPage_1/ChildPageViewController.h"
 #import "nextPage_2/ChildPage2ViewController.h"
 #import "UserLoginController.h"
+#import "UserRegisterController.h"
 #import "Toast.h"
+
+#import "UIImageView+WebCache.h"
 
 @interface PersonalPageViewController ()<UITableViewDelegate, UITableViewDataSource, UserLoginControllerDelegate>
 
@@ -36,7 +39,7 @@
 @property(nonatomic, strong) UIImageView* photoImageView;
 @property(nonatomic, strong) UIImageView* toUserInfoImageView;
 
-@property(nonatomic) BOOL isLogin;
+@property(nonatomic, strong) UserInfoModel* user;
 
 - (void)LoginButtonClick;
 - (void)MarkButtonClick;
@@ -49,21 +52,21 @@
 @implementation PersonalPageViewController
 
 
-- (void)userLoginController:(UserLoginController *)userLoginController goBackWithIsLogin:(BOOL)isLogin {
-    self.isLogin = isLogin;
-    NSLog(@"%@",isLogin?@"YES":@"NO");
-    NSArray *subviews = [self.view subviews];
-    if(subviews.count > 0){
-        for(UIView *sub in subviews){
-            [sub removeFromSuperview];
+- (void)userLoginController:(UserLoginController *)userLoginController goBackWithUser:(UserInfoModel*)_user {
+    
+        self.user = _user;
+        NSArray *subviews = [self.view subviews];
+        if(subviews.count > 0){
+            for(UIView *sub in subviews){
+                [sub removeFromSuperview];
+            }
         }
-    }
-    [self viewWillDisappear:YES];
-    [self viewDidDisappear:YES];
-    [self viewDidLoad];
-    [self viewWillAppear:YES];
-    [self viewDidAppear:YES];
-    [self viewWillLayoutSubviews];
+        [self viewWillDisappear:YES];
+        [self viewDidDisappear:YES];
+        [self viewDidLoad];
+        [self viewWillAppear:YES];
+        [self viewDidAppear:YES];
+        [self viewWillLayoutSubviews];
 }
 
 
@@ -130,6 +133,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    self.user = [UserInfoModel testUser];
+    
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
     CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
@@ -148,15 +153,16 @@
         button;
     });
     
-    UserInfoModel *myUser = [UserInfoModel testUser];
-    
     int width = 0;
     int height = screenBound.size.height/2 - 3 * screenBound.size.width/4;
     extra = 10;
     self.photoImageView = ({
-        UIImageView *imageView =  [[UIImageView alloc] initWithImage:myUser.photo];
+        UIImageView *imageView =  [[UIImageView alloc] init];
         imageView.frame = CGRectMake(width + extra, height, screenBound.size.width/4 - 2*extra, screenBound.size.width/4- 2*extra);
-        
+        NSURL *url = [NSURL URLWithString:self.user.pic_url];
+        [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            NSLog(@"error:%@", error);
+        }];
         imageView.clipsToBounds = YES;
         imageView.layer.cornerRadius = imageView.frame.size.width/2;
         imageView.userInteractionEnabled = YES;
@@ -168,7 +174,7 @@
     self.userNameLabel = ({
         UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width/2, screenBound.size.width/4)];
         UIFont *Font = [UIFont systemFontOfSize:24];
-        NSAttributedString *string = [[NSAttributedString alloc] initWithString:myUser.username attributes:@{NSFontAttributeName:Font,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *string = [[NSAttributedString alloc] initWithString:self.user.username attributes:@{NSFontAttributeName:Font,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         label.attributedText = string;
         label.textAlignment = NSTextAlignmentCenter;
         label.userInteractionEnabled = YES;
@@ -198,7 +204,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfHeadline] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfHeadline] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"头条" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -219,7 +225,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfAttention] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfAttention] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"关注" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -239,7 +245,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfFans] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfFans] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"粉丝" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -262,7 +268,7 @@
         UIFont *smallFont = [UIFont systemFontOfSize:bigFont.pointSize/2];
         
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]init];
-        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",myUser.numOfLike] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
+        NSAttributedString *number = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld\n",self.user.numOfLike] attributes:@{NSFontAttributeName:bigFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"获赞" attributes:@{NSFontAttributeName:smallFont,NSForegroundColorAttributeName:[UIColor blackColor],NSBaselineOffsetAttributeName:@(0)}];
         [attributedString appendAttributedString:number];
         [attributedString appendAttributedString:title];
@@ -375,7 +381,7 @@
     [self.view addSubview:self.commentButton];
     [self.view addSubview:self.historyButton];
     [self.view addSubview:grayline3];
-    if(self.isLogin){
+    if(self.user.isLogin){
         [self.view addSubview:self.photoImageView];
         [self.view addSubview:self.userNameLabel];
         [self.view addSubview:self.toUserInfoImageView];
@@ -420,7 +426,8 @@
         [self.navigationController pushViewController:controller animated:NO];
     }
     if([self.items[indexPath.row] isEqual:@"用户反馈"]){
-        [[[Toast alloc] init] popUpToastWithMessage:@"Toast Testing"];
+        UserRegisterController *controller = [[UserRegisterController alloc] init];
+        [self.navigationController pushViewController:controller animated:NO];
     }
 }
 

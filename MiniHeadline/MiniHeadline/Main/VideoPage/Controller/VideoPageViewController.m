@@ -17,6 +17,7 @@
 #import "MJRefresh.h"
 #import "../ViewModel/VideoListViewModel.h"
 #import "../View/SimpleVideoView.h"
+#import "../../PersonalPage/Model/UserInfoModel.h"
 
 static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 
@@ -39,6 +40,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 @property (nonatomic, strong) SimpleVideoView *playerView;
 @property (nonatomic, strong) UIView *whiteView;
 @property (nonatomic, assign) BOOL isFirst;
+@property (nonatomic, assign) int uid;
+@property (nonatomic, assign) BOOL isLogin;
 @end
 
 @implementation VideoPageViewController
@@ -98,7 +101,11 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     self.dataList = [[NSMutableArray alloc] init];
     self.offset = 1;
     self.isFirst = YES;
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
     [self loadMoreData];
+    
 }
 
 - (void)loadNewData {

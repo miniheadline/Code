@@ -25,6 +25,8 @@
 #import "../ViewModel/CommentIDViewModel.h"
 #import "../ViewModel/PostViewModel.h"
 #import "../ViewModel/VideoListViewModel.h"
+#import "../../PersonalPage/Model/UserInfoModel.h"
+#import "../../PersonalPage/ViewModel/Toast.h"
 
 
 @interface VideoDetailViewController ()
@@ -85,6 +87,8 @@
 @property (nonatomic, assign) NSInteger offset;
 @property (nonatomic, assign) BOOL hasMore;
 @property (nonatomic, assign) BOOL isTwo;
+@property (nonatomic, assign) int uid;
+@property (nonatomic, assign) BOOL isLogin;
 @end
 
 @implementation VideoDetailViewController
@@ -106,37 +110,39 @@
 
 - (void)setData {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel browseVideoWithUid:3 vid:self.myVideo.vid success:^{
-        
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
-    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
-        self.myVideo.isLike = isLike;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isLike) {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
-    [viewModel getIsStarWithUid:3 vid:self.myVideo.vid success:^(BOOL isStar) {
-        self.myVideo.isStar = isStar;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isStar) {
-                [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    if(self.isLogin) {
+        [viewModel browseVideoWithUid:self.uid vid:self.myVideo.vid success:^{
+            
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+            self.myVideo.isLike = isLike;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLike) {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+        [viewModel getIsStarWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isStar) {
+            self.myVideo.isStar = isStar;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isStar) {
+                    [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
     /*[viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
         self.myVideo.likeNum = likeNumGet;
     } failure:^(NSError * _Nonnull error) {
@@ -446,6 +452,9 @@
     [self.likeBarBtn addTarget:self action:@selector(likeBarBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.starBtn addTarget:self action:@selector(starBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
     
     /// 添加监听.以及回调
     __weak typeof(self) weakSelf = self;
@@ -689,31 +698,37 @@
     [self.commentsList insertObject:myComment atIndex:0];
     [self.commentTableView reloadData];*/
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    if(self.isTwo == NO) {
-        [viewModel postCommentWith:3 vid:self.myVideo.vid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
-            //[self.commentsList addObject:<#(nonnull MyComment *)#>];
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.commentText setText:@""];
-                [self.commentTableView reloadData];
-            });
-        } failure:^(NSError * _Nonnull error) {
-            NSLog(@"请求失败 error:%@",error.description);
-        }];
+    if(self.isLogin){
+        if(self.isTwo == NO) {
+            [viewModel postCommentWith:self.uid vid:self.myVideo.vid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
+                //[self.commentsList addObject:<#(nonnull MyComment *)#>];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.commentText setText:@""];
+                    [self.commentTableView reloadData];
+                });
+            } failure:^(NSError * _Nonnull error) {
+                NSLog(@"请求失败 error:%@",error.description);
+            }];
+        }
+        else {
+            int cid;
+            if(self.commentTwoView != nil) {
+                cid = self.commentTwoView.choosenComment.cid;
+            }
+            [viewModel postCommentTwoWith:self.uid cid:cid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.commentText setText:@""];
+                    //[self.commentTwoView.commentsListSecond addObject:comment];
+                    [self.commentTwoView.commentViewTableView reloadData];
+                });
+            } failure:^(NSError * _Nonnull error) {
+                NSLog(@"请求失败 error:%@",error.description);
+            }];
+        }
     }
     else {
-        int cid;
-        if(self.commentTwoView != nil) {
-            cid = self.commentTwoView.choosenComment.cid;
-        }
-        [viewModel postCommentTwoWith:3 cid:cid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.commentText setText:@""];
-                //[self.commentTwoView.commentsListSecond addObject:comment];
-                [self.commentTwoView.commentViewTableView reloadData];
-            });
-        } failure:^(NSError * _Nonnull error) {
-            NSLog(@"请求失败 error:%@",error.description);
-        }];
+        Toast *toast = [[Toast alloc] init];
+        [toast popUpToastWithMessage:@"请先登录"];
     }
 }
 
@@ -756,7 +771,7 @@
     NSLog(@"loadMoreData");
     self.isLoading = YES;
     CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
-    [viewModel getFeedsListWithID:2 offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+    [viewModel getFeedsListWithID:self.myVideo.vid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
         if(dataArray.count == 0) {
             self.hasMore = NO;
         }
@@ -898,7 +913,7 @@
 
     if([tableView isEqual:self.commentTableView]) {
         if(indexPath.section == 1) {
-            return 110;
+            return 100;
         }
         else if(indexPath.section == 0){
             return [self.myVideo getHeight] + 160;
@@ -933,19 +948,25 @@
 
 - (void)videoLikeBtnDelegate:(VideoDetailTableViewCell *)cell{
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
-        self.myVideo.isLike = isLike;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isLike) {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    if(self.isLogin) {
+        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+            self.myVideo.isLike = isLike;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLike) {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
+    else {
+        Toast *toast = [[Toast alloc] init];
+        [toast popUpToastWithMessage:@"请先登录"];
+    }
 }
 
 - (void)closeCommentsViewBtnDelegate:(CommentsView *)view{
@@ -954,40 +975,52 @@
 
 - (void)likeBarBtnClick:(UIButton*) button {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel likeVideoWithUid:3 vid:self.myVideo.vid success:^(BOOL isLikeGet, int likeNumGet) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isLikeGet) {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-            }
-            //[self.likeBarBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
-    if (_delegate && [_delegate respondsToSelector:@selector(videoLikeBarBtnDelegate:)]){
-        //[self.startBtn removeFromSuperview];
-        [_delegate videoLikeBarBtnDelegate:self];
+    if(self.isLogin) {
+        [viewModel likeVideoWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLikeGet, int likeNumGet) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLikeGet) {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
+                //[self.likeBarBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+        if (_delegate && [_delegate respondsToSelector:@selector(videoLikeBarBtnDelegate:)]){
+            //[self.startBtn removeFromSuperview];
+            [_delegate videoLikeBarBtnDelegate:self];
+        }
+    }
+    else {
+        Toast *toast = [[Toast alloc] init];
+        [toast popUpToastWithMessage:@"请先登录"];
     }
 }
 
 -(void)starBtnClick:(UIButton*) button {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
-    [viewModel starVideoWithUid:3 vid:self.myVideo.vid success:^(BOOL isStarGet) {
-        self.myVideo.isStar = isStarGet;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(isStarGet) {
-                [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
-            }
-            else {
-                [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-    }];
+    if(self.isLogin){
+        [viewModel starVideoWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isStarGet) {
+            self.myVideo.isStar = isStarGet;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isStarGet) {
+                    [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
+    else {
+        Toast *toast = [[Toast alloc] init];
+        [toast popUpToastWithMessage:@"请先登录"];
+    }
 }
 
 @end

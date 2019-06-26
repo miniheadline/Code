@@ -42,11 +42,14 @@
 @property (nonatomic) BOOL isFirstLoading;
 @property (nonatomic) BOOL isLoading;
 
-@property (nonatomic) int offset;
+@property (nonatomic) NSInteger offset;
+@property (nonatomic) NSMutableArray *offsetArray;
 
 @end
 
 @implementation FirstPageViewController
+
+#pragma mark - LifeCycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -58,69 +61,14 @@
     [self loadMoreData];
 }
 
+
+#pragma mark - Init
+
 - (void)initVar {
     self.offset = 0;
     self.isLoading = NO;
     self.isFirstLoading = YES;
 }
-
-- (void)setupUpRefresh {
-    self.newsTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-}
-
-- (void)setupDownRefresh {
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    self.newsTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
-}
-
-- (void)loadNewData {
-    NSLog(@"loadNewData");
-    self.isLoading = YES;
-    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
-    [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
-        NSRange range = NSMakeRange(0, 20);
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.newsTableView reloadData];
-            [self.newsTableView.mj_header endRefreshing];
-            self.offset = self.offset + 20;
-            self.isLoading = NO;
-            NSLog(@"reload tableview");
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-        [self.newsTableView.mj_header endRefreshing];
-        self.isLoading = NO;
-    }];
-}
-
-- (void)loadMoreData {
-    NSLog(@"loadMoreData");
-    self.isLoading = YES;
-    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
-    [viewModel getFeedsListWithOffset:self.offset success:^(NSMutableArray * _Nonnull dataArray) {
-        [self.tableDataArray addObjectsFromArray:dataArray];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.newsTableView reloadData];
-            [self.newsTableView.mj_footer endRefreshing];
-            self.isLoading = NO;
-            self.offset = self.offset + 20;
-            if (self.isFirstLoading == YES) {
-                // 集成下拉刷新控件
-                [self setupDownRefresh];
-                // 集成上拉刷新控件
-                [self setupUpRefresh];
-            }
-            NSLog(@"reload tableview");
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-        [self.newsTableView.mj_footer endRefreshing];
-        self.isLoading = NO;
-    }];
-}
-
 
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
@@ -257,6 +205,83 @@
     [self.view addSubview:self.newsTableView];
 }
 
+- (void)setupUpRefresh {
+    self.newsTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+}
+
+- (void)setupDownRefresh {
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
+    self.newsTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+}
+
+
+#pragma mark - LoadData
+
+- (void)loadNewData {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
+    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
+        // 返回的数据插入在前面
+        NSRange range = NSMakeRange(0, 20);
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
+        NSMutableArray *indexArray = [NSMutableArray array];
+        for (NSInteger i = 0; i < 20; i++) {
+            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
+            [indexArray addObject:temp];
+        }
+        [self.offsetArray insertObjects:indexArray atIndexes:indexSet];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.newsTableView reloadData];
+            [self.newsTableView.mj_header endRefreshing];
+            self.offset = self.offset + 20;
+            self.isLoading = NO;
+            NSLog(@"reload tableview");
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        [self.newsTableView.mj_header endRefreshing];
+        self.isLoading = NO;
+    }];
+}
+
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
+        // 返回的数据插入在后面
+        [self.tableDataArray addObjectsFromArray:dataArray];
+        NSMutableArray *indexArray = [NSMutableArray array];
+        for (NSInteger i = 0; i < 20; i++) {
+            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
+            [indexArray addObject:temp];
+        }
+        [self.offsetArray addObjectsFromArray:indexArray];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.newsTableView reloadData];
+            [self.newsTableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.offset + 20;
+            if (self.isFirstLoading == YES) {
+                // 集成下拉刷新控件
+                [self setupDownRefresh];
+                // 集成上拉刷新控件
+                [self setupUpRefresh];
+            }
+            NSLog(@"reload tableview");
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        [self.newsTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+}
+
+
+#pragma mark - LazyLoading
+
 // 懒加载
 - (NSMutableArray *)tableDataArray {
     if (_tableDataArray == nil || _tableDataArray == NULL) {
@@ -265,8 +290,15 @@
     return _tableDataArray;
 }
 
+- (NSMutableArray *)offsetArray {
+    if (_offsetArray == nil || _offsetArray == NULL) {
+        _offsetArray = [NSMutableArray array];
+    }
+    return _offsetArray;
+}
 
-#pragma mark - SingleTap
+
+#pragma mark - TapGesture
 
 // 点击除下拉菜单之外的区域触发事件
 - (void)otherSingleTap:(UIGestureRecognizer *)gestureRecognizer {
@@ -288,7 +320,6 @@
     SearchViewController *searchVC = [[SearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:NO];
 }
-
 
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
@@ -351,7 +382,6 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     if (indexPath.row == self.tableDataArray.count - 5 && self.isLoading == NO) {
         [self loadMoreData];
     }
@@ -373,6 +403,9 @@
         NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
         NewsModel *temp = self.tableDataArray[indexPath.row];
         newsDetailVC.groupID = temp.groupID;
+        newsDetailVC.newsTitle = temp.title;
+        NSLog(@"%@", self.offsetArray[indexPath.row]);
+        newsDetailVC.nid = (NSInteger)self.offsetArray[indexPath.row];
         [self.navigationController pushViewController:newsDetailVC animated:NO];
     }
 }
@@ -400,5 +433,6 @@
         self.tagView.alpha = 1;
     }
 }
+
 
 @end

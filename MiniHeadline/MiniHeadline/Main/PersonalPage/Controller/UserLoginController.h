@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class UserInfoModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (void)userLoginController:(UserLoginController *)userLoginController goBackWithIsLogin:(BOOL)isLogin;
+- (void)userLoginController:(UserLoginController *)userLoginController goBackWithUser:(UserInfoModel *)_user;
 
 @end
 

@@ -191,7 +191,7 @@
 
 - (void)getLikeNumWithUid:(int)uid vid:(int)vid success:(void (^)(int))success failure:(void (^)(NSError * _Nonnull))failure {
     //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/isUserConnect?uid=%d&vid=%d&type=2", uid, vid];
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getVideo?uid=%d&vid=%d&type=0", uid, vid];
     NSURL *url = [NSURL URLWithString:urlString];
     
     //2.创建请求对象
@@ -210,15 +210,9 @@
      error：错误信息，如果请求失败，则error有值
      */
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-        if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            NSInteger status = (NSInteger)[dict objectForKey:@"status"];
-            success(status == 1);
-            NSLog(@"isLike:%@", [dict objectForKey:@"status"]);
-        }
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        int likeNum = [[dict objectForKey:@"likeNum"] integerValue];
+        success(likeNum);
     }];
     
     //5.执行任务
@@ -296,7 +290,7 @@
         NSString* text = [res objectForKey:@"text"];
         int uid = [[res objectForKey:@"from_uid"] integerValue];
         int replyNum = [[res objectForKey:@"replyNum"] integerValue];
-        int likeNum = [[res objectForKey:@"replyNum"] integerValue];
+        int likeNum = [[res objectForKey:@"likeNum"] integerValue];
         NSString *time = [res objectForKey:@"time"];
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"yyyy-MM-dd"];

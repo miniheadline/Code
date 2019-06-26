@@ -66,21 +66,23 @@
     self.time.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.time];
     [self.title makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.top).with.offset(10);
+        make.top.equalTo(self.top).with.offset(20);
         make.left.equalTo(self.left).with.offset(10);
     }];
     [self.detail makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.title.bottom).with.offset(10);
-        make.left.equalTo(self.title.left);
+        make.bottom.equalTo(self.bottom).with.offset(-20);
+        make.left.equalTo(self.title.left).with.offset(10);
     }];
     [self.videoImage makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.top).with.offset(10);
         make.right.equalTo(self.right).with.offset(-10);
-        make.bottom.equalTo(self.bottom).with.offset(-10);
+        make.height.equalTo(80);
+        make.width.equalTo(120);
     }];
     [self.time makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.imageView.bottom).with.offset(-10);
-        make.right.equalTo(self.imageView.right).with.offset(-10);
+        make.bottom.equalTo(self.videoImage.bottom).with.offset(-10);
+        make.right.equalTo(self.videoImage.right).with.offset(-10);
+        make.width.equalTo(43);
     }];
 }
 
