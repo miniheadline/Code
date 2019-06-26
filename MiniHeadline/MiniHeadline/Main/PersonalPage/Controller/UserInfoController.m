@@ -10,9 +10,9 @@
 #import "UIColor+Hex.h"
 #import "UserInfoModel.h"
 #import "EditInfoController.h"
-#import "nextPage_1/InfoTableViewCell.h"
-#import "nextPage_1/InfoTableViewCellWithPicture.h"
-#import "nextPage_1/NSComment.h"
+#import "InfoTableViewCell.h"
+#import "InfoTableViewCellWithPicture.h"
+#import "NSComment.h"
 #import "UIImageView+WebCache.h"
 
 @interface UserInfoController ()<UITableViewDelegate, UITableViewDataSource>

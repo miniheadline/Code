@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setStarBtnStateWithIsStar:(BOOL)isStar;
 - (void)setLikeBtnStateWithIsLike:(BOOL)isLike;
 
+- (void)setCommentCountWithNumber:(NSInteger)count;
+
 @end
 
 NS_ASSUME_NONNULL_END
