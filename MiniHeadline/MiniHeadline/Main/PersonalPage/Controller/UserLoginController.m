@@ -193,11 +193,15 @@
             NSLog(@"%d, %d",error_code,uid);
             NSLog(@"%@",str);
             if(error_code == -2){
-                [[[Toast alloc] init] popUpToastWithMessage:@"用户不存在"];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[[Toast alloc] init] popUpToastWithMessage:@"用户不存在"];
+                });
                 self.user.isLogin = NO;
             }
             else if(error_code == -1){
-                [[[Toast alloc] init] popUpToastWithMessage:@"密码错误"];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[[Toast alloc] init] popUpToastWithMessage:@"密码错误"];
+                });
                 self.user.isLogin = NO;
             }
             else if(error_code == 0){
@@ -351,4 +355,10 @@
     });
     [self.view addSubview:self.registerButton];
 }
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.usernameTextField resignFirstResponder];
+    [self.passwordTextField resignFirstResponder];
+}
+
 @end
