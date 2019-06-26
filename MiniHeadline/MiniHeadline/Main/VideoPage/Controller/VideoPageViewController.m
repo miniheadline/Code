@@ -14,6 +14,12 @@
 #import "../../../Common/UIColor+Hex.h"
 #import "VideoDetailViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "MJRefresh.h"
+#import "../ViewModel/VideoListViewModel.h"
+#import "../View/SimpleVideoView.h"
+#import "../../PersonalPage/Model/UserInfoModel.h"
+
+static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 
 @interface VideoPageViewController ()
 @property (nonatomic, strong) UIView *searchBackgroundView;
@@ -28,6 +34,14 @@
 @property(nonatomic, strong)NSMutableArray<MyVideo*>* dataList;
 @property(nonatomic, assign)LoadingStatus status;
 @property(nonatomic, assign)NSInteger pageIndex;
+@property(nonatomic, assign)BOOL isLoading;
+@property(nonatomic, assign)NSInteger offset;
+@property (nonatomic, assign) UITableViewCell *cell;
+@property (nonatomic, strong) SimpleVideoView *playerView;
+@property (nonatomic, strong) UIView *whiteView;
+@property (nonatomic, assign) BOOL isFirst;
+@property (nonatomic, assign) int uid;
+@property (nonatomic, assign) BOOL isLogin;
 @end
 
 @implementation VideoPageViewController
@@ -71,22 +85,118 @@
         UITableView* tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 90, screenBound.size.width, screenBound.size.height-180) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.tableFooterView = [UIView new];
+        tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         tableView;
     });
     [self.view addSubview:self.tableView];
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height)];
+    [self.whiteView setBackgroundColor:[UIColor whiteColor]];
+    [self.view addSubview:self.whiteView];
     
-    NSArray* firstPage = [self loadData:0];
+    
+    /*NSArray* firstPage = [self loadData:0];
     self.dataList = [NSMutableArray arrayWithArray:firstPage];
-    self.pageIndex = 0;
+    self.pageIndex = 0;*/
+    self.dataList = [[NSMutableArray alloc] init];
+    self.offset = 1;
+    self.isFirst = YES;
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
+    [self loadMoreData];
     
-    [self setupDownRefresh];
+}
+
+- (void)loadNewData {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
+    
+    VideoListViewModel *viewModel = [[VideoListViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        NSRange range = NSMakeRange(0, 5);
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.dataList insertObjects:dataArray atIndexes:indexSet];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            [self.tableView.mj_header endRefreshing];
+            self.offset = self.offset + 5;
+            self.isLoading = NO;
+            NSLog(@"reload tableview");
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        [self.tableView.mj_header endRefreshing];
+        self.isLoading = NO;
+    }];
+    /*for(int i=0; i<3; i++){
+        //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        NSString *path;
+        if(i==0) {
+            path = @"http://149.28.26.98/video.mp4";
+        }
+        else if (i == 1) {
+            path = @"http://149.28.26.98/ramen.mp4";
+        }
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*10000];
+        [self.dataList addObject:myVideo];
+    }*/
+    /*dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        self.offset = self.offset + 20;
+        self.isLoading = NO;
+        NSLog(@"reload tableview");
+    });*/
+}
+
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    VideoListViewModel *viewModel = [[VideoListViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        [self.dataList addObjectsFromArray:dataArray];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            [self.tableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.offset + 5;
+            NSLog(@"reload tableview");
+            if(self.isFirst) {
+                [self.whiteView removeFromSuperview];
+            }
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+        [self.tableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+    /*for(int i=0; i<3; i++){
+        //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        NSString *path;
+        if(i==0) {
+            path = @"http://149.28.26.98/video.mp4";
+        }
+        else if (i == 1) {
+            path = @"http://149.28.26.98/ramen.mp4";
+        }
+        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*10000];
+        [self.dataList addObject:myVideo];
+    }*/
+    /*dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+        self.offset = self.offset + 5;
+        NSLog(@"reload tableview");
+    });*/
 }
 
 - (NSArray*)loadData:(NSInteger)pageIndex{
     NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
     for(int i=0; i<3; i++){
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
+        NSString *path = @"http://149.28.26.98/video.mp4";
         MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
         [result addObject:myVideo];
     }
@@ -94,87 +204,42 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataList.count + 1; // 增加的1为加载更多
+    return self.dataList.count; // 增加的1为加载更多
 }
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     NSInteger cellType;
-    if(indexPath.row == self.dataList.count) {
-        cellType = 0;
-    }
-    else {
-        cellType = self.dataList[indexPath.row].cellType;
-    }
+    cellType = self.dataList[indexPath.row].cellType;
     NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
-    
+    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+    VideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
     if(cell == nil) {
-        if(cellType == 0){
-            cell = [[LoadingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-            ((LoadingTableViewCell*) cell).status = self.status;
-            cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-        }
-        else if(cellType == 1) {
-            cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-            [(VideoTableViewCell*)cell setCellData:self.dataList[indexPath.row]];
-            //cell.cellD
-        }
-        else if(cellType == 2) {
-            
-        }
+        cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+        [(VideoTableViewCell*)cell setCellData:self.dataList[indexPath.row]];
+        cell.delegate = self;
+        
     } else {
-        if(cellType == 0){
-            ((LoadingTableViewCell*) cell).status = self.status;
-            cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-        }
-        else if(cellType == 1) {
-            [(VideoTableViewCell*)cell setCellData:self.dataList[indexPath.row]];
-        }
-        else if(cellType == 2) {
-            
-        }
+        [(VideoTableViewCell*)cell setCellData:self.dataList[indexPath.row]];
+        cell.delegate = self;
     }
     
     return cell;
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if(indexPath.row == self.dataList.count) {
-        self.status = LoadingStatusLoding;
-        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.pageIndex++;
-            if (self.pageIndex < 5) {
-                self.status = LoadingStatusDefault;
-            } else {
-                self.status = LoadingStatusNoMore;
-            }
-            
-            NSArray *newPage = [self loadData:self.pageIndex];
-            [self.dataList addObjectsFromArray:newPage];
-            
-            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
-        });
-    }
-    else {
-        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        if ([tableView isEqual:self.tableView]) {
-            // 跳转
-            VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
-            videoDetailViewController.myVideo = self.dataList[indexPath.row];
-            [self.navigationController pushViewController:videoDetailViewController animated:NO];
-        }
+    NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if ([tableView isEqual:self.tableView]) {
+        // 跳转
+        VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
+        videoDetailViewController.myVideo = self.dataList[indexPath.row];
+        [self.navigationController pushViewController:videoDetailViewController animated:NO];
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == self.dataList.count) {
-        return 30;
-    }
-    return 300;
+    return 270;
 }
 
 // 通知委托指定行将要被选中，返回响应行的索引
@@ -182,30 +247,56 @@
     NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     return indexPath;
 }
-- (void)setupDownRefresh {
-    UIRefreshControl *control = [[UIRefreshControl alloc] init];
-    [control addTarget:self action:@selector(loadNewData:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:control];
-}
 
-- (void)loadNewData:(UIRefreshControl *)control {
-    NSMutableArray* result = [NSMutableArray arrayWithCapacity:3];
-    for(int i=0; i<3; i++){
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-        MyVideo *myVideo = [[MyVideo alloc] initWithVideo:[NSString stringWithFormat:@"title: %d_new", i] video:path authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] icon:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
-        [result addObject:myVideo];
+/*- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    //因为复用，同一个cell可能会走多次
+    if ([_cell isEqual:cell]) {
+        //区分是否是播放器所在cell,销毁时将指针置空
+        [_playerView destroyPlayer];
+        _cell = nil;
     }
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndex:0];
-    [indexes addIndex:1];
-    [indexes addIndex:2];
-    [self.dataList insertObjects:result atIndexes:indexes];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [control endRefreshing];
-    });
+}*/
+
+- (void)cl_tableViewCellPlayVideoWithCell:(VideoTableViewCell *)cell{
+    //记录被点击的Cell
+    _cell = cell;
+    //销毁播放器
+    [_playerView destroyPlayer];
+    SimpleVideoView *playerView = [[SimpleVideoView alloc] initWithFrame:cell.videoView.frame];
+    //playerView.frame = cell.videoView.frame;
+    _playerView = playerView;
+    //[cell.videoView addSubview:_playerView];
+    [cell.videoView insertSubview:_playerView belowSubview:cell.titleLabel];
+    //视频地址
+    _playerView.url = cell.videoModel.video;
+    [_playerView loadVideo];
+    //播放
+    [_playerView playVideo];
+    
 }
 
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    if (indexPath.row == self.dataList.count - 1 && self.isLoading == NO) {
+        [self loadMoreData];
+    }
+    
+}*/
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    //我尝试去修改作者的，似乎也没有起作用，所有自己在改方法中进行销毁
+    NSArray *cells = [self.tableView visibleCells];
+    if (![cells containsObject:self.cell]) {
+        
+        if (self.playerView) {
+            //销毁播放器
+            [self.playerView destroyPlayer];
+            self.playerView = nil;
+        }
+        
+    }
+}
 
 
 @end

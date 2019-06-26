@@ -21,8 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) NSInteger commentNum;
 @property(nonatomic, assign) BOOL isFollow;
 @property(nonatomic, assign) NSInteger playNum;
+@property(nonatomic, assign) int vid;
+@property(nonatomic, strong) NSString *detail;
+@property(nonatomic, assign) float height;
+@property(nonatomic, assign) int likeNum;
+@property(nonatomic, assign) BOOL isLike;
+@property(nonatomic, assign) BOOL isStar;
 - (instancetype)initWithVideo:(NSString*)title video:(NSString*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow
     playNum:(NSInteger)playNum;
+- (float) getHeight;
 
 @end
 

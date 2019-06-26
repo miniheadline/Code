@@ -11,17 +11,21 @@
 #define MAS_SHORTHAND_GLOBALS
 #import "CommentsView.h"
 #import "Masonry.h"
+#import "MJRefresh.h"
 
 
 @interface CommentsView()
 @property (nonatomic, strong) UILabel *commentViewLabel;
-@property (nonatomic, strong) UITableView *commentViewTableView;
+
 @property (nonatomic, strong) UIButton *closeCommentViewBtn;
 @property (nonatomic, strong) UIView *line1;
 @property (nonatomic, strong) UIView *line;
-@property (nonatomic, strong) NSMutableArray<MyComment*>* commentsListSecond;
+
 @property (nonatomic, assign) LoadingStatus status2;
 @property (nonatomic, assign) NSUInteger pageIndexSecond;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, assign) int offset;
+@property (nonatomic, assign) BOOL hasMore;
 @end
 @implementation CommentsView
 
@@ -35,8 +39,9 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        
-        
+        self.isLoading = false;
+        self.offset = 0;
+        self.hasMore = YES;
         /*self.commentViewLabel = [[UILabel alloc]init];
         [self.commentViewLabel setText:@"所有评论"];
         [self addSubview:self.commentViewLabel];*/
@@ -68,15 +73,19 @@
 }
 
 - (IBAction)closeComment:(id)sender {
+    if (_delegate && [_delegate respondsToSelector:@selector(closeCommentsViewBtnDelegate:)]){
+        //[self.startBtn removeFromSuperview];
+        [_delegate closeCommentsViewBtnDelegate:self];
+    }
     [self removeFromSuperview];
 }
 
 - (UITableView *) commentViewTableView {
     if(_commentViewTableView == nil) {
-        UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 52, self.frame.size.width, 290) style:UITableViewStylePlain]);
+        UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 52, self.frame.size.width, 400) style:UITableViewStylePlain]);
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.tableFooterView = [UIView new];
+        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [self addSubview:tableView];
         _commentViewTableView = tableView;
     }
@@ -117,10 +126,12 @@
 #pragma mark- 模型赋值
 - (void)setCommentData:(MyComment *)choosenComment{
     _choosenComment = choosenComment;
-    NSArray* commentPart = [self loadComment:1];
-    self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
-    self.pageIndexSecond = 0;
-    [self.commentViewTableView reloadData];
+    //NSArray* commentPart = [self loadComment:1];
+    //self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
+    //self.pageIndexSecond = 0;
+    //[self.commentViewTableView reloadData];
+    self.commentsListSecond = [[NSMutableArray alloc] init];
+    [self loadMoreData];
 }
 
 #pragma mark- 子控件坐标
@@ -155,28 +166,41 @@
         make.right.equalTo(self);
         make.height.equalTo(1);
     }];
-    self.commentViewTableView.frame = CGRectMake(0, 52, self.frame.size.width, 290);
+    //self.commentViewTableView.frame = CGRectMake(0, 52, self.frame.size.width, 480);
+    [self.commentViewTableView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.line.bottom);
+        make.bottom.equalTo(self.bottom);
+        make.left.equalTo(self);
+        make.right.equalTo(self);
+    }];
+    [self loadMoreData];
 }
 
-- (NSArray*)loadComment:(NSInteger)tableViewType{
-    NSMutableArray* result;
-    if(tableViewType == 0) {
-        result = [NSMutableArray arrayWithCapacity:3];
-        for(int i=0; i<3; i++){
-            //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-            MyComment *myComment = [[MyComment alloc] initWithComment:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] comment:[NSString stringWithFormat:@"日清和海贼王的联动广告，哈哈哈哈哈哈不愧是日清的广告，我还记得之前的小狐狸吉冈里帆_%d", i]  likeNum:(i+1)*10 isLike:NO date:[NSDate date]];
-            [result addObject:myComment];
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
+    [viewModel getCommentListWithID:self.choosenComment.cid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        if(dataArray.count == 0) {
+            self.hasMore = NO;
         }
-    }
-    else {
-        result = [NSMutableArray arrayWithCapacity:3];
-        for(int i=0; i<3; i++){
-            //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-            MyComment *myComment = [[MyComment alloc] initWithComment:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] comment:[NSString stringWithFormat:@"你这个什么垃圾评论啊_%d", i]  likeNum:(i+1)*10 isLike:NO date:[NSDate date]];
-            [result addObject:myComment];
+        else {
+            self.hasMore = YES;
         }
-    }
-    return result;
+        if (dataArray != nil) {
+            [self.commentsListSecond addObjectsFromArray:dataArray];
+        }
+        NSLog(@"count: %d", self.commentsListSecond.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.commentViewTableView reloadData];
+            [self.commentViewTableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.commentsListSecond.count;
+        });
+    } failure:^(NSError * _Nonnull error) {
+        [self.commentViewTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -188,17 +212,14 @@
         return 1;
     }
     else {
-        return self.commentsListSecond.count+1;
+        return self.commentsListSecond.count;
     }
 }
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     NSInteger cellType;
     UITableViewCell* cell;
-    if(indexPath.row == self.commentsListSecond.count) {
-        cellType = 0;
-    }
-    else if(indexPath.section == 0) {
+    if(indexPath.section == 0) {
         cellType = 3;
     }
     else {
@@ -213,8 +234,9 @@
             cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
         }
         else if(cellType == 2) {
-            cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-            [(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
+            cell = [[CommentTwoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            //[(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
+            [(CommentTwoTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row] username:self.choosenComment.authorName];
         }
         else if(cellType == 3) {
             cell = [[ChoosenCommentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
@@ -227,7 +249,7 @@
             cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
         }
         else if(cellType == 2) {
-            [(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
+            [(CommentTwoTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row] username:self.choosenComment.authorName];
         }
         else if(cellType == 3) {
             [(ChoosenCommentTableViewCell*)cell setCellData:self.choosenComment];
@@ -236,36 +258,19 @@
     return cell;
 }
 
-- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if (indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
-        self.status2 = LoadingStatusLoding;
-        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.pageIndexSecond++;
-            if (self.pageIndexSecond < 5) {
-                self.status2 = LoadingStatusDefault;
-            } else {
-                self.status2 = LoadingStatusNoMore;
-            }
-            
-            NSArray *newPage = [self loadComment:1];
-            [self.commentsListSecond addObjectsFromArray:newPage];
-            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
-        });
-    }
-    
-}
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
-        return 30;
+    if(indexPath.section == 0) {
+        return self.choosenComment.height;
     }
-    else {
-        if(indexPath.section == 0) {
-            return self.choosenComment.height;
-        }
-        return self.commentsListSecond[indexPath.row].height;
+    return self.commentsListSecond[indexPath.row].height;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    if (indexPath.row == self.commentsListSecond.count - 1 && self.isLoading == NO && _hasMore == YES) {
+        [self loadMoreData];
     }
 }
 

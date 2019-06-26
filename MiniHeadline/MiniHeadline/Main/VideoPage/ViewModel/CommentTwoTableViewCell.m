@@ -1,20 +1,19 @@
 //
-//  CommentTableViewCell.m
+//  CommentTwoTableViewCell.m
 //  MiniHeadline
 //
-//  Created by huangscar on 2019/5/3.
+//  Created by huangscar on 2019/6/26.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 // 定义这个常量，就可以不用在开发过程中使用mas_前缀。
 #define MAS_SHORTHAND
 // 定义这个常量，就可以让Masonry帮我们自动把基础数据类型的数据，自动装箱为对象类型。
 #define MAS_SHORTHAND_GLOBALS
-#import "CommentTableViewCell.h"
+#import "CommentTwoTableViewCell.h"
 #import "../Model/MyComment.h"
 #import "Masonry.h"
 
-
-@interface CommentTableViewCell()
+@interface CommentTwoTableViewCell()
 
 @property (nonatomic, strong) UIButton* icon;
 @property (nonatomic, strong) UIButton* name;
@@ -24,7 +23,7 @@
 
 @end
 
-@implementation CommentTableViewCell
+@implementation CommentTwoTableViewCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -33,7 +32,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
@@ -54,8 +53,8 @@
     self.name.font = [UIFont systemFontOfSize:15];
     [self.contentView addSubview:self.name];
     /*self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(348, 18, 46, 23)];
-    [self.likeBtn setImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
-    [self.contentView addSubview:self.likeBtn];*/
+     [self.likeBtn setImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
+     [self.contentView addSubview:self.likeBtn];*/
     self.comments = [[UILabel alloc] initWithFrame:CGRectMake(54, 49, 340, 30)];
     self.comments.font = [UIFont systemFontOfSize:17];
     self.comments.numberOfLines = 0;
@@ -74,9 +73,9 @@
         make.left.equalTo(self.icon.right).with.offset(10);
     }];
     /*[self.likeBtn makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.icon.centerY);
-        make.right.equalTo(self.contentView).with.offset(-15);
-    }];*/
+     make.centerY.equalTo(self.icon.centerY);
+     make.right.equalTo(self.contentView).with.offset(-15);
+     }];*/
     [self.comments makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.name.bottom).with.offset(10);
         make.left.equalTo(self.name.left);
@@ -89,13 +88,14 @@
     }];
 }
 
-- (void)setCellData:(MyComment*) data {
+- (void)setCellData:(MyComment*) data username:(NSString*)username {
     self.data = data;
     [self.icon setBackgroundImage:data.icon forState:UIControlStateNormal];
     [self.comments setText:data.comment];
     //CGRect rect = [data.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.name.font} context:nil];
     //[self.name setFrame:CGRectMake(54, 12, rect.size.width, 33)];
-    [self.name setTitle:data.authorName forState:UIControlStateNormal];
+    NSString* nameStr = [NSString stringWithFormat:@"%@  回复  %@", data.authorName, username];
+    [self.name setTitle:nameStr forState:UIControlStateNormal];
     /*[self.likeBtn setTitle:[NSString stringWithFormat:@"%d", data.likeNum] forState:UIControlStateNormal];*/
     //rect = [data.comment boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.comments.font} context:nil];
     //NSInteger commentsHeight = ceil(rect.size.height)+1;
