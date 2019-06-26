@@ -11,8 +11,7 @@
 #import "SettingViewController.h"
 #import "UserInfoModel.h"
 #import "UserInfoController.h"
-#import "nextPage_1/ChildPageViewController.h"
-#import "nextPage_2/ChildPage2ViewController.h"
+#import "ChildPageViewController.h"
 #import "UserLoginController.h"
 #import "UserRegisterController.h"
 #import "Toast.h"
@@ -115,16 +114,10 @@
 
 - (void)FansLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
     NSLog(@"Fans Click");
-    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
-    
-    [self.navigationController pushViewController:controller animated:NO];
 }
 
 - (void)LikeLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
     NSLog(@"Like Click");
-    ChildPage2ViewController *controller = [[ChildPage2ViewController alloc] init];
-    
-    [self.navigationController pushViewController:controller animated:NO];
 }
 
 

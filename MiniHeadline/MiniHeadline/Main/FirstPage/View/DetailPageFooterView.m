@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UILabel *writeCommentLabel;
 @property (nonatomic, strong) UIImageView *writeImageView;
 @property (nonatomic, strong) UIImageView *commentImageView;
+@property (nonatomic, strong) UILabel *commentCountLabel;
 @property (nonatomic, strong) UIImageView *starImageView;
 @property (nonatomic, strong) UIImageView *likeImageView;
 
@@ -43,6 +44,7 @@
     self.writeCommentLabel.frame = CGRectMake(45, 5, 100, 30);
     self.writeImageView.frame = CGRectMake(10, 5, 30, 30);
     self.commentImageView.frame = CGRectMake(width - 160, 10, 30, 30);
+    self.commentCountLabel.frame = CGRectMake(width - 140, 5, 20, 15);
     self.starImageView.frame = CGRectMake(width - 100, 10, 30, 30);
     self.likeImageView.frame = CGRectMake(width - 40, 10, 30, 30);
 }
@@ -107,6 +109,22 @@
         _commentImageView = imageView;
     }
     return _commentImageView;
+}
+
+- (UILabel *)commentCountLabel {
+    if (_commentCountLabel == nil) {
+        UILabel *label = [[UILabel alloc] init];
+        label.text = @"0";
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont systemFontOfSize:10];
+        label.backgroundColor = [UIColor colorWithHexString:@"#FF7256"];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.layer.cornerRadius = 8;
+        label.layer.masksToBounds = YES;
+        [self addSubview:label];
+        _commentCountLabel = label;
+    }
+    return _commentCountLabel;
 }
 
 - (UIImageView *)starImageView {
@@ -195,6 +213,12 @@
     NSString *imageName = isLike ? @"like_selected.png" : @"like_unselected.png";
     dispatch_async(dispatch_get_main_queue(), ^{
         self.likeImageView.image = [UIImage imageNamed:imageName];
+    });
+}
+
+- (void)setCommentCountWithNumber:(NSInteger)count {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        self.commentCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count];
     });
 }
 
