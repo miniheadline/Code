@@ -14,13 +14,18 @@
 #import "../Model/MyVideo.h"
 #import <AVFoundation/AVFoundation.h>
 #import "../Model/MyComment.h"
-#import "../ViewModel/LoadingTableViewCell.h"
+
 #import "../ViewModel/RecommendationVideoTableViewCell.h"
 #import "../ViewModel/CommentTableViewCell.h"
 #import "../ViewModel/ChoosenCommentTableViewCell.h"
-#import "../ViewModel/CommentsView.h"
+#import "../View/CommentsView.h"
 #import "Masonry.h"
 #import "../ViewModel/VideoDetailTableViewCell.h"
+#import "MJRefresh.h"
+#import "../ViewModel/CommentIDViewModel.h"
+#import "../ViewModel/PostViewModel.h"
+#import "../ViewModel/VideoListViewModel.h"
+
 
 @interface VideoDetailViewController ()
 
@@ -75,6 +80,11 @@
 @property (nonatomic, assign) NSInteger pageIndexSecond;
 @property(nonatomic, assign) LoadingStatus status;
 @property(nonatomic, assign) LoadingStatus status2;
+@property(nonatomic, strong) NSMutableArray<NSNumber*> *cids;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, assign) NSInteger offset;
+@property (nonatomic, assign) BOOL hasMore;
+@property (nonatomic, assign) BOOL isTwo;
 @end
 
 @implementation VideoDetailViewController
@@ -84,8 +94,54 @@
     
     if(self.myVideo) {
         self.isPlay = NO;
+        [self setData];
         [self addSubViews];
+        self.isLoading = false;
+        self.offset = 0;
+        [self loadRecommendationData];
+        [self loadMoreData];
+        self.isTwo = NO;
     }
+}
+
+- (void)setData {
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    [viewModel browseVideoWithUid:3 vid:self.myVideo.vid success:^{
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
+        self.myVideo.isLike = isLike;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(isLike) {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+            }
+            else {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+            }
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+    [viewModel getIsStarWithUid:3 vid:self.myVideo.vid success:^(BOOL isStar) {
+        self.myVideo.isStar = isStar;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(isStar) {
+                [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
+            }
+            else {
+                [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
+            }
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+    /*[viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
+        self.myVideo.likeNum = likeNumGet;
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];*/
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -99,6 +155,9 @@
 }
 
 - (void)addSubViews {
+    
+    
+    
     // 获取屏幕尺寸（包括状态栏）
     CGRect screenBound = [UIScreen mainScreen].bounds;
     // 获取状态栏尺寸
@@ -179,7 +238,7 @@
     [self.footToolBar addSubview:self.starBtn];
     self.likeBarBtn = [[UIButton alloc] init];
     //self.likeBarBtn = [[UIButton alloc] initWithFrame:CGRectMake(296, 8, 25, 25)];
-    [self.likeBarBtn setBackgroundImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
+    [self.likeBarBtn setBackgroundImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
     [self.footToolBar addSubview:self.likeBarBtn];
     self.shareBtn = [[UIButton alloc] init];
     //self.shareBtn = [[UIButton alloc] initWithFrame:CGRectMake(351, 8, 25, 25)];
@@ -188,7 +247,7 @@
     self.videoView = [[UIView alloc] init];
     //self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0, 44, screenBound.size.width, 254)];
     self.videoView.backgroundColor = [UIColor blackColor];
-    NSURL *url = [NSURL fileURLWithPath:self.myVideo.video];
+    NSURL *url = [NSURL URLWithString:self.myVideo.video];
     self.videoPlayer = [AVPlayer playerWithURL:url];
     self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
     [self.videoView.layer addSublayer:self.video];
@@ -356,7 +415,7 @@
         UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 477, 414, 341) style:UITableViewStylePlain]);
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.tableFooterView = [UIView new];
+        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         tableView;
     });
     [self.view addSubview:self.commentTableView];
@@ -369,11 +428,10 @@
     self.fullView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 896, 414)];
     
     
-    NSArray* videoPart = [self loadVideo];
-    self.recommendationVideoList = [NSMutableArray arrayWithArray:videoPart];
-    NSArray* commentPart = [self loadComment:0];
-    self.commentsList = [NSMutableArray arrayWithArray:commentPart];
-    self.pageIndex = 0;
+    //NSArray* videoPart = [self loadVideo];
+    //self.recommendationVideoList = [NSMutableArray arrayWithArray:videoPart];
+    self.recommendationVideoList = [[NSMutableArray alloc] init];
+    self.commentsList = [[NSMutableArray alloc] init];
     
     
     self.video.frame = CGRectMake(0, 0, screenBound.size.width, screenBound.size.width*7/12);
@@ -385,6 +443,8 @@
     [self.editCommentBtn addTarget:self action:@selector(editCommentBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.videoProgess addTarget:self action:@selector(progessChange:) forControlEvents:UIControlEventValueChanged];
     [self.closeCommentViewBtn addTarget:self action:@selector(closeComment:) forControlEvents:UIControlEventTouchUpInside];
+    [self.likeBarBtn addTarget:self action:@selector(likeBarBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.starBtn addTarget:self action:@selector(starBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
     
     /// 添加监听.以及回调
@@ -519,11 +579,11 @@
         make.centerX.equalTo(self.view.centerX);
     }];
     self.video.frame = CGRectMake(0, 0, screenBound.size.width, screenBound.size.width*7/12);
-    
+    [self.likeBarBtn addTarget:self action:@selector(likeBarBtnClick:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(IBAction)progessChange:(UISlider*)sender{
-    NSURL *url = [NSURL fileURLWithPath:self.myVideo.video];
+    NSURL *url = [NSURL URLWithString:self.myVideo.video];
     AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
     CMTime videoDuration = [avUrlAsset duration];
     float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
@@ -624,10 +684,37 @@
 }
 
 -(void) addComment {
-    MyComment *myComment = [[MyComment alloc]initWithComment:[UIImage imageNamed:@"icon_2.png"] authorName:@"huangscar" comment:self.commentText.text likeNum:0 isLike:NO date:[NSDate date]];
+    /*MyComment *myComment = [[MyComment alloc]initWithComment:[UIImage imageNamed:@"icon_2.png"] authorName:@"huangscar" comment:self.commentText.text likeNum:0 date:[NSDate date]];
     [self.commentText setText:@""];
     [self.commentsList insertObject:myComment atIndex:0];
-    [self.commentTableView reloadData];
+    [self.commentTableView reloadData];*/
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    if(self.isTwo == NO) {
+        [viewModel postCommentWith:3 vid:self.myVideo.vid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
+            //[self.commentsList addObject:<#(nonnull MyComment *)#>];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.commentText setText:@""];
+                [self.commentTableView reloadData];
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
+    else {
+        int cid;
+        if(self.commentTwoView != nil) {
+            cid = self.commentTwoView.choosenComment.cid;
+        }
+        [viewModel postCommentTwoWith:3 cid:cid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.commentText setText:@""];
+                //[self.commentTwoView.commentsListSecond addObject:comment];
+                [self.commentTwoView.commentViewTableView reloadData];
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
+        }];
+    }
 }
 
 - (void)showCommentText {
@@ -653,56 +740,66 @@
     return result;
 }
 
+- (void)loadRecommendationData {
+    VideoListViewModel *viewModel = [[VideoListViewModel alloc] init];
+    [viewModel getFeedsListWithOffset:self.myVideo.vid size:3 success:^(NSMutableArray * _Nonnull dataArray) {
+        [self.recommendationVideoList addObjectsFromArray:dataArray];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.commentViewTableView reloadData];
+        });
+    } failure:^(NSError * _Nonnull error) {
+        
+    }];
+}
+
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
+    [viewModel getFeedsListWithID:2 offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        if(dataArray.count == 0) {
+            self.hasMore = NO;
+        }
+        else {
+            self.hasMore = YES;
+        }
+        if (dataArray != nil) {
+            [self.commentsList addObjectsFromArray:dataArray];
+        }
+        NSLog(@"count: %d", self.commentsList.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.commentTableView reloadData];
+            [self.commentTableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.commentsList.count;
+        });
+    } failure:^(NSError * _Nonnull error) {
+        [self.commentTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
     [self.commentsView removeFromSuperview];
     self.editCommentBtn.userInteractionEnabled = YES;
 }
 
-- (NSArray*)loadComment:(NSInteger)tableViewType{
-    NSMutableArray* result;
-    if(tableViewType == 0) {
-        result = [NSMutableArray arrayWithCapacity:3];
-        for(int i=0; i<3; i++){
-            //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-            MyComment *myComment = [[MyComment alloc] initWithComment:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] comment:[NSString stringWithFormat:@"日清和海贼王的联动广告，哈哈哈哈哈哈不愧是日清的广告，我还记得之前的小狐狸吉冈里帆_%d", i]  likeNum:(i+1)*10 isLike:NO date:[NSDate date]];
-            [result addObject:myComment];
-        }
-    }
-    else {
-        result = [NSMutableArray arrayWithCapacity:3];
-        for(int i=0; i<3; i++){
-            //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
-            MyComment *myComment = [[MyComment alloc] initWithComment:[UIImage imageNamed:[NSString stringWithFormat:@"icon_%d", i]] authorName:[NSString stringWithFormat:@"aaaaaaaaaaaaa%d", i] comment:[NSString stringWithFormat:@"你这个什么垃圾评论啊_%d", i]  likeNum:(i+1)*10 isLike:NO date:[NSDate date]];
-            [result addObject:myComment];
-        }
-    }
-    return result;
-}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if([tableView isEqual:self.commentTableView]) {
-        if(section == 0) {
-            return 1;
-        }
-        else if(section == 1){
-            return self.recommendationVideoList.count;
-        }
-        else {
-            return self.commentsList.count + 1; // 增加的1为加载更多
-        }
+    if(section == 0) {
+        return 1;
+    }
+    else if(section == 1){
+        return self.recommendationVideoList.count;
     }
     else {
-        if(section == 0) {
-            return 1;
-        }
-        else {
-            return self.commentsListSecond.count+1;
-        }
+        return self.commentsList.count; // 增加的1为加载更多
     }
 }
 
@@ -710,10 +807,7 @@
     NSInteger cellType;
     UITableViewCell* cell;
     if([tableView isEqual:self.commentTableView]) {
-        if(indexPath.row == self.commentsList.count) {
-            cellType = 0;
-        }
-        else if(indexPath.section == 1) {
+        if(indexPath.section == 1) {
             cellType = self.recommendationVideoList[indexPath.row].cellType;
         }
         else if(indexPath.section == 0) {
@@ -726,30 +820,25 @@
         cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
         
         if(cell == nil) {
-            if(cellType == 0){
-                cell = [[LoadingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-                ((LoadingTableViewCell*) cell).status = self.status;
-                cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-            }
-            else if(cellType == 1) {
+            if(cellType == 1) {
                 cell = [[RecommendationVideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
                 [(RecommendationVideoTableViewCell*)cell setCellData:self.recommendationVideoList[indexPath.row]];
                 //cell.cellD
             }
             else if(cellType == 2) {
                 cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+                NSLog(@"indexPath.row=%ld", indexPath.row);
                 [(CommentTableViewCell*)cell setCellData:self.commentsList[indexPath.row]];
             }
             else if(cellType == 3) {
                 cell = [[VideoDetailTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
                 [(VideoDetailTableViewCell*)cell setCellData:self.myVideo];
+                VideoDetailTableViewCell* vcell = (VideoDetailTableViewCell*) cell;
+                vcell.delegate = self;
+                self.delegate = cell.self;
             }
         } else {
-            if(cellType == 0){
-                ((LoadingTableViewCell*) cell).status = self.status;
-                cell.selectionStyle = ((self.status==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-            }
-            else if(cellType == 1) {
+            if(cellType == 1) {
                 [(RecommendationVideoTableViewCell*)cell setCellData:self.recommendationVideoList[indexPath.row]];
             }
             else if(cellType == 2) {
@@ -757,203 +846,66 @@
             }
             else if(cellType == 3) {
                 [(VideoDetailTableViewCell*)cell setCellData:self.myVideo];
+                VideoDetailTableViewCell* vcell = (VideoDetailTableViewCell*) cell;
+                vcell.delegate = self;
             }
         }
     }
-    else {
-        if(indexPath.row == self.commentsListSecond.count) {
-            cellType = 0;
-        }
-        else if(indexPath.section == 0) {
-            cellType = 3;
-        }
-        else {
-            cellType = self.commentsListSecond[indexPath.row].cellType;
-        }
-        NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
-        cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
-        if(cell == nil) {
-            if(cellType == 0){
-                cell = [[LoadingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-                ((LoadingTableViewCell*) cell).status = self.status2;
-                cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-            }
-            else if(cellType == 2) {
-                cell = [[CommentTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-                [(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
-            }
-            else if(cellType == 3) {
-                cell = [[ChoosenCommentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-                [(ChoosenCommentTableViewCell*)cell setCellData:self.choosenComment];
-                cellType = 3;
-            }
-        } else {
-            if(cellType == 0){
-                ((LoadingTableViewCell*) cell).status = self.status2;
-                cell.selectionStyle = ((self.status2==LoadingStatusDefault)?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone);
-            }
-            else if(cellType == 2) {
-                [(CommentTableViewCell*)cell setCellData:self.commentsListSecond[indexPath.row]];
-            }
-            else if(cellType == 3) {
-                [(ChoosenCommentTableViewCell*)cell setCellData:self.choosenComment];
-            }
-        }
-    }
+    
+    
     return cell;
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if(indexPath.row == self.commentsList.count && [tableView isEqual:self.commentTableView]) {
-        self.status = LoadingStatusLoding;
-        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.pageIndex++;
-            if (self.pageIndex < 5) {
-                self.status = LoadingStatusDefault;
-            } else {
-                self.status = LoadingStatusNoMore;
+    NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if([tableView isEqual:self.commentTableView]) {
+        if (indexPath.section == 1) {
+            // 跳转
+            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            NSString *cellType = cell.reuseIdentifier;
+            if([cellType isEqualToString:@"cellType:1"]) {
+                VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
+                videoDetailViewController.myVideo = self.recommendationVideoList[indexPath.row];
+                [self.navigationController pushViewController:videoDetailViewController animated:NO];
             }
-            
-            NSArray *newPage = [self loadComment:0];
-            [self.commentsList addObjectsFromArray:newPage];
-            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
-        });
-    }
-    else if (indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
-        self.status2 = LoadingStatusLoding;
-        [tableView reloadData]; // 从默认态切换到加载状态，需要更新
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.pageIndexSecond++;
-            if (self.pageIndexSecond < 5) {
-                self.status2 = LoadingStatusDefault;
-            } else {
-                self.status2 = LoadingStatusNoMore;
-            }
-            
-            NSArray *newPage = [self loadComment:1];
-            [self.commentsListSecond addObjectsFromArray:newPage];
-            [tableView reloadData];  // 从默认态切换到加载状态或者加载技术，需要更新
-        });
-    }
-    else {
-        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        if([tableView isEqual:self.commentTableView]) {
-            if (indexPath.section == 0) {
-                // 跳转
-                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                NSString *cellType = cell.reuseIdentifier;
-                if([cellType isEqualToString:@"cellType:1"]) {
-                    VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
-                    videoDetailViewController.myVideo = self.recommendationVideoList[indexPath.row];
-                    [self.navigationController pushViewController:videoDetailViewController animated:NO];
-                }
-            }
-            else {
-                /*CGRect screenBound = [UIScreen mainScreen].bounds;
-                [self.commentTwoView setBackgroundColor:[UIColor whiteColor]];
-                if(!self.commentViewTableView) {
-                    self.commentViewTableView = ({
-                        UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 52, screenBound.size.width, 290) style:UITableViewStylePlain]);
-                        tableView.delegate = self;
-                        tableView.dataSource = self;
-                        tableView.tableFooterView = [UIView new];
-                        tableView;
-                    });
-                }
-                //self.closeCommentViewBtn.frame = CGRectMake(30, 0, 30, 30);
-                [self.commentTwoView addSubview:self.commentViewLabel];
-                [self.commentTwoView addSubview:self.commentViewTableView];
-                [self.commentTwoView addSubview:self.closeCommentViewBtn];
-                [self.commentTwoView addSubview:self.line];
-                [self.commentTwoView addSubview:self.line1];
-                [self.view addSubview:self.commentTwoView];
-                self.commentViewLabel.textAlignment = NSTextAlignmentCenter;
-                [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(self.likeBtn.bottom).with.offset(10);
-                    make.bottom.equalTo(self.footToolBar.top);
-                    make.left.equalTo(self.view);
-                    make.right.equalTo(self.view);
-                }];
-                [self.closeCommentViewBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(self.commentTwoView).with.offset(10);
-                    make.left.equalTo(self.commentTwoView).with.offset(10);
-                    make.width.height.equalTo(25);
-                }];
-                [self.commentViewLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.centerY.equalTo(self.closeCommentViewBtn.centerY);
-                    make.left.equalTo(self.closeCommentViewBtn.right).with.offset(10);
-                    make.right.equalTo(self.commentTwoView);
-                    make.height.equalTo(50);
-                }];
-                [self.line mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(self.commentViewLabel.bottom);
-                    make.left.equalTo(self.commentTwoView);
-                    make.right.equalTo(self.commentTwoView);
-                    make.height.equalTo(1);
-                }];
-                [self.line1 mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.bottom.equalTo(self.commentViewLabel.top);
-                    make.left.equalTo(self.commentTwoView);
-                    make.right.equalTo(self.commentTwoView);
-                    make.height.equalTo(1);
-                }];
-                /*[self.commentViewTableView makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(self.commentViewLabel.bottom).with.offset(10);
-                    make.left.equalTo(self.commentTwoView);
-                    make.bottom.equalTo(self.footToolBar.top);
-                    make.width.equalTo(screenBound.size.width);
-                }];*/
-                CommentTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                _choosenComment = cell.data;
-                /*NSArray* commentPart = [self loadComment:1];
-                self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
-                self.pageIndexSecond = 0;*/
+        }
+        else if (indexPath.section == 2) {
+            CommentTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            _choosenComment = cell.data;
+            /*NSArray* commentPart = [self loadComment:1];
+             self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
+             self.pageIndexSecond = 0;*/
+            if(self.commentTwoView == nil) {
                 self.commentTwoView = [[CommentsView alloc] init];
-                [self.commentTwoView setCommentData:self.choosenComment];
-                [self.view addSubview:self.commentTwoView];
-                [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(self.videoView.bottom).with.offset(10);
-                    make.bottom.equalTo(self.footToolBar.top);
-                    make.left.equalTo(self.view);
-                    make.right.equalTo(self.view);
-                }];
+                self.commentTwoView.delegate = self;
             }
+            [self.commentTwoView setCommentData:self.choosenComment];
+            [self.view addSubview:self.commentTwoView];
+            [self.commentTwoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(self.videoView.bottom);
+                make.bottom.equalTo(self.footToolBar.top);
+                make.left.equalTo(self.view);
+                make.right.equalTo(self.view);
+            }];
+            self.isTwo = YES;
         }
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == self.commentsList.count && [tableView isEqual:self.commentTableView]) {
-        return 30;
-    }
-    else if(indexPath.row == self.commentsListSecond.count && [tableView isEqual:self.commentViewTableView]) {
-        return 30;
-    }
-    else {
-        if([tableView isEqual:self.commentTableView]) {
-            if(indexPath.section == 1) {
-                return 110;
-            }
-            else if(indexPath.section == 0){
-                return 150;
-            }
-            return self.commentsList[indexPath.row].height;
+
+    if([tableView isEqual:self.commentTableView]) {
+        if(indexPath.section == 1) {
+            return 110;
         }
-        else {
-            if(indexPath.section == 1) {
-                return self.choosenComment.height;
-            }
-            else if(indexPath.section == 0){
-                return 300;
-            }
-            return self.commentsListSecond[indexPath.row].height;
+        else if(indexPath.section == 0){
+            return [self.myVideo getHeight] + 160;
         }
+        return self.commentsList[indexPath.row].height;
     }
+    return 10;
 }
 
 // 通知委托指定行将要被选中，返回响应行的索引
@@ -971,5 +923,71 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+    if (indexPath.row == self.commentsList.count - 1 && self.isLoading == NO && _hasMore == YES) {
+        [self loadMoreData];
+    }
+}
+
+- (void)videoLikeBtnDelegate:(VideoDetailTableViewCell *)cell{
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
+        self.myVideo.isLike = isLike;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(isLike) {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+            }
+            else {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+            }
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+}
+
+- (void)closeCommentsViewBtnDelegate:(CommentsView *)view{
+    self.isTwo = NO;
+}
+
+- (void)likeBarBtnClick:(UIButton*) button {
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    [viewModel likeVideoWithUid:3 vid:self.myVideo.vid success:^(BOOL isLikeGet, int likeNumGet) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(isLikeGet) {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+            }
+            else {
+                [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+            }
+            //[self.likeBarBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+    if (_delegate && [_delegate respondsToSelector:@selector(videoLikeBarBtnDelegate:)]){
+        //[self.startBtn removeFromSuperview];
+        [_delegate videoLikeBarBtnDelegate:self];
+    }
+}
+
+-(void)starBtnClick:(UIButton*) button {
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    [viewModel starVideoWithUid:3 vid:self.myVideo.vid success:^(BOOL isStarGet) {
+        self.myVideo.isStar = isStarGet;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(isStarGet) {
+                [self.starBtn setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
+            }
+            else {
+                [self.starBtn setImage:[UIImage imageNamed:@"star_25.png"] forState:UIControlStateNormal];
+            }
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+}
 
 @end

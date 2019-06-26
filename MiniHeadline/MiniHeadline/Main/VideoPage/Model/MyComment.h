@@ -17,10 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) NSString* comment;
 @property(nonatomic) NSInteger cellType;
 @property(nonatomic, assign) NSInteger likeNum;
-@property(nonatomic, assign) BOOL isLike;
+//@property(nonatomic, assign) BOOL isLike;
+@property(nonatomic, assign) NSInteger replyNum;
 @property(nonatomic, strong) NSDate *date;
 @property(nonatomic, assign) NSInteger height;
-- (instancetype)initWithComment:(UIImage*)icon authorName:(NSString*)authorName comment:(NSString*)comment  likeNum:(NSInteger)likeNum isLike:(BOOL)isLike date:(NSDate*)date;
+@property(nonatomic, assign) int cid;
+- (instancetype)initWithComment:(UIImage*)icon authorName:(NSString*)authorName comment:(NSString*)comment  likeNum:(NSInteger)likeNum date:(NSDate*)date;
 @end
 
 NS_ASSUME_NONNULL_END
