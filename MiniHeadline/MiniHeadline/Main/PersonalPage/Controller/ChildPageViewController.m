@@ -16,6 +16,7 @@
 #import "MultiImageTableViewCell.h"
 #import "VideoTableViewCell.h"
 #import "NewsDetailViewController.h"
+#import "UIColor+Hex.h"
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -27,6 +28,8 @@
 @property (nonatomic, retain)IBOutlet UIButton *editor;
 @property (nonatomic, retain)IBOutlet UIButton *search;
 @property (nonatomic, retain)IBOutlet UIImageView *backImageView;
+
+@property (nonatomic, strong) UIView *seperateLine;
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -45,6 +48,55 @@
 
 
 @implementation ChildPageViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
+    CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
+    CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height - statusBarBound.size.height - 50);
+    
+    self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(0, 110 + self.bt1.frame.size.height - 0.5, screenBound.size.width, 0.5)];
+    self.seperateLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
+    [self.view addSubview:self.seperateLine];
+    
+    self.tableView = ({
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 110 + self.bt1.frame.size.height, screenBound.size.width, screenBound.size.height - self.bt1.frame.size.height - 60) style:UITableViewStylePlain];
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        UIView *footer = [[UIView alloc] init];
+        footer.backgroundColor = [UIColor clearColor];
+        tableView.tableFooterView = footer;
+        // tableView分割线
+        tableView.separatorInset = UIEdgeInsetsMake(1, 0, 1, 0);
+        tableView.separatorColor = [UIColor lightGrayColor];
+        tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView.estimatedRowHeight = 180;
+        tableView;
+    });
+    
+    self.items =  [[NSMutableArray alloc]init];
+    //self.items = self.itemsOfbt1;
+    self.select = 1;
+    self.offset = 0;
+    [self tableLoad];
+    [self.view addSubview: self.tableView];
+    
+    [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.bt3 addTarget:self action:@selector(LikeButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.backImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
+    [self.backImageView addGestureRecognizer:back];
+    
+    [self viewWillAppear:FALSE];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
@@ -157,63 +209,6 @@
         [result addObject:myVideo];
     }
     [self.items addObjectsFromArray:result];
-    
-    
-}
-
-
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    //[self.tableView registerNib:[UINib nibWithNibName:@"TableCellView" //bundle:nil] forCellReuseIdentifier:@"TableCellView"];\
-
-    
-    CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
-    CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
-    CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
-    
-    int width = 0;
-    int height = screenBound.size.height/4;
-
-    self.tableView = ({
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height*0.85) style:UITableViewStylePlain];
-        tableView.delegate = self;
-        tableView.dataSource = self;
-        UIView *footer = [[UIView alloc] init];
-        footer.backgroundColor = [UIColor clearColor];
-        tableView.tableFooterView = footer;
-        // tableView分割线
-        tableView.separatorInset = UIEdgeInsetsMake(1, 0, 1, 0);
-        tableView.separatorColor = [UIColor lightGrayColor];
-        tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        tableView.rowHeight = UITableViewAutomaticDimension;
-        tableView.estimatedRowHeight = 180;
-        tableView;
-    });
-
-    
-    self.items =  [[NSMutableArray alloc]init];
-    //self.items = self.itemsOfbt1;
-    self.select = 1;
-    self.offset = 0;
-    [self tableLoad];
-    [self.view addSubview: self.tableView];
-    
-    [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt3 addTarget:self action:@selector(LikeButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.backImageView.userInteractionEnabled = YES;
-    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
-    [self.backImageView addGestureRecognizer:back];
-    
-    [self viewWillAppear:FALSE];
-
-    
     
     
 }
