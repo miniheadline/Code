@@ -99,18 +99,21 @@
     
     if(self.myVideo) {
         self.isPlay = NO;
-        [self setData];
+        //[self setData];
         [self addSubViews];
         self.isLoading = false;
         self.offset = 0;
         [self loadRecommendationData];
-        [self loadMoreData];
+        
         self.isTwo = NO;
     }
 }
 
 - (void)setData {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
+    UserInfoModel *user = [UserInfoModel testUser];
+    self.isLogin = user.isLogin;
+    self.uid = user.uid;
     if(self.isLogin) {
         [viewModel browseVideoWithUid:self.uid vid:self.myVideo.vid success:^{
             
@@ -453,9 +456,7 @@
     [self.likeBarBtn addTarget:self action:@selector(likeBarBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.starBtn addTarget:self action:@selector(starBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
-    UserInfoModel *user = [UserInfoModel testUser];
-    self.isLogin = user.isLogin;
-    self.uid = user.uid;
+    [self setData];
     
     /// 添加监听.以及回调
     __weak typeof(self) weakSelf = self;
@@ -761,8 +762,10 @@
     [viewModel getFeedsListWithOffset:self.myVideo.vid size:3 success:^(NSMutableArray * _Nonnull dataArray) {
         [self.recommendationVideoList addObjectsFromArray:dataArray];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.commentViewTableView reloadData];
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+            [self.commentTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         });
+        [self loadMoreData];
     } failure:^(NSError * _Nonnull error) {
         
     }];
@@ -784,7 +787,9 @@
         }
         NSLog(@"count: %d", self.commentsList.count);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.commentTableView reloadData];
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:2];
+            [self.commentTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            //[self.commentTableView reloadData];
             [self.commentTableView.mj_footer endRefreshing];
             self.isLoading = NO;
             self.offset = self.commentsList.count;
@@ -813,6 +818,7 @@
     }
     else if(section == 1){
         return self.recommendationVideoList.count;
+        //return 2;
     }
     else {
         return self.commentsList.count; // 增加的1为加载更多
@@ -940,17 +946,17 @@
 }
 */
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     if (indexPath.row == self.commentsList.count - 1 && self.isLoading == NO && _hasMore == YES) {
         [self loadMoreData];
     }
-}
+}*/
 
 - (void)videoLikeBtnDelegate:(VideoDetailTableViewCell *)cell{
     PostViewModel *viewModel = [[PostViewModel alloc] init];
     if(self.isLogin) {
-        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+        /*[viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
             self.myVideo.isLike = isLike;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(isLike) {
@@ -962,7 +968,14 @@
             });
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
-        }];
+        }];*/
+        self.myVideo.isLike = !self.myVideo.isLike;
+        if(self.myVideo.isLike) {
+            [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+        }
+        else {
+            [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+        }
     }
     else {
         Toast *toast = [[Toast alloc] init];

@@ -208,13 +208,24 @@
     [self.videoView addSubview:self.startBtn];
     [self.videoView addSubview:self.pauseBtn];*/
     //[self.commentBtn setTitle:[NSString stringWithFormat:@"%d", cellData.commentNum] forState:UIControlEventTouchUpInside];
-    NSURL *url = [NSURL URLWithString:cellData.video];
+    /*NSURL *url = [NSURL URLWithString:cellData.video];
     AVAsset * asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     CMTime cmtime = CMTimeMake(1,1);
     CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
-    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
-    [self.pic setImage:thumbnail];
+    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];*/
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL *url = [NSURL URLWithString:cellData.video];
+        AVAsset * asset = [AVAsset assetWithURL:url];
+        AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+        CMTime cmtime = CMTimeMake(1,1);
+        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
+        UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.pic setImage:thumbnail];
+        });
+    });
+    
     [self.icon setBackgroundImage:cellData.icon forState:UIControlStateNormal];
     CGRect rect = [cellData.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.titleLabel.font} context:nil];
     [self.name setFrame:CGRectMake(61, 260, rect.size.width, 21)];

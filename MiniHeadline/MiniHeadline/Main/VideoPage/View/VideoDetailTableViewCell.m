@@ -44,7 +44,10 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self setData];
+        UserInfoModel *user = [UserInfoModel testUser];
+        self.isLogin = user.isLogin;
+        self.uid = user.uid;
+        
         [self initSubView];
     }
     return self;
@@ -53,12 +56,20 @@
 - (void)setData {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
     if(self.isLogin){
-        [viewModel getIsLikeWithUid:3 vid:self.myVideo.vid success:^(BOOL isLike) {
+        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
             self.myVideo.isLike = isLike;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(isLike) {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                }
+            });
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];
-        [viewModel getLikeNumWithUid:3 vid:self.myVideo.vid success:^(int likeNumGet) {
+        [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
             self.myVideo.likeNum = likeNumGet;
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
@@ -148,14 +159,13 @@
     
     [self.likeBtn addTarget:self action:@selector(likeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
-    UserInfoModel *user = [UserInfoModel testUser];
-    self.isLogin = user.isLogin;
-    self.uid = user.uid;
+    
 }
 
 - (void)setCellData:(MyVideo*) data {
     //self.myVideo = [data copy];
     self.myVideo = data;
+    [self setData];
     [self.icon setBackgroundImage:data.icon forState:UIControlStateNormal];
     [self.name setText:data.authorName];
     /*if(self.myVideo.isFollow == NO) {
@@ -166,6 +176,9 @@
         self.followBtn.backgroundColor = [UIColor grayColor];
         [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
     }*/
+    if(data.isLike) {
+        [self.likeBtn setImage:@"like-fill_25.png" forState:UIControlStateNormal];
+    }
     [self.titleLabel setText:data.title];
     [self.moreDetail setText:data.detail];
     [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", data.likeNum] forState:UIControlStateNormal];
@@ -206,7 +219,7 @@
 - (void)videoLikeBarBtnDelegate:(VideoDetailViewController *)controller {
     PostViewModel *viewModel = [[PostViewModel alloc] init];
     if(self.isLogin) {
-        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+        /*[viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
             self.myVideo.isLike = isLike;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(isLike) {
@@ -218,9 +231,20 @@
             });
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
-        }];
+        }];*/
+        self.myVideo.isLike = !self.myVideo.isLike;
+        if(self.myVideo.isLike) {
+            [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+        }
+        else {
+            [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+        }
         [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
             self.myVideo.likeNum = likeNumGet;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+            });
+            
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];
