@@ -68,6 +68,8 @@
     self.offset = 0;
     self.isLoading = NO;
     self.isFirstLoading = YES;
+    
+    
 }
 
 - (void)addSubViews {
@@ -404,8 +406,9 @@
         NewsModel *temp = self.tableDataArray[indexPath.row];
         newsDetailVC.groupID = temp.groupID;
         newsDetailVC.newsTitle = temp.title;
-        NSLog(@"%@", self.offsetArray[indexPath.row]);
-        newsDetailVC.nid = (NSInteger)self.offsetArray[indexPath.row];
+        NewsModel *cellData = self.tableDataArray[indexPath.row];
+        NSLog(@"%ld", cellData.offset);
+        newsDetailVC.nid = cellData.offset + 1;
         [self.navigationController pushViewController:newsDetailVC animated:NO];
     }
 }

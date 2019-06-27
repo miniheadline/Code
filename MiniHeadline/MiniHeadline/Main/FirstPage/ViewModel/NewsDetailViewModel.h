@@ -14,12 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)getFeedDetailWithGroupID:(NSString *)groupID success:(void (^)(NSString *content))success failure:(void (^)(NSError *error))failure;
 
-- (void)getIsStarWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL isStar))success failure:(void (^)(NSError *error))failure;
-- (void)getIsLikeWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL isLike))success failure:(void (^)(NSError *error))failure;
+- (void)getIsStarWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL isStar))success failure:(void (^)(NSError *error))failure;
+- (void)getIsLikeWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL isLike))success failure:(void (^)(NSError *error))failure;
 
-- (void)readNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
-- (void)starNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
-- (void)likeNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)readNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)starNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)likeNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
 
 @end
 

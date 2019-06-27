@@ -18,6 +18,7 @@
 #import "CommentsView.h"
 #import "PublisherInfoTableViewCell.h"
 #import "UserInfoModel.h"
+#import "Toast.h"
 
 
 // 静态全局变量
@@ -34,16 +35,18 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 @property (nonatomic, strong) DetailPageHeaderView *headerView;
 @property (nonatomic, strong) DetailPageFooterView *footerView;
+@property (nonatomic, strong) CommentsView *commentsView;
 
 @property (nonatomic, strong) UITableView *detailTableView;
 @property (nonatomic, strong) UILabel *feedTitleLabel;
 @property (nonatomic, strong) UIScrollView *tempScrollView;
 @property (nonatomic, strong) WKWebView *feedContentWebView;
 @property (nonatomic, strong) UIImageView *previewImageView;
-@property (nonatomic, strong) CommentsView *commentsView;
 @property (nonatomic, strong) UILabel *testLabel;
 
 @property (nonatomic) NewsDetailViewModel *newsDetailViewModel;
+
+@property (nonatomic, strong) Toast *toast;
 
 @property (nonatomic) BOOL isStar;
 @property (nonatomic) BOOL isLike;
@@ -116,6 +119,8 @@ static CGRect statusBound; // 获取状态栏尺寸
     
     self.newsDetailViewModel = [[NewsDetailViewModel alloc] init];
     
+    self.toast = [[Toast alloc] init];
+    
     self.isLike = NO;
     self.isStar = NO;
     self.isTitleBeyond = NO;
@@ -134,8 +139,6 @@ static CGRect statusBound; // 获取状态栏尺寸
     testLabel.font = [UIFont systemFontOfSize:25];
     CGSize size = [testLabel.text boundingRectWithSize:CGSizeMake(screenBound.size.width - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:testLabel.font} context:nil].size;
     self.titleLabelHeight = size.height;
-    
-    
 }
 
 - (void)addSubViews {
@@ -177,8 +180,8 @@ static CGRect statusBound; // 获取状态栏尺寸
 #pragma mark - LoadData
 
 - (void)loadNewsData {
-    [self.newsDetailViewModel getFeedDetailWithGroupID:_groupID success:^(NSString * _Nonnull content) {
-        NSLog(@"content:%@", content);
+    [self.newsDetailViewModel getFeedDetailWithGroupID:self.groupID success:^(NSString * _Nonnull content) {
+//        NSLog(@"content:%@", content);
         // 使用富文本
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithData:[content dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
         [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, attributedString.length)];
@@ -187,29 +190,33 @@ static CGRect statusBound; // 获取状态栏尺寸
             [self.feedContentWebView loadHTMLString:content baseURL:nil];
         });
     } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
+        NSLog(@"请求失败 error:%@", error.description);
     }];
 }
 
 - (void)loadIsStar {
-    [self.newsDetailViewModel getIsStarWithUid:1 nid:1 success:^(BOOL isStar) {
+    NSLog(@"loadIsStar with uid:%ld nid:%ld", self.uid, self.nid);
+    [self.newsDetailViewModel getIsStarWithUid:self.uid nid:self.nid success:^(BOOL isStar) {
+        NSLog(@"isStar:%d", isStar);
         self.isStar = isStar;
         [self.footerView setStarBtnStateWithIsStar:isStar];
     } failure:^(NSError * _Nonnull error) {
-        NSLog(@"%@", error);
+        NSLog(@"请求失败 error:%@", error.description);
     }];
 }
 
 - (void)loadIsLike {
-    [self.newsDetailViewModel getIsLikeWithUid:1 nid:1 success:^(BOOL isLike) {
+    NSLog(@"loadIsLike with uid:%ld nid:%ld", self.uid, self.nid);
+    [self.newsDetailViewModel getIsLikeWithUid:self.uid nid:self.nid success:^(BOOL isLike) {
+        NSLog(@"isLike:%d", isLike);
         self.isLike = isLike;
         [self.footerView setLikeBtnStateWithIsLike:isLike];
     } failure:^(NSError * _Nonnull error) {
-        NSLog(@"%@", error);
+        NSLog(@"请求失败 error:%@", error.description);
     }];
 }
 
-- (void)loadCommentCount {
+- (void)loadComment {
     
 }
 
@@ -263,6 +270,12 @@ static CGRect statusBound; // 获取状态栏尺寸
         // 设置回调的Block
         [footer setWriteViewClick:^{
             NSLog(@"writeViewClick");
+            if (self.isLogin == YES) {
+                
+            }
+            else {
+                [self.toast popUpToastWithMessage:@"请先登录"];
+            }
         }];
         
         [footer setCommentBtnClick:^{
@@ -270,15 +283,34 @@ static CGRect statusBound; // 获取状态栏尺寸
         }];
         
         [footer setStarBtnClick:^{
-            NSLog(@"starBtnClick");
-            
-            self.isStar = !self.isStar;
+            if (self.isLogin == YES) {
+                NSLog(@"star news with uid:%ld nid:%ld", self.uid, self.nid);
+                [self.newsDetailViewModel starNewsWithUid:self.uid nid:self.nid success:^{
+                    NSLog(@"star success");
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@", error.description);
+                }];
+                self.isStar = !self.isStar;
+            }
+            else {
+                [self.toast popUpToastWithMessage:@"请先登录"];
+            }
             return self.isStar;
         }];
         
         [footer setLikeBtnClick:^{
-            NSLog(@"likeBtnClick");
-            self.isLike = !self.isLike;
+            if (self.isLogin == YES) {
+                NSLog(@"like news with uid:%ld nid:%ld", self.uid, self.nid);
+                [self.newsDetailViewModel likeNewsWithUid:self.uid nid:self.nid success:^{
+                    NSLog(@"like success");
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@", error.description);
+                }];
+                self.isLike = !self.isLike;
+            }
+            else {
+                [self.toast popUpToastWithMessage:@"请先登录"];
+            }
             return self.isLike;
         }];
         
@@ -286,6 +318,20 @@ static CGRect statusBound; // 获取状态栏尺寸
         _footerView = footer;
     }
     return _footerView;
+}
+
+
+#pragma mark - AuxiliaryFunction
+
+- (void)addBrowsingHistory {
+    if (self.isLogin == YES) {
+        NSLog(@"addBrowsingHistory with uid:%ld nid:%ld", self.uid, self.nid);
+        [self.newsDetailViewModel readNewsWithUid:self.uid nid:self.nid success:^{
+            NSLog(@"success");
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@", error.description);
+        }];
+    }
 }
 
 
@@ -298,22 +344,11 @@ static CGRect statusBound; // 获取状态栏尺寸
 }
 
 
-#pragma mark - AuxiliaryFunction
-
-- (void)addBrowsingHistory {
-    [self.newsDetailViewModel readNewsWithUid:1 nid:1 success:^{
-        NSLog(@"success");
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"error:%@", error);
-    }];
-}
-
-
 #pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if ([keyPath isEqualToString:@"contentSize"]) {
-        NSLog(@"observe value: contentSize");
+//        NSLog(@"observe value: contentSize");
         UIScrollView *scrollView = (UIScrollView *)object;
         CGFloat height = scrollView.contentSize.height;
         self.webViewHeight = height;
@@ -342,7 +377,7 @@ static CGRect statusBound; // 获取状态栏尺寸
     if ([message.name isEqualToString:@"imageClick"]) {
         NSLog(@"%@", message.body);
         [self.previewImageView sd_setImageWithURL:message.body completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            NSLog(@"error:%@", error);
+            NSLog(@"请求失败 error:%@", error.description);
             self.previewImageView.backgroundColor = [UIColor blackColor];
             [self.view bringSubviewToFront:self.previewImageView];
         }];
@@ -399,7 +434,7 @@ static CGRect statusBound; // 获取状态栏尺寸
         }
         default: {
             UITableViewCell *defaultCell = [[UITableViewCell alloc] init];
-            NSLog(@"default");
+            NSLog(@"defaultCell");
             return defaultCell;
             break;
         }

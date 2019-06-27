@@ -37,18 +37,6 @@
     [super layoutSubviews];
     
     // 在layoutSubviews里才设置subviews的frame
-    CGFloat width = self.frame.size.width;
-//    CGFloat height = self.frame.size.height;
-    
-//    self.separatorLine.frame = CGRectMake(0, 0, width, 0.5);
-//    self.writeCommentView.frame = CGRectMake(10, 5, 150, 40);
-//    self.writeCommentLabel.frame = CGRectMake(45, 5, 100, 30);
-//    self.writeImageView.frame = CGRectMake(10, 5, 30, 30);
-//    self.commentImageView.frame = CGRectMake(width - 160, 10, 30, 30);
-//    self.commentCountLabel.frame = CGRectMake(width - 140, 5, 20, 15);
-//    self.starImageView.frame = CGRectMake(width - 100, 10, 30, 30);
-//    self.likeImageView.frame = CGRectMake(width - 40, 10, 30, 30);
-    
     [self.separatorLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self);
         make.top.equalTo(self);
