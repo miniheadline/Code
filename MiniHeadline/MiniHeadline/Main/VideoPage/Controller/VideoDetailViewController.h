@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface VideoDetailViewController : UIViewController
 @property (nonatomic, strong) MyVideo* myVideo;
 @property (nonatomic, weak) id <VideoDetailViewControllerDelegate> delegate;
+- (void)setData;
 @end
 
 NS_ASSUME_NONNULL_END
