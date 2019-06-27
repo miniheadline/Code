@@ -16,6 +16,7 @@
 #import "MultiImageTableViewCell.h"
 #import "VideoTableViewCell.h"
 #import "NewsDetailViewController.h"
+#import "UserInfoModel.h"
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -40,6 +41,7 @@
 @property (nonatomic) BOOL isLoading;
 
 @property (nonatomic) int offset;
+@property(nonatomic, strong) UserInfoModel* user;
 
 @end
 
@@ -121,9 +123,118 @@
     [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 }
 
+- (void)loadVideo:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getVideoList?nid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"videoList"];
+            for(int i = 0; i < dataArr.count; i ++){// 到icon都是可用的，后面的信息没有，likeNum没用上
+                MyVideo* video = [[MyVideo alloc] initWithVideo:[dataArr[i] objectForKey:@"title"] video:[dataArr[i] objectForKey:@"utl"] authorName:[dataArr[i] objectForKey:@"username"] icon:[dataArr[i] objectForKey:@"user_pic"] commentNum:i*10 isFollow:NO playNum:(i+1)*100000];
+                switch (type) {
+                        //浏览
+                    case 0:
+                        [self.itemsOfbt4 addObject:video];
+                        break;
+                        //点赞
+                    case 1:
+                        [self.itemsOfbt2 addObject:video];
+                        break;
+                        //收藏
+                    case 2:
+                        [self.itemsOfbt1 addObject:video];
+                        break;
+                        
+                    default:
+                        break;
+                }
+            
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
+- (void)loadNews:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getNewsList?nid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"newsList"];
+            
+            FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
+            for(int i = 0; i < dataArr.count; i ++){
+                [viewModel getFeedsListWithOffset:[[dataArr[i] objectForKey:@"offset"]intValue] count:1 success:^(NSMutableArray * _Nonnull dataArray) {
+                    switch (type) {
+                            //浏览
+                        case 0:
+                            [self.itemsOfbt4 addObject:dataArray];
+                            break;
+                            //点赞
+                        case 1:
+                            [self.itemsOfbt2 addObject:dataArray];
+                            break;
+                            //收藏
+                        case 2:
+                            [self.itemsOfbt1 addObject:dataArray];
+                            break;
+                            
+                        default:
+                            break;
+                    }
+     
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@",error.description);
+
+                }];
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
 - (void)tableLoad {
     NSLog(@"loadNewData");
     
+    // 线程问题
+    
+    [self loadVideo:0];
+    [self loadVideo:1];
+    [self loadVideo:2];
+    
+    [self loadVideo:0];
+    [self loadVideo:1];
+    [self loadVideo:2];
+    
+    self.items = self.itemsOfbt1;
+    
+    /*
     
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
@@ -157,7 +268,7 @@
         [result addObject:myVideo];
     }
     [self.items addObjectsFromArray:result];
-    
+    */
     
 }
 
@@ -168,6 +279,13 @@
     // Do any additional setup after loading the view from its nib.
     //[self.tableView registerNib:[UINib nibWithNibName:@"TableCellView" //bundle:nil] forCellReuseIdentifier:@"TableCellView"];\
 
+    self.user = [UserInfoModel testUser];
+    self.items = [[NSMutableArray alloc]init];
+    self.itemsOfbt1 = [[NSMutableArray alloc]init];
+    self.itemsOfbt2 = [[NSMutableArray alloc]init];
+    self.itemsOfbt3 = [[NSMutableArray alloc]init];
+    self.itemsOfbt4 = [[NSMutableArray alloc]init];
+    
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
@@ -192,9 +310,7 @@
         tableView;
     });
 
-    
-    self.items =  [[NSMutableArray alloc]init];
-    //self.items = self.itemsOfbt1;
+
     self.select = 1;
     self.offset = 0;
     [self tableLoad];
