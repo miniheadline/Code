@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../Model/MyVideo.h"
-#import "../Controller/VideoDetailViewController.h"
+#import "MyVideo.h"
+#import "VideoDetailViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

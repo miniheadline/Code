@@ -7,8 +7,8 @@
 //
 
 #import "CommentIDViewModel.h"
-#import "../Model/MyComment.h"
-#import "../../PersonalPage/Model/UserInfoModel.h"
+#import "MyComment.h"
+#import "UserInfoModel.h"
 
 @implementation CommentIDViewModel
 - (void)getFeedsListWithID:(int)idNum offset:(int)offset size:(int)size success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {

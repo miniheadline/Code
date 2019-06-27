@@ -6,22 +6,24 @@
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
-#import "VideoPageViewController.h"
-#import "../Model/MyVideo.h"
-#import "../ViewModel/LoadingTableViewCell.h"
-#import "../ViewModel/VideoTableViewCell.h"
-#import "../../FirstPage/Controller/SearchViewController.h"
-#import "../../../Common/UIColor+Hex.h"
-#import "VideoDetailViewController.h"
 #import <AVFoundation/AVFoundation.h>
+
+#import "VideoPageViewController.h"
+#import "MyVideo.h"
+#import "LoadingTableViewCell.h"
+#import "VideoTableViewCell.h"
+#import "SearchViewController.h"
+#import "UIColor+Hex.h"
+#import "VideoDetailViewController.h"
 #import "MJRefresh.h"
-#import "../ViewModel/VideoListViewModel.h"
-#import "../View/SimpleVideoView.h"
-#import "../../PersonalPage/Model/UserInfoModel.h"
+#import "VideoListViewModel.h"
+#import "SimpleVideoView.h"
+#import "UserInfoModel.h"
 
 static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 
 @interface VideoPageViewController ()
+
 @property (nonatomic, strong) UIView *searchBackgroundView;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIImageView *publishImageView;
@@ -42,6 +44,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 @property (nonatomic, assign) BOOL isFirst;
 @property (nonatomic, assign) int uid;
 @property (nonatomic, assign) BOOL isLogin;
+
 @end
 
 @implementation VideoPageViewController

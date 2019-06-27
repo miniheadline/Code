@@ -7,7 +7,7 @@
 //
 
 #import "VideoListViewModel.h"
-#import "../Model/MyVideo.h"
+#import "MyVideo.h"
 
 @implementation VideoListViewModel
 - (void)getFeedsListWithOffset:(int)offset size:(int)size success:(void (^)(NSMutableArray *dataArray))success failure:(void (^)(NSError *error))failure {

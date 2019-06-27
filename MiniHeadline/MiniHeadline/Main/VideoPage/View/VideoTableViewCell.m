@@ -10,7 +10,7 @@
 // 定义这个常量，就可以让Masonry帮我们自动把基础数据类型的数据，自动装箱为对象类型。
 #define MAS_SHORTHAND_GLOBALS
 #import "VideoTableViewCell.h"
-#import "../Model/MyVideo.h"
+#import "MyVideo.h"
 #import "Masonry.h"
 
 
