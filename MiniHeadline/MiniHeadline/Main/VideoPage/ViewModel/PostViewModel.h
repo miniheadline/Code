@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../Model/MyComment.h"
+#import "MyComment.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

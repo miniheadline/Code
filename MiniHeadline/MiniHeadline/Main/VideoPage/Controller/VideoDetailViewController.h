@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../Model/MyVideo.h"
+#import "MyVideo.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

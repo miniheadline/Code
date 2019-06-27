@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../Model/MyComment.h"
-#import "../ViewModel/LoadingTableViewCell.h"
-#import "../ViewModel/CommentTwoTableViewCell.h"
-#import "../ViewModel/ChoosenCommentTableViewCell.h"
-#import "../ViewModel/CommentIDViewModel.h"
+#import "MyComment.h"
+#import "LoadingTableViewCell.h"
+#import "CommentTwoTableViewCell.h"
+#import "ChoosenCommentTableViewCell.h"
+#import "CommentIDViewModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

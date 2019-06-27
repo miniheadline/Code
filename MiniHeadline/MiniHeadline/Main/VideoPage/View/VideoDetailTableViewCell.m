@@ -11,9 +11,9 @@
 #define MAS_SHORTHAND_GLOBALS
 #import "VideoDetailTableViewCell.h"
 #import "Masonry.h"
-#import "../../../Common/UIColor+Hex.h"
+#import "UIColor+Hex.h"
 #import "PostViewModel.h"
-#import "../../PersonalPage/Model/UserInfoModel.h"
+#import "UserInfoModel.h"
 
 @interface VideoDetailTableViewCell()
 @property (nonatomic, strong) UILabel *titleLabel;

@@ -93,7 +93,6 @@
 		D62F5D2622971104009F66AD /* ChoosenCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D62F5D2422971104009F66AD /* ChoosenCommentTableViewCell.xib */; };
 		D64E44C422AF58000065E673 /* VideoDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D64E44C222AF58000065E673 /* VideoDetailTableViewCell.m */; };
 		D64E44C522AF58000065E673 /* VideoDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64E44C322AF58000065E673 /* VideoDetailTableViewCell.xib */; };
-		
 		D65AFEDA22C10654007B8842 /* PostViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFED922C10654007B8842 /* PostViewModel.m */; };
 		D692DF0122A26B5500BF5C2F /* SimpleVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = D692DF0022A26B5400BF5C2F /* SimpleVideoView.m */; };
 		D6BC8B042273F23A001AFD60 /* LoadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */; };
@@ -292,7 +291,7 @@
 		D6BC8B95227CAB4E001AFD60 /* MASConstraintMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MASConstraintMaker.m; path = MiniHeadline/Expand/Tool/Masonry/MASConstraintMaker.m; sourceTree = "<group>"; };
 		D6BC8B96227CAB4E001AFD60 /* MASLayoutConstraint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MASLayoutConstraint.m; path = MiniHeadline/Expand/Tool/Masonry/MASLayoutConstraint.m; sourceTree = "<group>"; };
 		D6BC8B97227CAB4E001AFD60 /* MASViewConstraint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MASViewConstraint.m; path = MiniHeadline/Expand/Tool/Masonry/MASViewConstraint.m; sourceTree = "<group>"; };
-		D6BC8BB12282AE5F001AFD60 /* RecommendationVideoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecommendationVideoTableViewCell.h; sourceTree = "<group>"; };
+		D6BC8BB12282AE5F001AFD60 /* RecommendationVideoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RecommendationVideoTableViewCell.h; path = MiniHeadline/Main/VideoPage/ViewModel/RecommendationVideoTableViewCell.h; sourceTree = SOURCE_ROOT; };
 		D6BC8BB22282AE5F001AFD60 /* RecommendationVideoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationVideoTableViewCell.m; sourceTree = "<group>"; };
 		D6BC8BB32282AE5F001AFD60 /* RecommendationVideoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecommendationVideoTableViewCell.xib; sourceTree = "<group>"; };
 		D6BC8BB62283E66B001AFD60 /* View2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = View2.xib; sourceTree = "<group>"; };
@@ -588,17 +587,8 @@
 		1BCE642B226DB3F40078E11B /* View */ = {
 			isa = PBXGroup;
 			children = (
-				D692DEFF22A26B5400BF5C2F /* CommentsView.h */,
-				D6F8174322BD4ADD001143CB /* CommentsView.m */,
-				D6F8174222BD4ADC001143CB /* SimpleVideoView.h */,
-				D692DF0022A26B5400BF5C2F /* SimpleVideoView.m */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		1BCE642C226DB3FA0078E11B /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
+				D6BC8B3222798CDB001AFD60 /* View.xib */,
+				D6BC8BB62283E66B001AFD60 /* View2.xib */,
 				D6BC8B012273F23A001AFD60 /* LoadingTableViewCell.h */,
 				D6BC8AFF2273F23A001AFD60 /* LoadingTableViewCell.m */,
 				D6BC8B1E2276B3B1001AFD60 /* VideoTableViewCell.h */,
@@ -615,15 +605,26 @@
 				D64E44C122AF58000065E673 /* VideoDetailTableViewCell.h */,
 				D64E44C222AF58000065E673 /* VideoDetailTableViewCell.m */,
 				D64E44C322AF58000065E673 /* VideoDetailTableViewCell.xib */,
+				D60073E922C37317003DDA07 /* CommentTwoTableViewCell.h */,
+				D60073EA22C37317003DDA07 /* CommentTwoTableViewCell.m */,
+				D60073EB22C37317003DDA07 /* CommentTwoTableViewCell.xib */,
+				D692DEFF22A26B5400BF5C2F /* CommentsView.h */,
+				D6F8174322BD4ADD001143CB /* CommentsView.m */,
+				D6F8174222BD4ADC001143CB /* SimpleVideoView.h */,
+				D692DF0022A26B5400BF5C2F /* SimpleVideoView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		1BCE642C226DB3FA0078E11B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
 				D6F8173C22BA6A3C001143CB /* VideoListViewModel.h */,
 				D6F8173D22BA6A3C001143CB /* VideoListViewModel.m */,
 				D6F8173F22BAC684001143CB /* CommentIDViewModel.h */,
 				D6F8174022BAC684001143CB /* CommentIDViewModel.m */,
 				D65AFED822C10654007B8842 /* PostViewModel.h */,
 				D65AFED922C10654007B8842 /* PostViewModel.m */,
-				D60073E922C37317003DDA07 /* CommentTwoTableViewCell.h */,
-				D60073EA22C37317003DDA07 /* CommentTwoTableViewCell.m */,
-				D60073EB22C37317003DDA07 /* CommentTwoTableViewCell.xib */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -635,8 +636,6 @@
 				1B09D19D226B004100BB7480 /* VideoPageViewController.m */,
 				D6BC8B1B227407BF001AFD60 /* VideoDetailViewController.h */,
 				D6BC8B1C227407BF001AFD60 /* VideoDetailViewController.m */,
-				D6BC8B3222798CDB001AFD60 /* View.xib */,
-				D6BC8BB62283E66B001AFD60 /* View2.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -666,6 +665,10 @@
 		1BCE6430226DB43F0078E11B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				E81158CF2297F61F002BA4CD /* ChildPageViewController.xib */,
+				E81158D32297F61F002BA4CD /* InfoTableViewCellWithPicture.h */,
+				E81158D42297F61F002BA4CD /* InfoTableViewCellWithPicture.m */,
+				E81158D52297F61F002BA4CD /* InfoTableViewCellWithPicture.xib */,
 				E81158D02297F61F002BA4CD /* InfoTableViewCell.h */,
 				E81158D12297F61F002BA4CD /* InfoTableViewCell.m */,
 				E81158D22297F61F002BA4CD /* InfoTableViewCell.xib */,
@@ -676,10 +679,6 @@
 		1BCE6431226DB4450078E11B /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				E8913EE22298D401007C16CA /* Toast.h */,
-				E8913EE12298D401007C16CA /* Toast.m */,
-				E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */,
-				E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -687,24 +686,20 @@
 		1BCE6432226DB44C0078E11B /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				E81158CD2297F61F002BA4CD /* ChildPageViewController.h */,
-				E81158CE2297F61F002BA4CD /* ChildPageViewController.m */,
-				E81158CF2297F61F002BA4CD /* ChildPageViewController.xib */,
-				E81158D32297F61F002BA4CD /* InfoTableViewCellWithPicture.h */,
-				E81158D42297F61F002BA4CD /* InfoTableViewCellWithPicture.m */,
-				E81158D52297F61F002BA4CD /* InfoTableViewCellWithPicture.xib */,
+				E8913EE622B48DE0007C16CA /* UserRegisterController.h */,
+				E8913EE422B48DBD007C16CA /* UserRegisterController.m */,
+				E81158BB2297F575002BA4CD /* UserLoginController.h */,
+				E81158BC2297F575002BA4CD /* UserLoginController.m */,
 				E81158B82297F575002BA4CD /* EditInfoController.h */,
 				E81158B92297F575002BA4CD /* EditInfoController.m */,
 				E81158B72297F574002BA4CD /* UserInfoController.h */,
 				E81158BA2297F575002BA4CD /* UserInfoController.m */,
-				E81158BB2297F575002BA4CD /* UserLoginController.h */,
-				E81158BC2297F575002BA4CD /* UserLoginController.m */,
 				E8893881227AAFCD003C8FB7 /* SettingViewController.h */,
 				E8893880227AAFCD003C8FB7 /* SettingViewController.m */,
 				1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */,
 				1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */,
-				E8913EE422B48DBD007C16CA /* UserRegisterController.m */,
-				E8913EE622B48DE0007C16CA /* UserRegisterController.h */,
+				E81158CD2297F61F002BA4CD /* ChildPageViewController.h */,
+				E81158CE2297F61F002BA4CD /* ChildPageViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -776,6 +771,10 @@
 			children = (
 				1B17BCF5227197C300F30CEF /* UIColor+Hex.h */,
 				1B17BCF6227197C300F30CEF /* UIColor+Hex.m */,
+				E8913EE22298D401007C16CA /* Toast.h */,
+				E8913EE12298D401007C16CA /* Toast.m */,
+				E8893883227AAFD7003C8FB7 /* UIButton+ImageTitleStyle.h */,
+				E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -911,7 +910,6 @@
 				1B0F355822C0CC1B00449F42 /* camera.png in Resources */,
 				D6BC8B3322798CDB001AFD60 /* View.xib in Resources */,
 				D60073F722C3A64A003DDA07 /* play_list.png in Resources */,
-				E81158EC2297F628002BA4CD /* AddFreindPageViewController.xib in Resources */,
 				1B0F354322C0CC1B00449F42 /* logo.png in Resources */,
 				D6BC8B142273F524001AFD60 /* icon_2.png in Resources */,
 				1B0F354222C0CC1B00449F42 /* pause.png in Resources */,
@@ -948,7 +946,6 @@
 				1B0F353222C0CC1B00449F42 /* comments.png in Resources */,
 				1B0F353F22C0CC1B00449F42 /* Share_25.png in Resources */,
 				E81158DD2297F61F002BA4CD /* InfoTableViewCellWithPicture.xib in Resources */,
-				D65AFED722C08579007B8842 /* play_list.png in Resources */,
 				1B09D188226AFF7B00BB7480 /* Main.storyboard in Resources */,
 				1B0F354E22C0CC1B00449F42 /* mainpage_unselected.png in Resources */,
 				1B0F352922C0CC1B00449F42 /* mainpage_selected.png in Resources */,

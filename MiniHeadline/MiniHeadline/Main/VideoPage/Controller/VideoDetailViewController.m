@@ -9,24 +9,25 @@
 #define MAS_SHORTHAND
 // 定义这个常量，就可以让Masonry帮我们自动把基础数据类型的数据，自动装箱为对象类型。
 #define MAS_SHORTHAND_GLOBALS
-#import "VideoDetailViewController.h"
-#import "../../../Common/UIColor+Hex.h"
-#import "../Model/MyVideo.h"
-#import <AVFoundation/AVFoundation.h>
-#import "../Model/MyComment.h"
 
-#import "../ViewModel/RecommendationVideoTableViewCell.h"
-#import "../ViewModel/CommentTableViewCell.h"
-#import "../ViewModel/ChoosenCommentTableViewCell.h"
-#import "../View/CommentsView.h"
+#import <AVFoundation/AVFoundation.h>
+
+#import "VideoDetailViewController.h"
+#import "UIColor+Hex.h"
+#import "MyVideo.h"
+#import "MyComment.h"
+#import "RecommendationVideoTableViewCell.h"
+#import "CommentTableViewCell.h"
+#import "ChoosenCommentTableViewCell.h"
+#import "CommentsView.h"
 #import "Masonry.h"
-#import "../ViewModel/VideoDetailTableViewCell.h"
+#import "VideoDetailTableViewCell.h"
 #import "MJRefresh.h"
-#import "../ViewModel/CommentIDViewModel.h"
-#import "../ViewModel/PostViewModel.h"
-#import "../ViewModel/VideoListViewModel.h"
-#import "../../PersonalPage/Model/UserInfoModel.h"
-#import "../../PersonalPage/ViewModel/Toast.h"
+#import "CommentIDViewModel.h"
+#import "PostViewModel.h"
+#import "VideoListViewModel.h"
+#import "UserInfoModel.h"
+#import "Toast.h"
 
 
 @interface VideoDetailViewController ()

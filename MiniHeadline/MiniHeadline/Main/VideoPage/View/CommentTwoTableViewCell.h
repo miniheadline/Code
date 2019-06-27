@@ -1,20 +1,20 @@
 //
-//  CommentTableViewCell.h
+//  CommentTwoTableViewCell.h
 //  MiniHeadline
 //
-//  Created by huangscar on 2019/5/3.
+//  Created by huangscar on 2019/6/26.
 //  Copyright © 2019 Booooby. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "../Model/MyComment.h"
+#import "MyComment.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CommentTableViewCell : UITableViewCell
+@interface CommentTwoTableViewCell : UITableViewCell
 @property (nonatomic, assign) GLfloat height;
 @property (nonatomic, strong) MyComment *data;
-- (void)setCellData:(MyComment*) data;
+- (void)setCellData:(MyComment*) data username:(MyComment*)username;
 @end
 
 NS_ASSUME_NONNULL_END
