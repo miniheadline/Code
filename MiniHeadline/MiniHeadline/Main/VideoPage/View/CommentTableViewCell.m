@@ -10,7 +10,7 @@
 // 定义这个常量，就可以让Masonry帮我们自动把基础数据类型的数据，自动装箱为对象类型。
 #define MAS_SHORTHAND_GLOBALS
 #import "CommentTableViewCell.h"
-#import "../Model/MyComment.h"
+#import "MyComment.h"
 #import "Masonry.h"
 
 
@@ -18,7 +18,7 @@
 
 @property (nonatomic, strong) UIButton* icon;
 @property (nonatomic, strong) UIButton* name;
-@property (nonatomic, strong) UIButton *likeBtn;
+//@property (nonatomic, strong) UIButton *likeBtn;
 @property (nonatomic, strong) UILabel *comments;
 @property (nonatomic, strong) UILabel *time;
 
@@ -53,9 +53,9 @@
     [self.name setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.name.font = [UIFont systemFontOfSize:15];
     [self.contentView addSubview:self.name];
-    self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(348, 18, 46, 23)];
+    /*self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(348, 18, 46, 23)];
     [self.likeBtn setImage:[UIImage imageNamed:@"like_23.png"] forState:UIControlStateNormal];
-    [self.contentView addSubview:self.likeBtn];
+    [self.contentView addSubview:self.likeBtn];*/
     self.comments = [[UILabel alloc] initWithFrame:CGRectMake(54, 49, 340, 30)];
     self.comments.font = [UIFont systemFontOfSize:17];
     self.comments.numberOfLines = 0;
@@ -73,10 +73,10 @@
         make.centerY.equalTo(self.icon.centerY);
         make.left.equalTo(self.icon.right).with.offset(10);
     }];
-    [self.likeBtn makeConstraints:^(MASConstraintMaker *make) {
+    /*[self.likeBtn makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.icon.centerY);
         make.right.equalTo(self.contentView).with.offset(-15);
-    }];
+    }];*/
     [self.comments makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.name.bottom).with.offset(10);
         make.left.equalTo(self.name.left);
@@ -93,22 +93,19 @@
     self.data = data;
     [self.icon setBackgroundImage:data.icon forState:UIControlStateNormal];
     [self.comments setText:data.comment];
-    CGRect rect = [data.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.name.font} context:nil];
-    [self.name setFrame:CGRectMake(54, 12, rect.size.width, 33)];
+    //CGRect rect = [data.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.name.font} context:nil];
+    //[self.name setFrame:CGRectMake(54, 12, rect.size.width, 33)];
     [self.name setTitle:data.authorName forState:UIControlStateNormal];
-    [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", data.likeNum] forState:UIControlStateNormal];
-    if(data.isLike == YES) {
-        [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_23.png"] forState:UIControlStateNormal];
-    }
-    rect = [data.comment boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.comments.font} context:nil];
-    NSInteger commentsHeight = ceil(rect.size.height)+1;
-    [self.comments setFrame:CGRectMake(54, 49, 340, commentsHeight)];
+    /*[self.likeBtn setTitle:[NSString stringWithFormat:@"%d", data.likeNum] forState:UIControlStateNormal];*/
+    //rect = [data.comment boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.comments.font} context:nil];
+    //NSInteger commentsHeight = ceil(rect.size.height)+1;
+    //[self.comments setFrame:CGRectMake(54, 49, 340, commentsHeight)];
     [self.comments setText:data.comment];
-    [self.time setFrame:CGRectMake(54, 49+commentsHeight+20, 340, 21)];
+    //[self.time setFrame:CGRectMake(54, 49+commentsHeight+20, 340, 21)];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
     [self.time setText:[dateFormatter stringFromDate:data.date]];
-    self.height += commentsHeight-30;
+    //self.height += commentsHeight-30;
     
 }
 

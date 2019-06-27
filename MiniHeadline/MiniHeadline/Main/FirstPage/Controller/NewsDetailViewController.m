@@ -50,6 +50,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 @property (nonatomic) BOOL isTitleBeyond;
 @property (nonatomic) BOOL isLogin;
 @property (nonatomic) NSInteger uid;
+@property (nonatomic) NSInteger commentCount;
 
 @property (nonatomic, assign) CGFloat webViewHeight;
 @property (nonatomic, assign) CGFloat titleLabelHeight;
@@ -185,6 +186,10 @@ static CGRect statusBound; // 获取状态栏尺寸
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
+}
+
+- (void)loadCommentCount {
+    
 }
 
 

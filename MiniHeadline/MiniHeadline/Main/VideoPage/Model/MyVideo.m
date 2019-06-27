@@ -25,4 +25,10 @@
     }
     return self;
 }
+
+-(float) getHeight {
+    CGRect rect = [self.detail boundingRectWithSize:CGSizeMake(340, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17]} context:nil];
+    return rect.size.height+1;
+}
+
 @end

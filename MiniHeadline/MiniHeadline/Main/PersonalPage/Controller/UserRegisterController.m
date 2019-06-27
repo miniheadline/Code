@@ -227,4 +227,12 @@
     });
     [self.view addSubview:self.confirmButton];
 }
+
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.usernameTextField resignFirstResponder];
+    [self.passwordTextField resignFirstResponder];
+    [self.confirmTextField resignFirstResponder];
+}
+
 @end
