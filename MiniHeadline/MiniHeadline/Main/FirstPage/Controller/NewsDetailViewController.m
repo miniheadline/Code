@@ -49,6 +49,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 @property (nonatomic) BOOL isLike;
 @property (nonatomic) BOOL isTitleBeyond;
 @property (nonatomic) BOOL isLogin;
+@property (nonatomic) BOOL isIphoneXSeries;
 @property (nonatomic) NSInteger uid;
 @property (nonatomic) NSInteger commentCount;
 
@@ -80,6 +81,23 @@ static CGRect statusBound; // 获取状态栏尺寸
     [super viewWillAppear:animated];
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    // 判断是否为iPhoneX系列
+    if (@available(iOS 11.0, *)) {
+        if (self.view.safeAreaInsets.bottom > 0) {
+            self.isIphoneXSeries = YES;
+            NSLog(@"iPhoneXSeries");
+        }
+    }
+    
+    // 有没有更好的方案？
+    CGFloat footerHeight = self.isIphoneXSeries ? screenBound.size.height - 50 - self.view.safeAreaInsets.bottom : screenBound.size.height - 50;
+    self.footerView.frame = CGRectMake(0, footerHeight, screenBound.size.width, 50);
+    self.detailTableView.frame = CGRectMake(0, statusBound.size.height + self.headerView.frame.size.height, screenBound.size.width, screenBound.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - statusBound.size.height - self.view.safeAreaInsets.bottom);
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
     [super viewWillDisappear:animated];
@@ -101,6 +119,7 @@ static CGRect statusBound; // 获取状态栏尺寸
     self.isLike = NO;
     self.isStar = NO;
     self.isTitleBeyond = NO;
+    self.isIphoneXSeries = NO;
     
     UserInfoModel *user = [UserInfoModel testUser];
     self.isLogin = user.isLogin;
@@ -115,6 +134,8 @@ static CGRect statusBound; // 获取状态栏尺寸
     testLabel.font = [UIFont systemFontOfSize:25];
     CGSize size = [testLabel.text boundingRectWithSize:CGSizeMake(screenBound.size.width - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:testLabel.font} context:nil].size;
     self.titleLabelHeight = size.height;
+    
+    
 }
 
 - (void)addSubViews {
@@ -197,9 +218,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 - (DetailPageHeaderView *)headerView {
     if (_headerView == nil) {
-//        DetailPageHeaderView *header = [[DetailPageHeaderView alloc] initWithFrame:CGRectMake(0, statusBound.size.height, screenBound.size.width, 50)];
-        DetailPageHeaderView *header = [[DetailPageHeaderView alloc] init];
-        header.frame = CGRectMake(0, statusBound.size.height, screenBound.size.width, 50);
+        DetailPageHeaderView *header = [[DetailPageHeaderView alloc] initWithFrame:CGRectMake(0, statusBound.size.height, screenBound.size.width, 50)];
         
         // 设置回调的Block
         [header setBackBtnClickWithBlock:^{
@@ -239,7 +258,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 - (DetailPageFooterView *)footerView {
     if (_footerView == nil) {
-        DetailPageFooterView *footer = [[DetailPageFooterView alloc] initWithFrame:CGRectMake(0, screenBound.size.height - 60, screenBound.size.width, 60)];
+        DetailPageFooterView *footer = [[DetailPageFooterView alloc] initWithFrame:CGRectMake(0, screenBound.size.height - 50, screenBound.size.width, 50)];
         
         // 设置回调的Block
         [footer setWriteViewClick:^{
