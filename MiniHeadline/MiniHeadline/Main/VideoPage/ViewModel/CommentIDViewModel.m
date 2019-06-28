@@ -55,7 +55,7 @@
             int fromUID = [[dataArr[i] objectForKey:@"from_uid"] integerValue];
             int replayNum = [[dataArr[i] objectForKey:@"reply_num"] integerValue];
             int likeNum = [[dataArr[i] objectForKey:@"like_num"] integerValue];
-            NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
+            //NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
             NSString *userName = [dataArr[i] objectForKey:@"username"];
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"yyyy-MM-dd"];
@@ -64,9 +64,14 @@
                                 [formatter setTimeZone:zone];
             NSDate *stringDate = [formatter dateFromString:time];
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
-            
-            static NSString *picPath;
-            dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+            dispatch_group_enter(downloadTaskGroup);
+            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
+            comment.cid = cid;
+            [arr replaceObjectAtIndex:i-offset withObject:comment];
+            dispatch_group_leave(downloadTaskGroup);
+            //static NSString *picPath;
+            /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
             dispatch_group_enter(imagesDownloadTaskGroup);
             [self downloadImageWithURL:picURL index:index success:^(NSString *imagePath) {
                 picPath = [imagePath copy];
@@ -82,7 +87,7 @@
                 [arr replaceObjectAtIndex:i-offset withObject:comment];
                 dispatch_group_leave(downloadTaskGroup);
             
-            });
+            });*/
         }
         dispatch_group_notify(downloadTaskGroup, dispatch_get_main_queue(), ^{
             NSLog(@"notify");
@@ -96,7 +101,7 @@
 
 
 
-- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
+/*- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
     //    NSLog(@"%@", url);
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -118,7 +123,7 @@
     
     //开始任务
     [task resume];
-}
+}*/
 
 - (void)getCommentWithID:(int)idNum offset:(int)offset size:(int)size success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {
     //1.创建会话对象
@@ -164,7 +169,7 @@
             int fromUID = [[dataArr[i] objectForKey:@"from_uid"] integerValue];
             int replayNum = [[dataArr[i] objectForKey:@"reply_num"] integerValue];
             int likeNum = [[dataArr[i] objectForKey:@"like_num"] integerValue];
-            NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
+            //NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
             NSString *userName = [dataArr[i] objectForKey:@"username"];
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"yyyy-MM-dd"];
@@ -174,8 +179,12 @@
             NSDate *stringDate = [formatter dateFromString:time];
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
             
-            static NSString *picPath;
-            dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
+            comment.cid = cid;
+            [arr replaceObjectAtIndex:i withObject:comment];
+            //static NSString *picPath;
+            /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
             dispatch_group_enter(imagesDownloadTaskGroup);
             [self downloadImageWithURL:picURL index:index success:^(NSString *imagePath) {
                 picPath = [imagePath copy];
@@ -191,7 +200,7 @@
                 [arr replaceObjectAtIndex:i withObject:comment];
                 dispatch_group_leave(downloadTaskGroup);
                 
-            });
+            });*/
         }
         dispatch_group_notify(downloadTaskGroup, dispatch_get_main_queue(), ^{
             NSLog(@"notify");
@@ -247,7 +256,7 @@
             int fromUID = [[dataArr[i] objectForKey:@"from_uid"] integerValue];
             int replayNum = [[dataArr[i] objectForKey:@"reply_num"] integerValue];
             int likeNum = [[dataArr[i] objectForKey:@"like_num"] integerValue];
-            NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
+            //NSString *picURL = [dataArr[i] objectForKey:@"user_pic"];
             NSString *userName = [dataArr[i] objectForKey:@"username"];
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"yyyy-MM-dd"];
@@ -257,8 +266,12 @@
             NSDate *stringDate = [formatter dateFromString:time];
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
             
-            static NSString *picPath;
-            dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+            //static NSString *picPath;
+            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
+            comment.cid = cid;
+            [arr replaceObjectAtIndex:i-offset withObject:comment];
+            /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
             dispatch_group_enter(imagesDownloadTaskGroup);
             [self downloadImageWithURL:picURL index:index success:^(NSString *imagePath) {
                 picPath = [imagePath copy];
@@ -274,7 +287,7 @@
                 [arr replaceObjectAtIndex:i-offset withObject:comment];
                 dispatch_group_leave(downloadTaskGroup);
                 
-            });
+            });*/
         }
         dispatch_group_notify(downloadTaskGroup, dispatch_get_main_queue(), ^{
             NSLog(@"notify");

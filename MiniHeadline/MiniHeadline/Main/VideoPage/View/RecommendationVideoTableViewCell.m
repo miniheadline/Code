@@ -90,12 +90,23 @@
 - (void)setCellData:(MyVideo*) data {
     [self.title setText:data.title];
     NSURL *url = [NSURL URLWithString:data.video];
-    AVAsset * asset = [AVAsset assetWithURL:url];
+    /*AVAsset * asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     CMTime cmtime = CMTimeMake(1,1);
     CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
-    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
-    [self.videoImage setImage:thumbnail];
+    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];*/
+    //[self.videoImage setImage:data.startPic];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL *url = [NSURL URLWithString:data.video];
+        AVAsset * asset = [AVAsset assetWithURL:url];
+        AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+        CMTime cmtime = CMTimeMake(1,1);
+        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
+        UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.videoImage setImage:thumbnail];
+        });
+    });
     NSString *detailString = [NSString stringWithString:data.authorName];
     [self.detail setText:detailString];
     AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];

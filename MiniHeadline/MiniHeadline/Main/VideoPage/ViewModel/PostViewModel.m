@@ -302,9 +302,9 @@
         
         dispatch_group_t downloadTaskGroup = dispatch_group_create();
         dispatch_group_enter(downloadTaskGroup);
-        [self getUserWithID:uid success:^(NSString * username, NSString *picPath) {
-            UIImage *pic = [[UIImage alloc] initWithContentsOfFile:picPath];
-            MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:username comment:text likeNum:likeNum date:stringDate];
+        [self getUserWithID:uid success:^(NSString * username, UIImage *icon) {
+            //UIImage *pic = [[UIImage alloc] initWithContentsOfFile:picPath];
+            MyComment *comment = [[MyComment alloc] initWithComment:icon authorName:username comment:text likeNum:likeNum date:stringDate];
             dispatch_group_leave(downloadTaskGroup);
             success(comment);
         } failure:^(NSError * _Nonnull error) {
@@ -318,7 +318,7 @@
 
 
 
-- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
+/*- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
     //    NSLog(@"%@", url);
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -340,9 +340,9 @@
     
     //开始任务
     [task resume];
-}
+}*/
 
-- (void)getUserWithID:(int)idNum success:(void (^)(NSString*, NSString*))success failure:(void (^)(NSError * _Nonnull))failure {
+- (void)getUserWithID:(int)idNum success:(void (^)(NSString*, UIImage*))success failure:(void (^)(NSError * _Nonnull))failure {
     //1.创建会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -367,12 +367,14 @@
         
         // 为了确保返回的数据和加载的顺序一致
         NSString* username = [res objectForKey:@"username"];
-        NSString* picURL = [res objectForKey:@"pic_url"];
+        UIImage* icon = [UIImage imageNamed:@"icon_default.jpg"];
+        success(username, icon);
+        //NSString* picURL = [res objectForKey:@"pic_url"];
         
-        NSString *index = [NSString stringWithFormat:@"icon_%d", idNum];
+        //NSString *index = [NSString stringWithFormat:@"icon_%d", idNum];
         
-        static NSString *picPath;
-        dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+        //static NSString *picPath;
+        /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
         dispatch_group_enter(imagesDownloadTaskGroup);
         [self downloadImageWithURL:picURL index:index success:^(NSString *imagePath) {
             picPath = [imagePath copy];
@@ -382,7 +384,7 @@
         }];
         dispatch_group_notify(imagesDownloadTaskGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             success(username, picPath);
-        });
+        });*/
     }];
     
     //7.执行任务
