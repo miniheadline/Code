@@ -16,11 +16,8 @@
 #import "MultiImageTableViewCell.h"
 #import "VideoTableViewCell.h"
 #import "NewsDetailViewController.h"
-<<<<<<< HEAD:MiniHeadline/MiniHeadline/Main/PersonalPage/Controller/nextPage_1/ChildPageViewController.m
 #import "UserInfoModel.h"
-=======
 #import "UIColor+Hex.h"
->>>>>>> d47478cb430a30fa54786cce453cbe87635ac2dc:MiniHeadline/MiniHeadline/Main/PersonalPage/Controller/ChildPageViewController.m
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -54,8 +51,15 @@
 
 @implementation ChildPageViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.user = [UserInfoModel testUser];
+    self.items = [[NSMutableArray alloc]init];
+    self.itemsOfbt1 = [[NSMutableArray alloc]init];
+    self.itemsOfbt2 = [[NSMutableArray alloc]init];
+    self.itemsOfbt3 = [[NSMutableArray alloc]init];
+    self.itemsOfbt4 = [[NSMutableArray alloc]init];
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
@@ -327,71 +331,7 @@
     
 }
 
-<<<<<<< HEAD:MiniHeadline/MiniHeadline/Main/PersonalPage/Controller/nextPage_1/ChildPageViewController.m
 
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    //[self.tableView registerNib:[UINib nibWithNibName:@"TableCellView" //bundle:nil] forCellReuseIdentifier:@"TableCellView"];\
-
-    self.user = [UserInfoModel testUser];
-    self.items = [[NSMutableArray alloc]init];
-    self.itemsOfbt1 = [[NSMutableArray alloc]init];
-    self.itemsOfbt2 = [[NSMutableArray alloc]init];
-    self.itemsOfbt3 = [[NSMutableArray alloc]init];
-    self.itemsOfbt4 = [[NSMutableArray alloc]init];
-    
-    
-    CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
-    CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
-    CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
-    
-    int width = 0;
-    int height = screenBound.size.height/4;
-
-    self.tableView = ({
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(width, height, screenBound.size.width, screenBound.size.height*0.85) style:UITableViewStylePlain];
-        tableView.delegate = self;
-        tableView.dataSource = self;
-        UIView *footer = [[UIView alloc] init];
-        footer.backgroundColor = [UIColor clearColor];
-        tableView.tableFooterView = footer;
-        // tableView分割线
-        tableView.separatorInset = UIEdgeInsetsMake(1, 0, 1, 0);
-        tableView.separatorColor = [UIColor lightGrayColor];
-        tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        tableView.rowHeight = UITableViewAutomaticDimension;
-        tableView.estimatedRowHeight = 180;
-        tableView;
-    });
-
-
-    self.select = 1;
-    self.offset = 0;
-    [self tableLoad];
-    [self.view addSubview: self.tableView];
-    
-    [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt3 addTarget:self action:@selector(LikeButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.backImageView.userInteractionEnabled = YES;
-    UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
-    [self.backImageView addGestureRecognizer:back];
-    
-    [self viewWillAppear:FALSE];
-
-    
-    
-    
-}
-
-=======
->>>>>>> d47478cb430a30fa54786cce453cbe87635ac2dc:MiniHeadline/MiniHeadline/Main/PersonalPage/Controller/ChildPageViewController.m
 -(void)SelectPage:(int) select {
     
     switch (select) {
