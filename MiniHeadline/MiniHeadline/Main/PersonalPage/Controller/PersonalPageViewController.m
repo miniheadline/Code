@@ -172,15 +172,17 @@
     });
     
     int width = 0;
-    height = screenBound.size.height/2 - 3 * screenBound.size.width/4;
+    height = screenBound.size.height/2 - 3 * screenBound.size.width/4 + 20;
     extra = 10;
     self.photoImageView = ({
-        UIImageView *imageView =  [[UIImageView alloc] init];
+        UIImage *headlineImage = [UIImage imageNamed:@"default.png"];
+        UIImageView *imageView = [[UIImageView alloc]initWithImage:headlineImage];
         imageView.frame = CGRectMake(width + extra, height, screenBound.size.width/4 - 2*extra, screenBound.size.width/4- 2*extra);
+        /*
         NSURL *url = [NSURL URLWithString:self.user.pic_url];
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             NSLog(@"error:%@", error);
-        }];
+        }];*/
         imageView.clipsToBounds = YES;
         imageView.layer.cornerRadius = imageView.frame.size.width/2;
         imageView.userInteractionEnabled = YES;
