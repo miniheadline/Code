@@ -282,14 +282,14 @@
     NSLog(@"loadNewData");
     
     // 线程问题
+    [self loadNews:2];
+       /*   [self loadNews:0];
+  [self loadNews:1];
     
+
     [self loadVideo:0];
     [self loadVideo:1];
-    [self loadVideo:2];
-    
-    [self loadVideo:0];
-    [self loadVideo:1];
-    [self loadVideo:2];
+    [self loadVideo:2];*/
     
     self.items = self.itemsOfbt1;
     

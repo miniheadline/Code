@@ -77,39 +77,61 @@
 }
 
 - (void)MarkButtonClick {
-    NSLog(@"MarkInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
     
-    [self.navigationController pushViewController:controller animated:NO];
-    [controller SelectPage:1];
+    if(self.user.isLogin){
+        NSLog(@"MarkInfo");
+        ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+        
+        [self.navigationController pushViewController:controller animated:NO];
+        [controller SelectPage:1];
+    }
+    else{
+        [[[Toast alloc] init] popUpToastWithMessage:@"请先登录"];
+    }
 
 }
 - (void)LikeButtonClick {
-    NSLog(@"LikeInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:2];
+    if(self.user.isLogin){
+        NSLog(@"LikeInfo");
+        ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+        [controller SelectPage:2];
+        
+        [self.navigationController pushViewController:controller animated:NO];
+    }
+    else{
+        [[[Toast alloc] init] popUpToastWithMessage:@"请先登录"];
+    }
     
-    [self.navigationController pushViewController:controller animated:NO];
 }
 - (void)CommentButtonClick {
-    NSLog(@"CommentInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:3];
-    
-    [self.navigationController pushViewController:controller animated:NO];
+    if(self.user.isLogin){
+        NSLog(@"CommentInfo");
+        ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+        [controller SelectPage:3];
+        
+        [self.navigationController pushViewController:controller animated:NO];
+    }
+    else{
+        [[[Toast alloc] init] popUpToastWithMessage:@"请先登录"];
+    }
 }
 - (void)HistoryButtonClick {
-    NSLog(@"HisInfo");
-    ChildPageViewController *controller = [[ChildPageViewController alloc] init];
-    [controller SelectPage:4];
-    
-    [self.navigationController pushViewController:controller animated:NO];
+    if(self.user.isLogin){
+        NSLog(@"HisInfo");
+        ChildPageViewController *controller = [[ChildPageViewController alloc] init];
+        [controller SelectPage:4];
+        
+        [self.navigationController pushViewController:controller animated:NO];
+    }
+    else{
+        [[[Toast alloc] init] popUpToastWithMessage:@"请先登录"];
+    }
 }
 
 - (void)toUserInfo:(UITapGestureRecognizer *)gestureRecognizer {
     NSLog(@"toUserInfo");
-    UserInfoController *controller = [[UserInfoController alloc] init];
-    [self.navigationController pushViewController:controller animated:NO];
+    //UserInfoController *controller = [[UserInfoController alloc] init];
+    //[self.navigationController pushViewController:controller animated:NO];
 }
 
 - (void)FansLabelClick:(UITapGestureRecognizer *)gestureRecognizer {
@@ -133,21 +155,24 @@
     CGRect screenBound = CGRectMake(0, 0, mainscreenBound.size.width, mainscreenBound.size.height-statusBarBound.size.height-50);
     
     int extra = 30;
+    
+    
+    int height = (screenBound.size.height/2-screenBound.size.width/4)/2-(screenBound.size.width/2-2*extra)/8;
     self.loginButton = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(screenBound.size.width/4+extra, screenBound.size.width/4, screenBound.size.width/2-2*extra, screenBound.size.width/2-2*extra);
+        button.frame = CGRectMake(screenBound.size.width/4+extra, height, screenBound.size.width/2-2*extra, screenBound.size.width/2-2*extra);
         [button setBackgroundColor:[UIColor redColor]];
         // 圆形按钮
         button.clipsToBounds = YES;
         button.layer.cornerRadius = button.frame.size.width/2;
         [button setTitle:@"登 录" forState:UIControlStateNormal];
-        button.titleLabel.font = [UIFont systemFontOfSize:32];
+        button.titleLabel.font = [UIFont systemFontOfSize:screenBound.size.width/10];
         [button addTarget:self action:@selector(LoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
         button;
     });
     
     int width = 0;
-    int height = screenBound.size.height/2 - 3 * screenBound.size.width/4;
+    height = screenBound.size.height/2 - 3 * screenBound.size.width/4;
     extra = 10;
     self.photoImageView = ({
         UIImageView *imageView =  [[UIImageView alloc] init];
@@ -377,7 +402,7 @@
     if(self.user.isLogin){
         [self.view addSubview:self.photoImageView];
         [self.view addSubview:self.userNameLabel];
-        [self.view addSubview:self.toUserInfoImageView];
+        //[self.view addSubview:self.toUserInfoImageView];
         [self.view addSubview:self.numOfHeadlineLabel];
         [self.view addSubview:self.numOfAttentionLabel];
         [self.view addSubview:self.numOfFansLabel];
