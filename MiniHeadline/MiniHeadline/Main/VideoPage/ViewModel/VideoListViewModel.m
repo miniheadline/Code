@@ -58,17 +58,23 @@
             NSString *index = [NSString stringWithFormat:@"icon_%d", userID];
             int vid = [[dataArr[i] objectForKey:@"vid"] integerValue];
             int likeNum = [[dataArr[i] objectForKey:@"likeNum"] integerValue];
-            static NSString *picPath;
-            dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
+            /*NSURL *urll = [NSURL URLWithString:url];
+            AVAsset * asset = [AVAsset assetWithURL:urll];
+            AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+            CMTime cmtime = CMTimeMake(1,1);
+            CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
+            UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];*/
+            //static NSString *picPath;
+            /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();
             dispatch_group_enter(imagesDownloadTaskGroup);
             [self downloadImageWithURL:userPicURL index:index success:^(NSString *imagePath) {
                 picPath = [imagePath copy];
                 dispatch_group_leave(imagesDownloadTaskGroup);
             } failure:^(NSError *error) {
                 dispatch_group_leave(imagesDownloadTaskGroup);
-            }];
+            }];*/
             dispatch_group_enter(downloadTaskGroup);
-            dispatch_group_notify(imagesDownloadTaskGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            /*dispatch_group_notify(imagesDownloadTaskGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 UIImage *pic = [[UIImage alloc] initWithContentsOfFile:picPath];
                 MyVideo *video = [[MyVideo alloc] initWithVideo:title video:url authorName:userName icon:pic commentNum:0 isFollow:isFollow playNum:0];
                 video.vid = vid;
@@ -76,7 +82,15 @@
                 video.likeNum = likeNum;
                 [arr replaceObjectAtIndex:i withObject:video];
                 dispatch_group_leave(downloadTaskGroup);
-            });
+            });*/
+            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            MyVideo *video = [[MyVideo alloc] initWithVideo:title video:url authorName:userName icon:pic commentNum:0 isFollow:isFollow playNum:0];
+            video.vid = vid;
+            video.detail = detail;
+            video.likeNum = likeNum;
+            //video.startPic = thumbnail;
+            [arr replaceObjectAtIndex:i withObject:video];
+            dispatch_group_leave(downloadTaskGroup);
         }
         dispatch_group_notify(downloadTaskGroup, dispatch_get_main_queue(), ^{
             NSLog(@"notify");
@@ -88,7 +102,7 @@
     [dataTask resume];
 }
 
-- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
+/*- (void)downloadImageWithURL:(NSString *)url index:(NSString *)index success:(void (^)(NSString *imagePath))success failure:(void (^)(NSError *error))failure {
     //    NSLog(@"%@", url);
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -110,6 +124,6 @@
     
     //开始任务
     [task resume];
-}
+}*/
 
 @end

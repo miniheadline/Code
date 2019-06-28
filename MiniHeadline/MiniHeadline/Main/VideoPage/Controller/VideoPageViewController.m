@@ -44,7 +44,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 @property (nonatomic, assign) BOOL isFirst;
 @property (nonatomic, assign) int uid;
 @property (nonatomic, assign) BOOL isLogin;
-
+@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 @end
 
 @implementation VideoPageViewController
@@ -54,6 +54,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     // Do any additional setup after loading the view from its nib.
     
     [self addSubViews];
+    
 }
 
 - (void)addSubViews {
@@ -63,6 +64,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     // 获取状态栏尺寸
     CGRect statusBound = [[UIApplication sharedApplication] statusBarFrame];
     
+    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
+    [self.indicator setFrame:CGRectMake(screenBound.size.width/2-50, screenBound.size.height/2-50, 100, 100)];
     self.searchBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, statusBound.size.height + 50)];
     self.searchBackgroundView.backgroundColor = [UIColor redColor]; // 背景颜色
     // 创建searchBar
@@ -95,6 +98,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     [self.view addSubview:self.tableView];
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height)];
     [self.whiteView setBackgroundColor:[UIColor whiteColor]];
+    [self.whiteView addSubview:self.indicator];
     [self.view addSubview:self.whiteView];
     
     
@@ -107,6 +111,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     UserInfoModel *user = [UserInfoModel testUser];
     self.isLogin = user.isLogin;
     self.uid = user.uid;
+    [self.indicator startAnimating];
     [self loadMoreData];
     
 }
@@ -157,23 +162,26 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     NSLog(@"loadMoreData");
     self.isLoading = YES;
     VideoListViewModel *viewModel = [[VideoListViewModel alloc] init];
-    [viewModel getFeedsListWithOffset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
-        [self.dataList addObjectsFromArray:dataArray];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [viewModel getFeedsListWithOffset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+            [self.dataList addObjectsFromArray:dataArray];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+                [self.tableView.mj_footer endRefreshing];
+                self.isLoading = NO;
+                self.offset = self.offset + 5;
+                NSLog(@"reload tableview");
+                if(self.isFirst) {
+                    [self.indicator stopAnimating];
+                    [self.whiteView removeFromSuperview];
+                }
+            });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"请求失败 error:%@",error.description);
             [self.tableView.mj_footer endRefreshing];
             self.isLoading = NO;
-            self.offset = self.offset + 5;
-            NSLog(@"reload tableview");
-            if(self.isFirst) {
-                [self.whiteView removeFromSuperview];
-            }
-        });
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"请求失败 error:%@",error.description);
-        [self.tableView.mj_footer endRefreshing];
-        self.isLoading = NO;
-    }];
+        }];
+    });
     /*for(int i=0; i<3; i++){
         //NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@".mp4"];
         NSString *path;
@@ -237,6 +245,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
         // 跳转
         VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
         videoDetailViewController.myVideo = self.dataList[indexPath.row];
+        //[videoDetailViewController setData];
         [self.navigationController pushViewController:videoDetailViewController animated:NO];
     }
 }
