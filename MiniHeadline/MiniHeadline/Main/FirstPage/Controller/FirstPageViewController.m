@@ -43,7 +43,6 @@
 @property (nonatomic) BOOL isLoading;
 
 @property (nonatomic) NSInteger offset;
-@property (nonatomic) NSMutableArray *offsetArray;
 
 @end
 
@@ -59,6 +58,11 @@
     [self addSubViews];
     
     [self loadMoreData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
 }
 
 
@@ -226,12 +230,6 @@
         NSRange range = NSMakeRange(0, 20);
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
         [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
-        NSMutableArray *indexArray = [NSMutableArray array];
-        for (NSInteger i = 0; i < 20; i++) {
-            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
-            [indexArray addObject:temp];
-        }
-        [self.offsetArray insertObjects:indexArray atIndexes:indexSet];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
             [self.newsTableView.mj_header endRefreshing];
@@ -253,12 +251,6 @@
     [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
         // 返回的数据插入在后面
         [self.tableDataArray addObjectsFromArray:dataArray];
-        NSMutableArray *indexArray = [NSMutableArray array];
-        for (NSInteger i = 0; i < 20; i++) {
-            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
-            [indexArray addObject:temp];
-        }
-        [self.offsetArray addObjectsFromArray:indexArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
             [self.newsTableView.mj_footer endRefreshing];
@@ -290,13 +282,6 @@
     return _tableDataArray;
 }
 
-- (NSMutableArray *)offsetArray {
-    if (_offsetArray == nil || _offsetArray == NULL) {
-        _offsetArray = [NSMutableArray array];
-    }
-    return _offsetArray;
-}
-
 
 #pragma mark - TapGesture
 
@@ -319,16 +304,6 @@
     NSLog(@"searchSingleTap");
     SearchViewController *searchVC = [[SearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:NO];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
-    [super viewWillDisappear:animated];
 }
 
 
@@ -404,8 +379,9 @@
         NewsModel *temp = self.tableDataArray[indexPath.row];
         newsDetailVC.groupID = temp.groupID;
         newsDetailVC.newsTitle = temp.title;
-        NSLog(@"%@", self.offsetArray[indexPath.row]);
-        newsDetailVC.nid = (NSInteger)self.offsetArray[indexPath.row];
+        NewsModel *cellData = self.tableDataArray[indexPath.row];
+        NSLog(@"%ld", cellData.offset);
+        newsDetailVC.nid = cellData.offset + 1;
         [self.navigationController pushViewController:newsDetailVC animated:NO];
     }
 }

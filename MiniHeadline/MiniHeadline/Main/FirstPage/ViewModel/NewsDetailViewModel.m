@@ -7,37 +7,30 @@
 //
 
 #import "NewsDetailViewModel.h"
+#import "MyComment.h"
 
 @implementation NewsDetailViewModel
 
 - (void)getFeedDetailWithGroupID:(NSString *)groupID success:(void (^)(NSString *content))success failure:(void (^)(NSError *error))failure {
-    //1.创建会话对象
+    // 创建会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //2.根据会话对象创建task
+    // 根据会话对象创建task
     NSURL *url = [NSURL URLWithString:@"https://i.snssdk.com/course/article_content"];
     
-    //3.创建可变的请求对象
+    // 创建可变的请求对象
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
-    //4.修改请求方法为POST
+    // 修改请求方法为POST
     request.HTTPMethod = @"POST";
     
-    //5.设置请求体
+    // 设置请求体
     NSString *arg = [NSString stringWithFormat:@"groupId=%@", groupID];
-    NSLog(@"%@", arg);
     request.HTTPBody = [arg dataUsingEncoding:NSUTF8StringEncoding];
     
-    //6.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        //8.解析数据
+        // 解析数据
         NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         NSString *imageUrlPrefix = [[res objectForKey:@"data"] objectForKey:@"image_url_prefix"];
         
@@ -69,192 +62,285 @@
         success(htmlString);
     }];
     
-    //7.执行任务
+    // 执行任务
     [dataTask resume];
 }
 
 // 是否已点赞
-- (void)getIsLikeWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL))success failure:(void (^)(NSError * _Nonnull))failure {
-    //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/isUserConnect?uid=%d&nid=%d&type=1", uid, nid];
+- (void)getIsLikeWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/isUserConnect?uid=%ld&nid=%ld&type=1", (long)uid, (long)nid];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    //2.创建请求对象
-    //请求对象内部默认已经包含了请求头和请求方法（GET）
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    //3.获得会话对象
+    // 获得会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //4.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
+            // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            NSInteger status = (NSInteger)[dict objectForKey:@"status"];
-            success(status == 1);
-            NSLog(@"isStar:%@", [dict objectForKey:@"status"]);
+            NSNumber *status = [dict objectForKey:@"status"]; // id类型要先转为NSNumber，不能转NSInteger
+            NSLog(@"status:%ld", status.integerValue);
+            success(status.integerValue == 1);
         }
     }];
     
-    //5.执行任务
+    // 执行任务
     [dataTask resume];
 }
 
 // 是否已收藏
-- (void)getIsStarWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL))success failure:(void (^)(NSError * _Nonnull))failure {
-    //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/isUserConnect?uid=%d&nid=%d&type=2", uid, nid];
+- (void)getIsStarWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/isUserConnect?uid=%ld&nid=%ld&type=2", (long)uid, (long)nid];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    //2.创建请求对象
-    //请求对象内部默认已经包含了请求头和请求方法（GET）
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    //3.获得会话对象
+    // 获得会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //4.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
+            // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            NSInteger status = (NSInteger)[dict objectForKey:@"status"];
-            success(status == 1);
-            NSLog(@"isLike:%@", [dict objectForKey:@"status"]);
+            NSNumber *status = [dict objectForKey:@"status"]; // id类型要先转为NSNumber，不能转NSInteger
+            NSLog(@"status:%ld", status.integerValue);
+            success(status.integerValue == 1);
         }
     }];
     
-    //5.执行任务
+    // 执行任务
     [dataTask resume];
 }
 
 // 浏览
-- (void)readNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
-    //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%d&nid=%d&type=0", uid, nid];
+- (void)readNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%ld&nid=%ld&type=0", (long)uid, (long)nid];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    //2.创建请求对象
-    //请求对象内部默认已经包含了请求头和请求方法（GET）
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    //3.获得会话对象
+    // 获得会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //4.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
+            // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             NSLog(@"%@", dict);
         }
     }];
     
-    //5.执行任务
+    // 执行任务
     [dataTask resume];
 }
 
 // 点赞
-- (void)likeNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
-    //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%d&nid=%d&type=1", uid, nid];
+- (void)likeNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%ld&nid=%ld&type=1", (long)uid, (long)nid];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    //2.创建请求对象
-    //请求对象内部默认已经包含了请求头和请求方法（GET）
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    //3.获得会话对象
+    // 获得会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //4.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
+            // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             NSLog(@"%@", dict);
         }
     }];
     
-    //5.执行任务
+    // 执行任务
     [dataTask resume];
 }
 
 // 收藏
-- (void)starNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
-    //1.确定请求路径
-    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%d&nid=%d&type=2", uid, nid];
+- (void)starNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/UserWithNews?uid=%ld&nid=%ld&type=2", (long)uid, (long)nid];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    //2.创建请求对象
-    //请求对象内部默认已经包含了请求头和请求方法（GET）
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    //3.获得会话对象
+    // 获得会话对象
     NSURLSession *session = [NSURLSession sharedSession];
     
-    //4.根据会话对象创建一个Task(发送请求）
-    /*
-     第一个参数：请求对象
-     第二个参数：completionHandler回调（请求完成【成功|失败】的回调）
-     data：响应体信息（期望的数据）
-     response：响应头信息，主要是对服务器端的描述
-     error：错误信息，如果请求失败，则error有值
-     */
+    // 根据会话对象创建一个Task(发送请求）
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         if (error == nil) {
-            //6.解析服务器返回的数据
-            //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）
+            // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             NSLog(@"%@", dict);
         }
     }];
     
-    //5.执行任务
+    // 执行任务
+    [dataTask resume];
+}
+
+// 获取新闻的一级评论
+- (void)getCommentsOfNewsWithNid:(NSInteger)nid success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getNewsComment?nid=%ld", (long)nid];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 获得会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil) {
+            NSLog(@"getCommentsOfNewsWithNid");
+            // 解析服务器返回的数据
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSLog(@"%@", dict);
+            NSMutableArray *rawData = [dict objectForKey:@"cmtList"];
+            NSMutableArray *dataArray = [NSMutableArray array];
+            for (NSUInteger i = 0; i < rawData.count; i++) {
+                NSNumber *cid = [rawData[i] objectForKey:@"cid"];
+                UIImage *icon = [UIImage imageNamed:@"icon_default.jpg"];
+                NSString *authorName = [rawData[i] objectForKey:@"username"];
+                NSString *comment = [rawData[i] objectForKey:@"text"];
+                NSNumber *likeNum = [rawData[i] objectForKey:@"like num"];
+                NSString *time = [rawData[i] objectForKey:@"time"];
+                NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"yyyy-MM-dd"];
+                NSTimeZone *zone = [[NSTimeZone alloc] initWithName:@"CUT"]; // 设置时区 全球标准时间CUT
+                [formatter setTimeZone:zone];
+                NSDate *date = [formatter dateFromString:time];
+                MyComment *myComment = [[MyComment alloc] initWithComment:icon authorName:authorName comment:comment likeNum:likeNum.integerValue date:date];
+                myComment.cid = cid.intValue;
+                [dataArray addObject:myComment];
+            }
+            success(dataArray);
+        }
+        else {
+            failure(error);
+        }
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 获取一级评论的评论
+- (void)getCommentsOfCommentWithCid:(NSInteger)cid success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getCmtsCmt?cid=%ld", (long)cid];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 获得会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil) {
+            // 解析服务器返回的数据
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSLog(@"%@", dict);
+        }
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 评论新闻
+- (void)addCommentForNewsWithUid:(NSInteger)uid nid:(NSInteger)nid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 创建会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建task
+    NSURL *url = [NSURL URLWithString:@"http://149.28.26.98:8082/miniheadline/add_news_comment"];
+    
+    // 创建可变的请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    // 修改请求方法为POST
+    request.HTTPMethod = @"POST";
+    
+    // 设置请求体
+    NSDictionary *json = @{@"uid": [NSNumber numberWithInteger:uid],
+                           @"nid": [NSNumber numberWithInteger:nid],
+                           @"text": text};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
+    request.HTTPBody = data;
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSNumber *cidNum = [res objectForKey:@"cid"];
+        NSInteger cid = cidNum.integerValue;
+        if (error == nil) success(cid);
+        else failure(error);
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 回复评论
+- (void)addCOmmentForCommentWithUid:(NSInteger)uid pid:(NSInteger)pid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 创建会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建task
+    NSURL *url = [NSURL URLWithString:@"http://149.28.26.98:8082/miniheadline/add_second_comment"];
+    
+    // 创建可变的请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    // 修改请求方法为POST
+    request.HTTPMethod = @"POST";
+    
+    // 设置请求体
+    NSDictionary *json = @{@"uid": [NSNumber numberWithInteger:uid],
+                           @"pid": [NSNumber numberWithInteger:pid],
+                           @"text": text};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
+    request.HTTPBody = data;
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        // 解析数据
+        NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSNumber *cidNum = [res objectForKey:@"cid"];
+        NSInteger cid = cidNum.integerValue;
+        if (error == nil) success(cid);
+        else failure(error);
+    }];
+    
+    // 执行任务
     [dataTask resume];
 }
 
 
 #pragma mark - AuxiliaryFunction
 
+// 解析图片src
 - (NSString *)replaceImageSrcWithString:(NSString *)content UrlPrefix:(NSString *)urlPrefix {
     NSString *temp = content;
     
@@ -277,6 +363,7 @@
     return newHtmlString;
 }
 
+// 将参数由JSON转为字符串
 - (NSString *)getImageSrcWithString:(NSString *)content UrlPrefix:(NSString *)urlPrefix {
     NSString *res = @"<p><img src=\"";
     

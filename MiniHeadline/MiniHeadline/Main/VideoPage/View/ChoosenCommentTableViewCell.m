@@ -16,6 +16,7 @@
 @interface ChoosenCommentTableViewCell()
 @property (strong, nonatomic) UIButton *icon;
 @property (strong, nonatomic) UIButton *name;
+@property (nonatomic, strong) UILabel *tagLabel;
 //@property (strong, nonatomic) UIButton *followBtn;
 @property (strong, nonatomic) UILabel *comment;
 @property (strong, nonatomic) UILabel *detail;
@@ -48,6 +49,8 @@
     self.name = [[UIButton alloc] init];
     [self.name setFont:[UIFont systemFontOfSize:15]];
     [self.name setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.tagLabel = [[UILabel alloc] init];
+    [self.contentView addSubview:self.tagLabel];
     /*self.followBtn = [[UIButton alloc] init];
     [self.followBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];*/
@@ -73,6 +76,12 @@
     [self.name makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.icon.right).with.offset(10);
         make.top.equalTo(self.icon.top);
+    }];
+    [self.tagLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.name.right).with.offset(5);
+        make.top.equalTo(self.name.top);
+        make.width.equalTo(10);
+        make.height.equalTo(5);
     }];
     /*[self.followBtn makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).with.offset(-10);
@@ -101,6 +110,10 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
     [self.detail setText:[dateFormatter stringFromDate:data.date]];
+}
+
+- (void)setTagLabel:(NSString *)tag {
+    [self.tagLabel setText:tag];
 }
 
 @end

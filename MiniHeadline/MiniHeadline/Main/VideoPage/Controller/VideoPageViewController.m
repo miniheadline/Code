@@ -28,8 +28,12 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIImageView *publishImageView;
 @property (nonatomic, strong) UILabel *publishLabel;
-//@property (nonatomic, strong) UITableView *publishTableView;
+@property (nonatomic, strong) UITableView *publishTableView;
+@property (nonatomic, strong) UIView *publishView;
+@property (nonatomic, strong) UIView *tagView;
 @property (nonatomic, strong) UIScrollView *tagScrollView;
+@property (nonatomic, strong) UIImageView *tagImageView;
+@property (nonatomic, strong) UIView *verticalLine;
 @property (nonatomic, strong) UIView *horizontalLine;
 @property (nonatomic, copy) NSArray *publishChoiceArray;
 @property(nonatomic, strong)UITableView *tableView;
@@ -66,6 +70,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     
     self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
     [self.indicator setFrame:CGRectMake(screenBound.size.width/2-50, screenBound.size.height/2-50, 100, 100)];
+    
+    // 用来放searchBar的View
     self.searchBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, statusBound.size.height + 50)];
     self.searchBackgroundView.backgroundColor = [UIColor redColor]; // 背景颜色
     // 创建searchBar
@@ -84,11 +90,81 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
             break;
         }
     }
+    // 点击输入框时跳转到另一个页面
+    for (UIView *view in self.searchBar.subviews) {
+        UITapGestureRecognizer *search = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchSingleTap:)];
+        // iOS 7.0之前
+        if ([view isKindOfClass:NSClassFromString(@"UISearchBarTextField")]) {
+            view.userInteractionEnabled = YES;
+            [view addGestureRecognizer:search];
+            break;
+        }
+        // iOS 7.0以及iOS 7.0以后
+        if ([view isKindOfClass:NSClassFromString(@"UIView")] && view.subviews.count > 0) {
+            [view.subviews objectAtIndex:1].userInteractionEnabled = YES;
+            [[view.subviews objectAtIndex:1] addGestureRecognizer:search];
+            break;
+        }
+    }
+    [self.searchBackgroundView addSubview:self.searchBar];
+    [self.view addSubview:self.searchBackgroundView];
+    
+    // 发布按钮
+    UIImage *image = [UIImage imageNamed:@"camera.png"];
+    self.publishImageView = [[UIImageView alloc] initWithImage:image];
+    self.publishImageView.frame = CGRectMake(screenBound.size.width - 45, statusBound.size.height, 30, 30);
+    [self.searchBackgroundView addSubview:self.publishImageView];
+    
+    self.publishLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenBound.size.width - 45, statusBound.size.height + 32, 30, 10)];
+    self.publishLabel.text = @"发布";
+    self.publishLabel.font = [UIFont systemFontOfSize:12];
+    self.publishLabel.textColor = [UIColor whiteColor];
+    self.publishLabel.textAlignment = NSTextAlignmentCenter;
+    [self.searchBackgroundView addSubview:self.publishLabel];
+    
+    // 滑动标签栏
+    self.tagScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height, screenBound.size.width, 40)];
+    self.tagScrollView.backgroundColor = [UIColor whiteColor];
+    self.tagScrollView.showsVerticalScrollIndicator = NO; // 不显示纵向拉动条
+    self.tagScrollView.showsHorizontalScrollIndicator = NO; // 不显示横向拉动条
+    self.tagScrollView.bounces = YES; // 设置反弹效果
+    self.tagScrollView.scrollEnabled = YES; // 设置能否滚动
+    self.tagScrollView.delegate = self;
+    // 在scrollView中添加label
+    NSArray *category = [NSArray arrayWithObjects:@"关注", @"推荐", @"热点", @"娱乐", @"科技", @"数码", @"电影", @"游戏", nil];
+    for (int i = 0; i < category.count; i++) {
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(5 + 60 * i, 0, 60, 40)];
+        [tempLabel setFont:[UIFont systemFontOfSize:20]];
+        [tempLabel setTextAlignment:NSTextAlignmentCenter];
+        [tempLabel setTextColor:[UIColor blackColor]];
+        [tempLabel setText:[category objectAtIndex:i]];
+        [self.tagScrollView addSubview:tempLabel];
+    }
+    [self.tagScrollView setContentSize:CGSizeMake(5 + 45 + 60 * category.count, 40)];
+    [self.view addSubview:self.tagScrollView];
+    
+    self.tagView = [[UIView alloc] initWithFrame:CGRectMake(screenBound.size.width - 40, self.searchBackgroundView.bounds.size.height, 40, 40)];
+    self.tagView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.tagView];
+    
+    UIImage *tagImage = [UIImage imageNamed:@"edit_label.png"];
+    self.tagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 20, 20)];
+    self.tagImageView.image = tagImage;
+    [self.tagView addSubview:self.tagImageView];
+    
+    self.verticalLine = [[UIView alloc] initWithFrame:CGRectMake(0, 10, 1, 20)];
+    self.verticalLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
+    [self.tagView addSubview:self.verticalLine];
+    
+    // 分割线
+    self.horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height, screenBound.size.width, 1)];
+    self.horizontalLine.backgroundColor = [UIColor colorWithHexString:@"#D9D9D9"];
+    [self.view addSubview:self.horizontalLine];
     
     
     
     self.tableView = ({
-        UITableView* tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 90, screenBound.size.width, screenBound.size.height-180) style:UITableViewStylePlain];
+        UITableView* tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height + 1, screenBound.size.width, screenBound.size.height - self.searchBackgroundView.bounds.size.height - self.tagScrollView.bounds.size.height) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
         //tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
@@ -308,6 +384,13 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
         }
         
     }
+}
+
+// 搜索输入框点击触发事件
+- (void)searchSingleTap:(UIGestureRecognizer *)gestureRecognizer {
+    NSLog(@"searchSingleTap");
+    SearchViewController *searchVC = [[SearchViewController alloc] init];
+    [self.navigationController pushViewController:searchVC animated:NO];
 }
 
 

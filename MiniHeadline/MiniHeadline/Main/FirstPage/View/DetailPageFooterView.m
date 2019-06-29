@@ -8,6 +8,7 @@
 
 #import "DetailPageFooterView.h"
 #import "UIColor+Hex.h"
+#import "Masonry.h"
 
 @interface DetailPageFooterView()
 
@@ -36,17 +37,58 @@
     [super layoutSubviews];
     
     // 在layoutSubviews里才设置subviews的frame
-    CGFloat width = self.frame.size.width;
-//    CGFloat height = self.frame.size.height;
+    [self.separatorLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self);
+        make.top.equalTo(self);
+        make.width.equalTo(self);
+        make.height.equalTo(@0.5);
+    }];
     
-    self.separatorLine.frame = CGRectMake(0, 0, width, 0.5);
-    self.writeCommentView.frame = CGRectMake(10, 5, 150, 40);
-    self.writeCommentLabel.frame = CGRectMake(45, 5, 100, 30);
-    self.writeImageView.frame = CGRectMake(10, 5, 30, 30);
-    self.commentImageView.frame = CGRectMake(width - 160, 10, 30, 30);
-    self.commentCountLabel.frame = CGRectMake(width - 140, 5, 20, 15);
-    self.starImageView.frame = CGRectMake(width - 100, 10, 30, 30);
-    self.likeImageView.frame = CGRectMake(width - 40, 10, 30, 30);
+    [self.likeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(10);
+        make.right.equalTo(self).offset(-20);
+        make.width.and.height.equalTo(@30);
+    }];
+    
+    [self.starImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(10);
+        make.right.equalTo(self.likeImageView.mas_left).offset(-20);
+        make.width.and.height.equalTo(@30);
+    }];
+    
+    [self.commentImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(10);
+        make.right.equalTo(self.starImageView.mas_left).offset(-20);
+        make.width.and.height.equalTo(@30);
+    }];
+    
+//    [self.commentCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.commentImageView.mas_top).offset(-5);
+//        make.right.equalTo(self.commentImageView.mas_right).offset(5);
+//        make.width.equalTo(@20);
+//        make.height.equalTo(@15);
+//    }];
+    
+    [self.writeCommentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(5);
+        make.left.equalTo(self).offset(10);
+        make.right.equalTo(self.commentImageView.mas_left).offset(-50);
+        make.height.equalTo(@40);
+    }];
+    
+    [self.writeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.writeCommentView.mas_left).offset(10);
+        make.top.equalTo(self.writeCommentView.mas_top).offset(5);
+        make.height.equalTo(@30);
+        make.width.equalTo(@30);
+    }];
+    
+    [self.writeCommentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.writeCommentView.mas_top).offset(5);
+        make.left.equalTo(self.writeImageView.mas_right).offset(5);
+        make.right.equalTo(self.writeCommentView.mas_right).offset(-50);
+        make.height.equalTo(@30);
+    }];
 }
 
 

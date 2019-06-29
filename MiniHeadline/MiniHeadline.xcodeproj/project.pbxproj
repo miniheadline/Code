@@ -18,6 +18,7 @@
 		1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D198226B002C00BB7480 /* FirstPageViewController.m */; };
 		1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D19D226B004100BB7480 /* VideoPageViewController.m */; };
 		1B09D1A4226B005500BB7480 /* PersonalPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */; };
+		1B0BE82E22C6165000F1D869 /* CommentInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0BE82D22C6165000F1D869 /* CommentInputView.m */; };
 		1B0F352822C0CC1B00449F42 /* lishixiao.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F34F322C0CC1B00449F42 /* lishixiao.png */; };
 		1B0F352922C0CC1B00449F42 /* mainpage_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F34F422C0CC1B00449F42 /* mainpage_selected.png */; };
 		1B0F352B22C0CC1B00449F42 /* play_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0F34F622C0CC1B00449F42 /* play_white.png */; };
@@ -80,7 +81,7 @@
 		1B846D6222A6193900378CD5 /* DetailPageFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B846D6122A6193900378CD5 /* DetailPageFooterView.m */; };
 		1BB8DD81229FB3D300FFECFA /* NoImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB8DD7F229FB3D300FFECFA /* NoImageTableViewCell.m */; };
 		1BB8DD82229FB3D300FFECFA /* NoImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BB8DD80229FB3D300FFECFA /* NoImageTableViewCell.xib */; };
-		1BE182BF22967B2C00343F83 /* NewsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE182BE22967B2C00343F83 /* NewsDetailViewModel.m */; };
+		1BC9A5FE22C6CFAF00084439 /* NewsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE182BE22967B2C00343F83 /* NewsDetailViewModel.m */; };
 		1BE182C122967B7100343F83 /* SingleImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BE182C022967B7100343F83 /* SingleImageTableViewCell.xib */; };
 		1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BEBE322226CBA200003C151 /* NewsDetailViewController.m */; };
 		45B703B5988019F06A193B19 /* libPods-MiniHeadline.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 698AD5FBF61BFBE0EF3E660D /* libPods-MiniHeadline.a */; };
@@ -129,6 +130,8 @@
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8913EE32298D401007C16CA /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE12298D401007C16CA /* Toast.m */; };
 		E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE422B48DBD007C16CA /* UserRegisterController.m */; };
+		E8F6CB3A22C627080018B941 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F6CB3922C627070018B941 /* default.png */; };
+		E8F6CB3D22C634BF0018B941 /* ChildPageNetworkModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -151,6 +154,8 @@
 		1B09D19D226B004100BB7480 /* VideoPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoPageViewController.m; sourceTree = "<group>"; };
 		1B09D1A1226B005500BB7480 /* PersonalPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalPageViewController.h; sourceTree = "<group>"; };
 		1B09D1A2226B005500BB7480 /* PersonalPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalPageViewController.m; sourceTree = "<group>"; };
+		1B0BE82C22C6165000F1D869 /* CommentInputView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommentInputView.h; sourceTree = "<group>"; };
+		1B0BE82D22C6165000F1D869 /* CommentInputView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommentInputView.m; sourceTree = "<group>"; };
 		1B0F34F322C0CC1B00449F42 /* lishixiao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lishixiao.png; sourceTree = "<group>"; };
 		1B0F34F422C0CC1B00449F42 /* mainpage_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainpage_selected.png; sourceTree = "<group>"; };
 		1B0F34F622C0CC1B00449F42 /* play_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_white.png; sourceTree = "<group>"; };
@@ -332,6 +337,9 @@
 		E8913EE422B48DBD007C16CA /* UserRegisterController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserRegisterController.m; sourceTree = "<group>"; };
 		E8913EE622B48DE0007C16CA /* UserRegisterController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserRegisterController.h; sourceTree = "<group>"; };
 		E8913EE722B49105007C16CA /* zhuce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhuce.png; sourceTree = "<group>"; };
+		E8F6CB3922C627070018B941 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = "<group>"; };
+		E8F6CB3B22C6348F0018B941 /* ChildPageNetworkModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChildPageNetworkModel.h; sourceTree = "<group>"; };
+		E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChildPageNetworkModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,6 +409,7 @@
 		1B0F34F222C0CC1B00449F42 /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				E8F6CB3922C627070018B941 /* default.png */,
 				D60073F422C3A64A003DDA07 /* play_list.png */,
 				D60073F522C3A64A003DDA07 /* shadow.png */,
 				D60073F622C3A64A003DDA07 /* star_on.png */,
@@ -537,6 +546,8 @@
 				1B3677E022A4BAAD00B0D458 /* DetailPageHeaderView.m */,
 				1B846D6022A6193900378CD5 /* DetailPageFooterView.h */,
 				1B846D6122A6193900378CD5 /* DetailPageFooterView.m */,
+				1B0BE82C22C6165000F1D869 /* CommentInputView.h */,
+				1B0BE82D22C6165000F1D869 /* CommentInputView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -657,6 +668,8 @@
 		1BCE642F226DB42D0078E11B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */,
+				E8F6CB3B22C6348F0018B941 /* ChildPageNetworkModel.h */,
 				E81158D62297F61F002BA4CD /* NSComment.h */,
 				E81158D72297F61F002BA4CD /* NSComment.m */,
 				E81158B42297F559002BA4CD /* UserInfoModel.h */,
@@ -938,6 +951,7 @@
 				1B0F354422C0CC1B00449F42 /* video_unselected.png in Resources */,
 				1B0F353A22C0CC1B00449F42 /* star_selected.png in Resources */,
 				1B0F355522C0CC1B00449F42 /* next_black.png in Resources */,
+				E8F6CB3A22C627080018B941 /* default.png in Resources */,
 				1B0F353B22C0CC1B00449F42 /* unlike-fill_23.png in Resources */,
 				1B0F352C22C0CC1B00449F42 /* pause _white.png in Resources */,
 				D6BC8BB72283E66B001AFD60 /* View2.xib in Resources */,
@@ -1025,6 +1039,8 @@
 				1B09D19A226B002C00BB7480 /* FirstPageViewController.m in Sources */,
 				E81158DE2297F61F002BA4CD /* NSComment.m in Sources */,
 				D6BC8B5E2279EB3F001AFD60 /* MyVideo.m in Sources */,
+				1B0BE82E22C6165000F1D869 /* CommentInputView.m in Sources */,
+				1BC9A5FE22C6CFAF00084439 /* NewsDetailViewModel.m in Sources */,
 				D6BC8B79227C7365001AFD60 /* CommentTableViewCell.m in Sources */,
 				E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */,
 				1BEBE323226CBA200003C151 /* NewsDetailViewController.m in Sources */,
@@ -1032,7 +1048,6 @@
 				1B7F82AC227052DC000165F6 /* SearchViewController.m in Sources */,
 				1B09D185226AFF7B00BB7480 /* ViewController.m in Sources */,
 				1B09D19F226B004100BB7480 /* VideoPageViewController.m in Sources */,
-				1BE182BF22967B2C00343F83 /* NewsDetailViewModel.m in Sources */,
 				E81158BE2297F575002BA4CD /* UserInfoController.m in Sources */,
 				D65AFEDA22C10654007B8842 /* PostViewModel.m in Sources */,
 				1B69A99A226EF664008B5A16 /* NewsModel.m in Sources */,
@@ -1040,6 +1055,7 @@
 				D6F8174122BAC684001143CB /* CommentIDViewModel.m in Sources */,
 				E81158B62297F55A002BA4CD /* UserInfoModel.m in Sources */,
 				E81158BD2297F575002BA4CD /* EditInfoController.m in Sources */,
+				E8F6CB3D22C634BF0018B941 /* ChildPageNetworkModel.m in Sources */,
 				D60073EC22C37317003DDA07 /* CommentTwoTableViewCell.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,

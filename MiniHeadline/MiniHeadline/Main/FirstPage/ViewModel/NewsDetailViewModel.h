@@ -14,12 +14,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)getFeedDetailWithGroupID:(NSString *)groupID success:(void (^)(NSString *content))success failure:(void (^)(NSError *error))failure;
 
-- (void)getIsStarWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL isStar))success failure:(void (^)(NSError *error))failure;
-- (void)getIsLikeWithUid:(int)uid nid:(int)nid success:(void (^)(BOOL isLike))success failure:(void (^)(NSError *error))failure;
+- (void)getIsStarWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL isStar))success failure:(void (^)(NSError *error))failure;
+- (void)getIsLikeWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(BOOL isLike))success failure:(void (^)(NSError *error))failure;
 
-- (void)readNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
-- (void)starNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
-- (void)likeNewsWithUid:(int)uid nid:(int)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)readNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)starNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+- (void)likeNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
+
+- (void)getCommentsOfNewsWithNid:(NSInteger)nid success:(void (^)(NSMutableArray *))success failure:(void (^)(NSError *error))failure;
+- (void)getCommentsOfCommentWithCid:(NSInteger)cid success:(void (^)(NSMutableArray *))success failure:(void (^)(NSError *error))failure;
+
+- (void)addCommentForNewsWithUid:(NSInteger)uid nid:(NSInteger)nid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError *error))failure;
+- (void)addCOmmentForCommentWithUid:(NSInteger)uid pid:(NSInteger)pid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError *error))failure;
 
 @end
 

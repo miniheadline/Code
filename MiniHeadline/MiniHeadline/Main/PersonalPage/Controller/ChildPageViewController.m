@@ -10,13 +10,16 @@
 #import "InfoTableViewCell.h"
 #import "InfoTableViewCellWithPicture.h"
 #import "NSComment.h"
-#import "FirstPageViewModel.h"
+#import "ChildPageNetworkModel.h"
 #import "NoImageTableViewCell.h"
 #import "SingleImageTableViewCell.h"
 #import "MultiImageTableViewCell.h"
-#import "VideoTableViewCell.h"
+#import "RecommendationVideoTableViewCell.h"
 #import "NewsDetailViewController.h"
+#import "UserInfoModel.h"
 #import "UIColor+Hex.h"
+#import "VideoDetailViewController.h"
+#import "SimpleVideoView.h"
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -35,22 +38,34 @@
 
 @property int select;
 @property (nonatomic, retain) NSMutableArray *items;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt1;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt2;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt3;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt4;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt1;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt2;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt3;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt4;
 
 @property (nonatomic) BOOL isLoading;
 
 @property (nonatomic) int offset;
+@property(nonatomic, strong) UserInfoModel* user;
+
+
+@property (nonatomic, assign) UITableViewCell *cell;
+@property (nonatomic, strong) SimpleVideoView *playerView;
 
 @end
 
 
 @implementation ChildPageViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.user = [UserInfoModel testUser];
+    self.items = [[NSMutableArray alloc]init];
+    self.itemsOfbt1 = [[NSMutableArray alloc]init];
+    self.itemsOfbt2 = [[NSMutableArray alloc]init];
+    self.itemsOfbt3 = [[NSMutableArray alloc]init];
+    self.itemsOfbt4 = [[NSMutableArray alloc]init];
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
@@ -76,19 +91,45 @@
         tableView;
     });
     
-    self.items =  [[NSMutableArray alloc]init];
     //self.items = self.itemsOfbt1;
-    self.select = 1;
-    self.offset = 0;
     [self tableLoad];
     [self.view addSubview: self.tableView];
+    
+    if(self.select == 4){
+        
+        [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 3){
+        
+        [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 2){
+        
+        [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 1){
+        
+        [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
     
     [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt3 addTarget:self action:@selector(LikeButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
+    //[self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
     
     self.backImageView.userInteractionEnabled = YES;
     UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
@@ -173,10 +214,170 @@
     [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 }
 
+- (void)loadVideo:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getVideoList?uid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"videoList"];
+            for(int i = 0; i < dataArr.count; i ++){// 到icon都是可用的，后面的信息没有，likeNum没用上
+                
+                NSString *title = [dataArr[i] objectForKey:@"title"];
+                NSString *url = [dataArr[i] objectForKey:@"url"];
+                NSString *detail = [dataArr[i] objectForKey:@"introduction"];
+                NSString *userPicURL = [dataArr[i] objectForKey:@"user_pic"];
+                NSString *userName = [dataArr[i] objectForKey:@"username"];
+                BOOL isFollow = [[dataArr[i] objectForKey:@"statusWithUser"] boolValue];
+                int userID = [[dataArr[i] objectForKey:@"from_uid"] integerValue];
+                NSString *index = [NSString stringWithFormat:@"icon_%d", userID];
+                int vid = [[dataArr[i] objectForKey:@"vid"] integerValue];
+                int likeNum = [[dataArr[i] objectForKey:@"likeNum"] integerValue];
+                UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+                MyVideo *video = [[MyVideo alloc] initWithVideo:title video:url authorName:userName icon:pic commentNum:0 isFollow:isFollow playNum:0];
+                video.vid = vid;
+                video.detail = detail;
+                video.likeNum = likeNum;
+                
+                switch (type) {
+                        //浏览
+                    case 0:
+                        [self.itemsOfbt4 addObject:video];
+                        if(self.select == 4){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt4;
+                                [self.tableView  reloadData];
+                            });
+                        }
+                        break;
+                        //点赞
+                    case 1:
+                        [self.itemsOfbt2 addObject:video];
+                        if(self.select == 2){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt2;
+                                [self.tableView  reloadData];
+                            });
+                        }
+                        break;
+                        //收藏
+                    case 2:
+                        [self.itemsOfbt1 addObject:video];
+                        if(self.select == 1){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt1;
+                                [self.tableView  reloadData];
+                            });
+                        }
+                        break;
+                }
+            
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
+- (void)loadNews:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getNewsList?uid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"newsList"];
+            
+            ChildPageNetworkModel *viewModel = [[ChildPageNetworkModel alloc] init];
+            for(int i = 0; i < dataArr.count; i ++){
+                NSLog(@"%d",[[dataArr[i] objectForKey:@"offset"]intValue]);
+                [viewModel getFeedsListWithOffset:[[dataArr[i] objectForKey:@"offset"]intValue] count:1 success:^(NSMutableArray * _Nonnull dataArray) {
+                    switch (type) {
+                            //浏览
+                        case 0:
+                            [self.itemsOfbt4 addObjectsFromArray:dataArray];
+                            if(self.select == 4){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt4;
+                                    [self.tableView  reloadData];
+                                });
+                            }
+                            break;
+                            //点赞
+                        case 1:
+                            [self.itemsOfbt2 addObjectsFromArray:dataArray];
+                            if(self.select == 2){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt2;
+                                    [self.tableView  reloadData];
+                                });
+                            }
+                            break;
+                            //收藏
+                        case 2:
+                            [self.itemsOfbt1 addObjectsFromArray:dataArray];
+
+                            if(self.select == 1){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt1;
+                                    [self.tableView  reloadData];
+                                });
+                            }
+                            break;
+                            
+                    }
+     
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@",error.description);
+
+                }];
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
 - (void)tableLoad {
     NSLog(@"loadNewData");
     
-    
+    // 线程问题
+    [self loadNews:2];
+    [self loadNews:0];
+    [self loadNews:1];
+
+    [self loadVideo:0];
+    [self loadVideo:1];
+    [self loadVideo:2];
+
+    /*
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
@@ -209,15 +410,17 @@
         [result addObject:myVideo];
     }
     [self.items addObjectsFromArray:result];
-    
+    */
     
 }
+
 
 -(void)SelectPage:(int) select {
     
     switch (select) {
         case 1:
             NSLog(@"1");
+            self.select = 1;
             [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -225,6 +428,7 @@
             break;
             
         case 2:
+            self.select = 2;
             NSLog(@"2");
             [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -234,6 +438,7 @@
             break;
             
         case 3:
+            self.select = 3;
             NSLog(@"3");
             [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -243,11 +448,8 @@
             break;
             
         case 4:
+            self.select = 4;
             NSLog(@"4");
-            [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             break;
     }
     
@@ -296,11 +498,19 @@
         }
     }
     else{
-        MyVideo* cellData = self.items[indexPath.row];
+        MyVideo *cellData = self.items[indexPath.row];
+        NSInteger cellType;
+        cellType = cellData.cellType;
+        NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+        if(cell == nil){
+            cell = [[RecommendationVideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.items[indexPath.row]];
+        }
+        else{
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.items[indexPath.row]];
+        }
         
-        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"1"];
-        cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"1"];
-        [(VideoTableViewCell*)cell setCellData:cellData];
         return cell;
     }
 }
@@ -315,14 +525,30 @@
 
 // 通知委托指定行被选中
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-        // 跳转
-    NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
-    NewsModel *temp = self.items[indexPath.row];
-    newsDetailVC.groupID = temp.groupID;
-    [self.navigationController pushViewController:newsDetailVC animated:NO];
+    if([self.items[indexPath.row] isKindOfClass:[NewsModel class]]){
+        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+            // 跳转
+        NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
+        NewsModel *temp = self.items[indexPath.row];
+        newsDetailVC.groupID = temp.groupID;
+        [self.navigationController pushViewController:newsDetailVC animated:NO];
+    }
+    else{
+        
+        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSString *cellType = cell.reuseIdentifier;
+        if([cellType isEqualToString:@"cellType:1"]) {
+            VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
+            videoDetailViewController.myVideo = self.items[indexPath.row];
+            [self.navigationController pushViewController:videoDetailViewController animated:NO];
+        }
+    }
     
 }
 
@@ -364,11 +590,56 @@
 }
 
 #pragma mark - 按钮的点击
+/*
 - (IBAction)remove {
     // 进入编辑模式
     //    self.tableView.editing = !self.tableView.isEditing;
     [self.tableView setEditing:!self.tableView.isEditing animated:YES];
 }
+*/
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if([self.items[indexPath.row] isKindOfClass:[NewsModel class]]){
+        return UITableViewAutomaticDimension;
+    }
+    else{
+        return 100;
+    }
+}
+
+/*- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+ //因为复用，同一个cell可能会走多次
+ if ([_cell isEqual:cell]) {
+ //区分是否是播放器所在cell,销毁时将指针置空
+ [_playerView destroyPlayer];
+ _cell = nil;
+ }
+ }*/
+
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+ NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+ if (indexPath.row == self.dataList.count - 1 && self.isLoading == NO) {
+ [self loadMoreData];
+ }
+ 
+ }*/
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    //我尝试去修改作者的，似乎也没有起作用，所有自己在改方法中进行销毁
+    NSArray *cells = [self.tableView visibleCells];
+    if (![cells containsObject:self.cell]) {
+        
+        if (self.playerView) {
+            //销毁播放器
+            [self.playerView destroyPlayer];
+            self.playerView = nil;
+        }
+        
+    }
+}
+
 
 
 @end
