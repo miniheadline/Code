@@ -50,6 +50,10 @@
 
 @implementation PersonalPageViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = NO;
+    [super viewWillAppear:animated];
+}
 
 - (void)userLoginController:(UserLoginController *)userLoginController goBackWithUser:(UserInfoModel*)_user {
     
