@@ -7,6 +7,7 @@
 //
 
 #import "NewsDetailViewModel.h"
+#import "MyComment.h"
 
 @implementation NewsDetailViewModel
 
@@ -82,8 +83,9 @@
         if (error == nil) {
             // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            NSInteger status = (NSInteger)[dict objectForKey:@"status"];
-            success(status == 1);
+            NSNumber *status = [dict objectForKey:@"status"]; // id类型要先转为NSNumber，不能转NSInteger
+            NSLog(@"status:%ld", status.integerValue);
+            success(status.integerValue == 1);
         }
     }];
     
@@ -108,8 +110,9 @@
         if (error == nil) {
             // 解析服务器返回的数据
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            NSInteger status = (NSInteger)[dict objectForKey:@"status"];
-            success(status == 1);
+            NSNumber *status = [dict objectForKey:@"status"]; // id类型要先转为NSNumber，不能转NSInteger
+            NSLog(@"status:%ld", status.integerValue);
+            success(status.integerValue == 1);
         }
     }];
     
@@ -186,6 +189,148 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             NSLog(@"%@", dict);
         }
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 获取新闻的一级评论
+- (void)getCommentsOfNewsWithNid:(NSInteger)nid success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getNewsComment?nid=%ld", (long)nid];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 获得会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil) {
+            NSLog(@"getCommentsOfNewsWithNid");
+            // 解析服务器返回的数据
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSLog(@"%@", dict);
+            NSMutableArray *rawData = [dict objectForKey:@"cmtList"];
+            NSMutableArray *dataArray = [NSMutableArray array];
+            for (NSUInteger i = 0; i < rawData.count; i++) {
+                NSNumber *cid = [rawData[i] objectForKey:@"cid"];
+                UIImage *icon = [UIImage imageNamed:@"icon_default.jpg"];
+                NSString *authorName = [rawData[i] objectForKey:@"username"];
+                NSString *comment = [rawData[i] objectForKey:@"text"];
+                NSNumber *likeNum = [rawData[i] objectForKey:@"like num"];
+                NSString *time = [rawData[i] objectForKey:@"time"];
+                NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"yyyy-MM-dd"];
+                NSTimeZone *zone = [[NSTimeZone alloc] initWithName:@"CUT"]; // 设置时区 全球标准时间CUT
+                [formatter setTimeZone:zone];
+                NSDate *date = [formatter dateFromString:time];
+                MyComment *myComment = [[MyComment alloc] initWithComment:icon authorName:authorName comment:comment likeNum:likeNum.integerValue date:date];
+                myComment.cid = cid.intValue;
+                [dataArray addObject:myComment];
+            }
+            success(dataArray);
+        }
+        else {
+            failure(error);
+        }
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 获取一级评论的评论
+- (void)getCommentsOfCommentWithCid:(NSInteger)cid success:(void (^)(NSMutableArray * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 确定请求路径
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getCmtsCmt?cid=%ld", (long)cid];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    // 创建请求对象，请求对象内部默认已经包含了请求头和请求方法（GET）
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 获得会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil) {
+            // 解析服务器返回的数据
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSLog(@"%@", dict);
+        }
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 评论新闻
+- (void)addCommentForNewsWithUid:(NSInteger)uid nid:(NSInteger)nid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 创建会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建task
+    NSURL *url = [NSURL URLWithString:@"http://149.28.26.98:8082/miniheadline/add_news_comment"];
+    
+    // 创建可变的请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    // 修改请求方法为POST
+    request.HTTPMethod = @"POST";
+    
+    // 设置请求体
+    NSDictionary *json = @{@"uid": [NSNumber numberWithInteger:uid],
+                           @"nid": [NSNumber numberWithInteger:nid],
+                           @"text": text};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
+    request.HTTPBody = data;
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSNumber *cidNum = [res objectForKey:@"cid"];
+        NSInteger cid = cidNum.integerValue;
+        if (error == nil) success(cid);
+        else failure(error);
+    }];
+    
+    // 执行任务
+    [dataTask resume];
+}
+
+// 回复评论
+- (void)addCOmmentForCommentWithUid:(NSInteger)uid pid:(NSInteger)pid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError * _Nonnull))failure {
+    // 创建会话对象
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // 根据会话对象创建task
+    NSURL *url = [NSURL URLWithString:@"http://149.28.26.98:8082/miniheadline/add_second_comment"];
+    
+    // 创建可变的请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    // 修改请求方法为POST
+    request.HTTPMethod = @"POST";
+    
+    // 设置请求体
+    NSDictionary *json = @{@"uid": [NSNumber numberWithInteger:uid],
+                           @"pid": [NSNumber numberWithInteger:pid],
+                           @"text": text};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
+    request.HTTPBody = data;
+    
+    // 根据会话对象创建一个Task(发送请求）
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        // 解析数据
+        NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSNumber *cidNum = [res objectForKey:@"cid"];
+        NSInteger cid = cidNum.integerValue;
+        if (error == nil) success(cid);
+        else failure(error);
     }];
     
     // 执行任务

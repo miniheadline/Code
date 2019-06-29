@@ -12,14 +12,15 @@
 #import "CommentsView.h"
 #import "Masonry.h"
 #import "MJRefresh.h"
+#import "UIColor+Hex.h"
 
 
-@interface CommentsView()
+@interface CommentsView()<UITableViewDelegate>
 @property (nonatomic, strong) UILabel *commentViewLabel;
 
 @property (nonatomic, strong) UIButton *closeCommentViewBtn;
 @property (nonatomic, strong) UIView *line1;
-@property (nonatomic, strong) UIView *line;
+@property (nonatomic, strong) UIView *line2;
 
 @property (nonatomic, assign) LoadingStatus status2;
 @property (nonatomic, assign) NSUInteger pageIndexSecond;
@@ -65,7 +66,8 @@
 - (UILabel *)commentViewLabel{
     if (_commentViewLabel == nil) {
         UILabel *commentViewLabel = [[UILabel alloc]init];
-        [commentViewLabel setText:@"所有评论"];
+        [commentViewLabel setText:@"所有回复"];
+        commentViewLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:commentViewLabel];
         _commentViewLabel = commentViewLabel;
     }
@@ -85,7 +87,8 @@
         UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 52, self.frame.size.width, 400) style:UITableViewStylePlain]);
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        tableView.separatorStyle = NO;
+//        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [self addSubview:tableView];
         _commentViewTableView = tableView;
     }
@@ -106,21 +109,21 @@
 - (UIView *) line1 {
     if(_line1 == nil) {
         UIView *line = [[UIView alloc] init];
-        [line setBackgroundColor:[UIColor darkGrayColor]];
+        [line setBackgroundColor:[UIColor colorWithHexString:@"#D9D9D9"]];
         [self addSubview:line];
         _line1 = line;
     }
     return _line1;
 }
 
-- (UIView *) line {
-    if(_line1 == nil) {
+- (UIView *) line2 {
+    if(_line2 == nil) {
         UIView *line = [[UIView alloc] init];
-        [line setBackgroundColor:[UIColor darkGrayColor]];
+        [line setBackgroundColor:[UIColor colorWithHexString:@"#F5F5F5"]];
         [self addSubview:line];
-        _line = line;
+        _line2 = line;
     }
-    return _line;
+    return _line2;
 }
 
 #pragma mark- 模型赋值
@@ -150,11 +153,11 @@
     }];
     [self.commentViewLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.closeCommentViewBtn.centerY);
-        make.left.equalTo(self.closeCommentViewBtn.right).with.offset(10);
+        make.left.equalTo(self);
         make.right.equalTo(self);
         make.height.equalTo(50);
     }];
-    [self.line mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.line2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.commentViewLabel.bottom);
         make.left.equalTo(self);
         make.right.equalTo(self);
@@ -168,7 +171,7 @@
     }];
     //self.commentViewTableView.frame = CGRectMake(0, 52, self.frame.size.width, 480);
     [self.commentViewTableView makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.line.bottom);
+        make.top.equalTo(self.line2.bottom);
         make.bottom.equalTo(self.bottom);
         make.left.equalTo(self);
         make.right.equalTo(self);
@@ -193,12 +196,12 @@
         NSLog(@"count: %d", self.commentsListSecond.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.commentViewTableView reloadData];
-            [self.commentViewTableView.mj_footer endRefreshing];
+//            [self.commentViewTableView.mj_footer endRefreshing];
             self.isLoading = NO;
             self.offset = self.commentsListSecond.count;
         });
     } failure:^(NSError * _Nonnull error) {
-        [self.commentViewTableView.mj_footer endRefreshing];
+//        [self.commentViewTableView.mj_footer endRefreshing];
         self.isLoading = NO;
     }];
 }
@@ -241,6 +244,7 @@
         else if(cellType == 3) {
             cell = [[ChoosenCommentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
             [(ChoosenCommentTableViewCell*)cell setCellData:self.choosenComment];
+            cell.backgroundColor = [UIColor colorWithHexString:@"#F5F5F5"];
             cellType = 3;
         }
     } else {
@@ -253,8 +257,10 @@
         }
         else if(cellType == 3) {
             [(ChoosenCommentTableViewCell*)cell setCellData:self.choosenComment];
+            cell.backgroundColor = [UIColor colorWithHexString:@"#F5F5F5"];
         }
     }
+    cell.userInteractionEnabled = NO;
     return cell;
 }
 

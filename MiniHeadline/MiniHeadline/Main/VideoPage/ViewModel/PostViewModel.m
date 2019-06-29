@@ -254,6 +254,7 @@
      */
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *res = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSLog(@"res: %@", res);
         int cid = [[res objectForKey:@"cid"] integerValue];
         [self getCommentWithID:cid success:^(MyComment * _Nonnull comment) {
             success(cid, comment);

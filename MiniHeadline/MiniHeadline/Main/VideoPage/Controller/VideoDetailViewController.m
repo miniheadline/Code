@@ -644,6 +644,7 @@
 }
 
 - (void)createCommentsView {
+    NSLog(@"createCommentsView");
     CGRect screenBound = [UIScreen mainScreen].bounds;
     if (!self.commentsView) {
         
@@ -687,7 +688,6 @@
 }
 
 -(IBAction)sendBtnClick:(id)sender {
-    
     [self.view endEditing:YES];
     [self.commentsView removeFromSuperview];
     self.editCommentBtn.userInteractionEnabled = YES;

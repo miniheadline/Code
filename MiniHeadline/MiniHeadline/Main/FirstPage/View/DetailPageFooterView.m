@@ -62,12 +62,12 @@
         make.width.and.height.equalTo(@30);
     }];
     
-    [self.commentCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.commentImageView.mas_top).offset(-5);
-        make.right.equalTo(self.commentImageView.mas_right).offset(5);
-        make.width.equalTo(@20);
-        make.height.equalTo(@15);
-    }];
+//    [self.commentCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.commentImageView.mas_top).offset(-5);
+//        make.right.equalTo(self.commentImageView.mas_right).offset(5);
+//        make.width.equalTo(@20);
+//        make.height.equalTo(@15);
+//    }];
     
     [self.writeCommentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(5);

@@ -21,6 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)starNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
 - (void)likeNewsWithUid:(NSInteger)uid nid:(NSInteger)nid success:(void (^)(void))success failure:(void (^)(NSError *error))failure;
 
+- (void)getCommentsOfNewsWithNid:(NSInteger)nid success:(void (^)(NSMutableArray *))success failure:(void (^)(NSError *error))failure;
+- (void)getCommentsOfCommentWithCid:(NSInteger)cid success:(void (^)(NSMutableArray *))success failure:(void (^)(NSError *error))failure;
+
+- (void)addCommentForNewsWithUid:(NSInteger)uid nid:(NSInteger)nid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError *error))failure;
+- (void)addCOmmentForCommentWithUid:(NSInteger)uid pid:(NSInteger)pid text:(NSString *)text success:(void (^)(NSInteger))success failure:(void (^)(NSError *error))failure;
+
 @end
 
 NS_ASSUME_NONNULL_END

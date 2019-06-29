@@ -43,7 +43,6 @@
 @property (nonatomic) BOOL isLoading;
 
 @property (nonatomic) NSInteger offset;
-@property (nonatomic) NSMutableArray *offsetArray;
 
 @end
 
@@ -228,12 +227,6 @@
         NSRange range = NSMakeRange(0, 20);
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
         [self.tableDataArray insertObjects:dataArray atIndexes:indexSet];
-        NSMutableArray *indexArray = [NSMutableArray array];
-        for (NSInteger i = 0; i < 20; i++) {
-            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
-            [indexArray addObject:temp];
-        }
-        [self.offsetArray insertObjects:indexArray atIndexes:indexSet];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
             [self.newsTableView.mj_header endRefreshing];
@@ -255,12 +248,6 @@
     [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
         // 返回的数据插入在后面
         [self.tableDataArray addObjectsFromArray:dataArray];
-        NSMutableArray *indexArray = [NSMutableArray array];
-        for (NSInteger i = 0; i < 20; i++) {
-            NSNumber *temp = [NSNumber numberWithInteger:(self.offset + i)];
-            [indexArray addObject:temp];
-        }
-        [self.offsetArray addObjectsFromArray:indexArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.newsTableView reloadData];
             [self.newsTableView.mj_footer endRefreshing];
@@ -290,13 +277,6 @@
         _tableDataArray = [NSMutableArray array];
     }
     return _tableDataArray;
-}
-
-- (NSMutableArray *)offsetArray {
-    if (_offsetArray == nil || _offsetArray == NULL) {
-        _offsetArray = [NSMutableArray array];
-    }
-    return _offsetArray;
 }
 
 
