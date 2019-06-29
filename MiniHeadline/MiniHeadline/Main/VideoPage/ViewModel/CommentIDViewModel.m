@@ -42,13 +42,13 @@
         
         NSInteger count = offset + size < dataArr.count ? size : (dataArr.count - offset);
         
-        for(int i = 0; i < count; i++){
+        for(int i = 0; i < dataArr.count; i++){
             MyComment *data = [[MyComment alloc] init];
             [arr addObject:data];
         }
         
         dispatch_group_t downloadTaskGroup = dispatch_group_create();
-        for (int i = offset; i < offset + count; i++) {
+        for (int i = 0; i < dataArr.count; i++) {
             int cid = [[dataArr[i] objectForKey:@"cid"] integerValue];
             NSString *text = [dataArr[i] objectForKey:@"text"];
             NSString *time = [dataArr[i] objectForKey:@"time"];
@@ -68,7 +68,7 @@
             UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
             MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
             comment.cid = cid;
-            [arr replaceObjectAtIndex:i-offset withObject:comment];
+            [arr replaceObjectAtIndex:i withObject:comment];
             dispatch_group_leave(downloadTaskGroup);
             //static NSString *picPath;
             /*dispatch_group_t imagesDownloadTaskGroup = dispatch_group_create();

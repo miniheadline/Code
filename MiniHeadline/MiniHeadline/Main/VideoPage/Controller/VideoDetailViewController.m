@@ -425,7 +425,9 @@
         UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 477, 414, 341) style:UITableViewStylePlain]);
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        [footer setTitle:@"" forState:MJRefreshStateIdle];
+        tableView.mj_footer = footer;
         tableView;
     });
     [self.view addSubview:self.commentTableView];
@@ -776,14 +778,41 @@
     self.isLoading = YES;
     CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
     [viewModel getFeedsListWithID:self.myVideo.vid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
-        if(dataArray.count == 0) {
+        if(dataArray.count == self.commentsList.count) {
             self.hasMore = NO;
         }
         else {
             self.hasMore = YES;
         }
-        if (dataArray != nil) {
-            [self.commentsList addObjectsFromArray:dataArray];
+        if (dataArray != nil && dataArray.count > self.commentsList.count) {
+            //[self.commentsList addObjectsFromArray:dataArray];
+            if(self.commentsList.count > 0) {
+                int count = self.commentsList.count;
+                int minID = self.commentsList[count-1].cid;
+                int maxID = self.commentsList[0].cid;
+                NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<%ld AND cid>=%ld",minID, minID-10];
+                NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", maxID];
+                if(beforeApredicate != nil) {
+                    NSArray *beforeArray = [dataArray filteredArrayUsingPredicate:beforeApredicate];
+                    if(beforeArray.count > 0) {
+                        NSRange range = NSMakeRange(0, beforeArray.count);
+                        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                        [self.commentsList insertObjects:beforeArray atIndexes:indexSet];
+                    }
+                }
+                if(backApredicate != nil) {
+                    NSArray *afterArray = [dataArray filteredArrayUsingPredicate:backApredicate];
+                    if(afterArray.count > 0) {
+                        [self.commentsList addObjectsFromArray:afterArray];
+                    }
+                }
+            }
+            else {
+                int count = dataArray.count < 5 ? dataArray.count : 5;
+                for(int i = 0; i < count; i++) {
+                    [self.commentsList addObject:dataArray[i]];
+                }
+            }
         }
         NSLog(@"count: %d", self.commentsList.count);
         dispatch_async(dispatch_get_main_queue(), ^{

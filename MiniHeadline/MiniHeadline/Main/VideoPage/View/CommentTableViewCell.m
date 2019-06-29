@@ -103,7 +103,7 @@
     [self.comments setText:data.comment];
     //[self.time setFrame:CGRectMake(54, 49+commentsHeight+20, 340, 21)];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     [self.time setText:[dateFormatter stringFromDate:data.date]];
     //self.height += commentsHeight-30;
     
