@@ -389,7 +389,7 @@ static CGRect statusBound; // 获取状态栏尺寸
                     [self.newsDetailViewModel addCommentForNewsWithUid:self.uid nid:self.nid text:text success:^(NSInteger cid) {
                         NSLog(@"comment success");
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            UIImage *icon = [UIImage imageNamed:@"default_user.jpg"];
+                            UIImage *icon = [UIImage imageNamed:@"default_user.png"];
                             UserInfoModel *user = [UserInfoModel testUser];
                             NSDate *date = [NSDate date];
                             MyComment *newComment = [[MyComment alloc] initWithComment:icon authorName:user.username comment:text likeNum:0 date:date];
@@ -406,7 +406,7 @@ static CGRect statusBound; // 获取状态栏尺寸
                     [self.newsDetailViewModel addCOmmentForCommentWithUid:self.uid pid:self.pid text:text success:^(NSInteger cid) {
                         NSLog(@"sub comment success");
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            UIImage *icon = [UIImage imageNamed:@"default_user.jpg"];
+                            UIImage *icon = [UIImage imageNamed:@"default_user.png"];
                             UserInfoModel *user = [UserInfoModel testUser];
                             NSDate *date = [NSDate date];
                             MyComment *newComment = [[MyComment alloc] initWithComment:icon authorName:user.username comment:text likeNum:0 date:date];
