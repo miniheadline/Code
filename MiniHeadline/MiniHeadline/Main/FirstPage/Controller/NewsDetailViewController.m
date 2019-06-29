@@ -67,6 +67,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 
 @property (nonatomic) NSInteger pid;
 @property (nonatomic) NSInteger uid;
+@property (nonatomic) NSString *userName;
 @property (nonatomic) NSInteger commentCount;
 
 @property (nonatomic, assign) CGFloat webViewHeight;
@@ -146,6 +147,7 @@ static CGRect statusBound; // 获取状态栏尺寸
     self.isLogin = user.isLogin;
     self.uid = user.uid;
     self.pid = -1;
+    self.userName = user.username;
     
     self.commentCount = 0;
     
@@ -386,6 +388,16 @@ static CGRect statusBound; // 获取状态栏尺寸
                 if (self.isSubComment == NO) {
                     [self.newsDetailViewModel addCommentForNewsWithUid:self.uid nid:self.nid text:text success:^(NSInteger cid) {
                         NSLog(@"comment success");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UIImage *icon = [UIImage imageNamed:@"default_user.jpg"];
+                            UserInfoModel *user = [UserInfoModel testUser];
+                            NSDate *date = [NSDate date];
+                            MyComment *newComment = [[MyComment alloc] initWithComment:icon authorName:user.username comment:text likeNum:0 date:date];
+                            newComment.cid = cid;
+                            [self.commentList insertObject:newComment atIndex:0];
+                            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+                            [self.detailTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+                        });
                     } failure:^(NSError * _Nonnull error) {
                         NSLog(@"comment failure");
                     }];
@@ -393,6 +405,16 @@ static CGRect statusBound; // 获取状态栏尺寸
                 else {
                     [self.newsDetailViewModel addCOmmentForCommentWithUid:self.uid pid:self.pid text:text success:^(NSInteger cid) {
                         NSLog(@"sub comment success");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UIImage *icon = [UIImage imageNamed:@"default_user.jpg"];
+                            UserInfoModel *user = [UserInfoModel testUser];
+                            NSDate *date = [NSDate date];
+                            MyComment *newComment = [[MyComment alloc] initWithComment:icon authorName:user.username comment:text likeNum:0 date:date];
+                            newComment.cid = cid;
+                            [self.commentsDetailView.commentsListSecond insertObject:newComment atIndex:0];
+                            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+                            [self.commentsDetailView.commentViewTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+                        });
                     } failure:^(NSError * _Nonnull error) {
                         NSLog(@"sub comment failure");
                     }];

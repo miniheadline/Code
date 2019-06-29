@@ -368,7 +368,7 @@
         
         // 为了确保返回的数据和加载的顺序一致
         NSString* username = [res objectForKey:@"username"];
-        UIImage* icon = [UIImage imageNamed:@"icon_default.jpg"];
+        UIImage* icon = [UIImage imageNamed:@"default_user.jpg"];
         success(username, icon);
         //NSString* picURL = [res objectForKey:@"pic_url"];
         
