@@ -218,7 +218,7 @@
             NSMutableArray *dataArray = [NSMutableArray array];
             for (NSUInteger i = 0; i < rawData.count; i++) {
                 NSNumber *cid = [rawData[i] objectForKey:@"cid"];
-                UIImage *icon = [UIImage imageNamed:@"icon_default.jpg"];
+                UIImage *icon = [UIImage imageNamed:@"default_user.jpg"];
                 NSString *authorName = [rawData[i] objectForKey:@"username"];
                 NSString *comment = [rawData[i] objectForKey:@"text"];
                 NSNumber *likeNum = [rawData[i] objectForKey:@"like num"];
