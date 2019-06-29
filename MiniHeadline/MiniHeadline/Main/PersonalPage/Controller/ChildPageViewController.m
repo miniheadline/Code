@@ -14,7 +14,7 @@
 #import "NoImageTableViewCell.h"
 #import "SingleImageTableViewCell.h"
 #import "MultiImageTableViewCell.h"
-#import "VideoTableViewCell.h"
+#import "RecommendationVideoTableViewCell.h"
 #import "NewsDetailViewController.h"
 #import "UserInfoModel.h"
 #import "UIColor+Hex.h"
@@ -92,17 +92,44 @@
     });
     
     //self.items = self.itemsOfbt1;
-    self.select = 1;
-    self.offset = 0;
     [self tableLoad];
     [self.view addSubview: self.tableView];
+    
+    if(self.select == 4){
+        
+        [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 3){
+        
+        [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 2){
+        
+        [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 1){
+        
+        [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
     
     [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt3 addTarget:self action:@selector(LikeButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt4 addTarget:self action:@selector(HistoryButtonClick) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
+    //[self.editor addTarget:self action:@selector(remove) forControlEvents:UIControlEventTouchUpInside];
     
     self.backImageView.userInteractionEnabled = YES;
     UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
@@ -226,20 +253,35 @@
                         //浏览
                     case 0:
                         [self.itemsOfbt4 addObject:video];
+                        if(self.select == 4){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt4;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                         //点赞
                     case 1:
                         [self.itemsOfbt2 addObject:video];
+                        if(self.select == 2){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt2;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                         //收藏
                     case 2:
                         [self.itemsOfbt1 addObject:video];
-
-                        dispatch_group_t group = dispatch_group_create();
-                        dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                            self.items = self.itemsOfbt1;
-                            [self.tableView  reloadData];
-                        });
+                        if(self.select == 1){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt1;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                 }
             
@@ -277,20 +319,36 @@
                             //浏览
                         case 0:
                             [self.itemsOfbt4 addObjectsFromArray:dataArray];
+                            if(self.select == 4){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt4;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             //点赞
                         case 1:
                             [self.itemsOfbt2 addObjectsFromArray:dataArray];
+                            if(self.select == 2){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt2;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             //收藏
                         case 2:
                             [self.itemsOfbt1 addObjectsFromArray:dataArray];
 
-                            dispatch_group_t group = dispatch_group_create();
-                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                                self.items = self.itemsOfbt1;
-                                [self.tableView  reloadData];
-                            });
+                            if(self.select == 1){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt1;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             
                     }
@@ -362,6 +420,7 @@
     switch (select) {
         case 1:
             NSLog(@"1");
+            self.select = 1;
             [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -369,6 +428,7 @@
             break;
             
         case 2:
+            self.select = 2;
             NSLog(@"2");
             [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -378,6 +438,7 @@
             break;
             
         case 3:
+            self.select = 3;
             NSLog(@"3");
             [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -387,11 +448,8 @@
             break;
             
         case 4:
+            self.select = 4;
             NSLog(@"4");
-            [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             break;
     }
     
@@ -444,16 +502,13 @@
         NSInteger cellType;
         cellType = cellData.cellType;
         NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
-        //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
-        VideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
-        if(cell == nil) {
-            cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
-            [(VideoTableViewCell*)cell setCellData:cellData];
-            cell.delegate = self;
-            
-        } else {
-            [(VideoTableViewCell*)cell setCellData:cellData];
-            cell.delegate = self;
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+        if(cell == nil){
+            cell = [[RecommendationVideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.items[indexPath.row]];
+        }
+        else{
+            [(RecommendationVideoTableViewCell*)cell setCellData:self.items[indexPath.row]];
         }
         
         return cell;
@@ -486,11 +541,11 @@
         NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
-        if ([tableView isEqual:self.tableView]) {
-            // 跳转
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSString *cellType = cell.reuseIdentifier;
+        if([cellType isEqualToString:@"cellType:1"]) {
             VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
             videoDetailViewController.myVideo = self.items[indexPath.row];
-            //[videoDetailViewController setData];
             [self.navigationController pushViewController:videoDetailViewController animated:NO];
         }
     }
@@ -535,12 +590,13 @@
 }
 
 #pragma mark - 按钮的点击
+/*
 - (IBAction)remove {
     // 进入编辑模式
     //    self.tableView.editing = !self.tableView.isEditing;
     [self.tableView setEditing:!self.tableView.isEditing animated:YES];
 }
-
+*/
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -548,7 +604,7 @@
         return UITableViewAutomaticDimension;
     }
     else{
-        return 270;
+        return 100;
     }
 }
 
@@ -560,24 +616,6 @@
  _cell = nil;
  }
  }*/
-
-- (void)cl_tableViewCellPlayVideoWithCell:(VideoTableViewCell *)cell{
-    //记录被点击的Cell
-    _cell = cell;
-    //销毁播放器
-    [_playerView destroyPlayer];
-    SimpleVideoView *playerView = [[SimpleVideoView alloc] initWithFrame:cell.videoView.frame];
-    //playerView.frame = cell.videoView.frame;
-    _playerView = playerView;
-    //[cell.videoView addSubview:_playerView];
-    [cell.videoView insertSubview:_playerView belowSubview:cell.titleLabel];
-    //视频地址
-    _playerView.url = cell.videoModel.video;
-    [_playerView loadVideo];
-    //播放
-    [_playerView playVideo];
-    
-}
 
 /*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
  NSLog(@"willSelectRowAtIndexPath:%@", indexPath);

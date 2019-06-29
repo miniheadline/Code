@@ -172,8 +172,10 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
         UITableView* tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, self.searchBackgroundView.bounds.size.height + self.tagScrollView.bounds.size.height + 1, screenBound.size.width, screenBound.size.height - self.searchBackgroundView.bounds.size.height - self.tagScrollView.bounds.size.height) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
-        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        //tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        [footer setTitle:@"" forState:MJRefreshStateIdle];
+        tableView.mj_footer = footer;
         tableView;
     });
     [self.view addSubview:self.tableView];
@@ -341,14 +343,12 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     return indexPath;
 }
 
-/*- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     //因为复用，同一个cell可能会走多次
     if ([_cell isEqual:cell]) {
-        //区分是否是播放器所在cell,销毁时将指针置空
-        [_playerView destroyPlayer];
-        _cell = nil;
+        //[_cell.imageView setBackgroundColor:<#(UIColor * _Nullable)#>];
     }
-}*/
+}
 
 - (void)cl_tableViewCellPlayVideoWithCell:(VideoTableViewCell *)cell{
     //记录被点击的Cell

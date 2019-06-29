@@ -239,15 +239,16 @@
         else {
             [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
         }
-        [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+        /*[viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
             self.myVideo.likeNum = likeNumGet;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+                [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal]; 
             });
             
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
-        }];
+        }];*/
+        [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum+1] forState:UIControlStateNormal]; 
     }
 }
 
