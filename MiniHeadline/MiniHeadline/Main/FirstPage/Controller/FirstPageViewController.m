@@ -60,6 +60,11 @@
     [self loadMoreData];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
+}
+
 
 #pragma mark - Init
 
@@ -67,8 +72,6 @@
     self.offset = 0;
     self.isLoading = NO;
     self.isFirstLoading = YES;
-    
-    
 }
 
 - (void)addSubViews {
@@ -301,16 +304,6 @@
     NSLog(@"searchSingleTap");
     SearchViewController *searchVC = [[SearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:NO];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    self.navigationController.navigationBar.hidden = NO; // 取消隐藏navigationBar
-    [super viewWillDisappear:animated];
 }
 
 

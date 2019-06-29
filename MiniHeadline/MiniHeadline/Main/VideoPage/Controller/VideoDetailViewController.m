@@ -45,6 +45,7 @@
 @property (nonatomic, strong) UITableView *commentTableView;
 
 @property (nonatomic, strong) UIView *footToolBar;
+@property (nonatomic, strong) UIView *seperateLine;
 @property (nonatomic, strong) UIButton *editCommentBtn;
 @property (nonatomic, strong) UIButton *commentBtn;
 @property (nonatomic, strong) UIButton *starBtn;
@@ -228,13 +229,16 @@
     [self.view addSubview:self.moreBtn];*/
     self.footToolBar = [[UIView alloc] init];
     //self.footToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, 818, 414, 44)];
-    [self.footToolBar setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    [self.footToolBar setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.footToolBar];
+    self.seperateLine = [[UIView alloc] init];
+    [self.seperateLine setBackgroundColor:[UIColor colorWithHexString:@"#D9D9D9"]];
+    [self.footToolBar addSubview:self.seperateLine];
     self.editCommentBtn = [[UIButton alloc] init];
     //self.editCommentBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 7, 130, 30)];
     [self.editCommentBtn setImage:[UIImage imageNamed:@"write.png"] forState:UIControlStateNormal];
     [self.editCommentBtn setTitle:@"写评论..." forState:UIControlStateNormal];
-    [self.editCommentBtn setBackgroundColor:[UIColor whiteColor]];
+    [self.editCommentBtn setBackgroundColor:[UIColor colorWithHexString:@"#EDEDED"]];
     [self.editCommentBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.editCommentBtn.layer.cornerRadius = 15;
     [self.footToolBar addSubview:self.editCommentBtn];
@@ -390,10 +394,15 @@
         make.centerY.equalTo(self.likeBtn.centerY);
     }];*/
     [self.footToolBar makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.view).with.offset(-44);
+        make.bottom.equalTo(self.view).with.offset(-34);
         make.left.equalTo(self.view);
         make.width.equalTo(screenBound.size.width);
         make.height.equalTo(44);
+    }];
+    [self.seperateLine makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.footToolBar);
+        make.left.and.right.equalTo(self.footToolBar);
+        make.height.equalTo(0.5);
     }];
     [self.editCommentBtn makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).with.offset(20);

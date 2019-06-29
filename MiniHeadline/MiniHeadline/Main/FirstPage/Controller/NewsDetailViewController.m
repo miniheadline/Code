@@ -101,7 +101,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    // 判断是否为iPhoneX系列
+    // 判断是否为iPhoneX系列，应该针对屏幕分辨率做适配
     if (@available(iOS 11.0, *)) {
         if (self.view.safeAreaInsets.bottom > 0) {
             self.isIphoneXSeries = YES;
@@ -248,7 +248,9 @@ static CGRect statusBound; // 获取状态栏尺寸
         [self.commentList addObjectsFromArray:dataArray];
         NSLog(@"commentList: %@", self.commentList);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.detailTableView reloadData];
+            // 只需要更新变化的section，否则会报错
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+            [self.detailTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         });
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"请求失败 error:%@", error.description);
