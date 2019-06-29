@@ -92,10 +92,37 @@
     });
     
     //self.items = self.itemsOfbt1;
-    self.select = 1;
-    self.offset = 0;
     [self tableLoad];
     [self.view addSubview: self.tableView];
+    
+    if(self.select == 4){
+        
+        [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 3){
+        
+        [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 2){
+        
+        [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    else if(self.select == 1){
+        
+        [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self.bt4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
     
     [self.bt1 addTarget:self action:@selector(MarkButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.bt2 addTarget:self action:@selector(CommentButtonClick) forControlEvents:UIControlEventTouchUpInside];
@@ -226,20 +253,35 @@
                         //浏览
                     case 0:
                         [self.itemsOfbt4 addObject:video];
+                        if(self.select == 4){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt4;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                         //点赞
                     case 1:
                         [self.itemsOfbt2 addObject:video];
+                        if(self.select == 2){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt2;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                         //收藏
                     case 2:
                         [self.itemsOfbt1 addObject:video];
-
-                        dispatch_group_t group = dispatch_group_create();
-                        dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                            self.items = self.itemsOfbt1;
-                            [self.tableView  reloadData];
-                        });
+                        if(self.select == 1){
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt1;
+                                [self.tableView  reloadData];
+                            });
+                        }
                         break;
                 }
             
@@ -277,20 +319,36 @@
                             //浏览
                         case 0:
                             [self.itemsOfbt4 addObjectsFromArray:dataArray];
+                            if(self.select == 4){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt4;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             //点赞
                         case 1:
                             [self.itemsOfbt2 addObjectsFromArray:dataArray];
+                            if(self.select == 2){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt2;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             //收藏
                         case 2:
                             [self.itemsOfbt1 addObjectsFromArray:dataArray];
 
-                            dispatch_group_t group = dispatch_group_create();
-                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                                self.items = self.itemsOfbt1;
-                                [self.tableView  reloadData];
-                            });
+                            if(self.select == 1){
+                                dispatch_group_t group = dispatch_group_create();
+                                dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                    self.items = self.itemsOfbt1;
+                                    [self.tableView  reloadData];
+                                });
+                            }
                             break;
                             
                     }
@@ -362,6 +420,7 @@
     switch (select) {
         case 1:
             NSLog(@"1");
+            self.select = 1;
             [self.bt1 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -369,6 +428,7 @@
             break;
             
         case 2:
+            self.select = 2;
             NSLog(@"2");
             [self.bt2 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -378,6 +438,7 @@
             break;
             
         case 3:
+            self.select = 3;
             NSLog(@"3");
             [self.bt3 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -387,11 +448,8 @@
             break;
             
         case 4:
+            self.select = 4;
             NSLog(@"4");
-            [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [self.bt1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.bt3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             break;
     }
     
