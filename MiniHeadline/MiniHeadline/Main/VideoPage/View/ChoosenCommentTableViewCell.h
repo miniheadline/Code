@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ChoosenCommentTableViewCell : UITableViewCell
 - (void)setCellData:(MyComment*) data;
+- (void)setTagLabel:(NSString *)tag;
 @end
 
 NS_ASSUME_NONNULL_END
