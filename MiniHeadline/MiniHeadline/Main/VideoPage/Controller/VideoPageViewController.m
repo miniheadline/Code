@@ -61,6 +61,11 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationController.navigationBar.hidden = YES; // 隐藏navigationBar
+    [super viewWillAppear:animated];
+}
+
 - (void)addSubViews {
     self.view.backgroundColor = [UIColor whiteColor];
     // 获取屏幕尺寸（包括状态栏）
