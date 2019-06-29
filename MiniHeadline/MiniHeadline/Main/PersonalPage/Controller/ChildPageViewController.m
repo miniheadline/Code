@@ -243,7 +243,7 @@
                 NSString *index = [NSString stringWithFormat:@"icon_%d", userID];
                 int vid = [[dataArr[i] objectForKey:@"vid"] integerValue];
                 int likeNum = [[dataArr[i] objectForKey:@"likeNum"] integerValue];
-                UIImage *pic = [UIImage imageNamed:@"default_user.jpg"];
+                UIImage *pic = [UIImage imageNamed:@"default_user.png"];
                 MyVideo *video = [[MyVideo alloc] initWithVideo:title video:url authorName:userName icon:pic commentNum:0 isFollow:isFollow playNum:0];
                 video.vid = vid;
                 video.detail = detail;
