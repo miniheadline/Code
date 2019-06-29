@@ -177,7 +177,7 @@
     self.photoImageView = ({
         UIImage *headlineImage = [UIImage imageNamed:@"default.png"];
         UIImageView *imageView = [[UIImageView alloc]initWithImage:headlineImage];
-        imageView.frame = CGRectMake(width + extra, height, screenBound.size.width/4 - 2*extra, screenBound.size.width/4- 2*extra);
+        imageView.frame = CGRectMake(width + 40, height, screenBound.size.width/4 - 2*extra, screenBound.size.width/4- 2*extra);
         /*
         NSURL *url = [NSURL URLWithString:self.user.pic_url];
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
