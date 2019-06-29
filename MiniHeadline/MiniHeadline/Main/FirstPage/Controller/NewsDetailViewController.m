@@ -101,7 +101,7 @@ static CGRect statusBound; // 获取状态栏尺寸
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    // 判断是否为iPhoneX系列
+    // 判断是否为iPhoneX系列，应该针对屏幕分辨率做适配
     if (@available(iOS 11.0, *)) {
         if (self.view.safeAreaInsets.bottom > 0) {
             self.isIphoneXSeries = YES;
