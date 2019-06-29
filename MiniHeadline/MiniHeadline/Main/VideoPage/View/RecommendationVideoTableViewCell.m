@@ -42,6 +42,9 @@
 }
 
 - (void)initSubView {
+    CGRect screenBound = [UIScreen mainScreen].bounds;
+    // 获取状态栏尺寸
+    CGRect statusBound = [[UIApplication sharedApplication] statusBarFrame];
     self.videoImage = [[UIImageView alloc] init];
     //self.videoImage = [[UIImageView alloc] initWithFrame:CGRectMake(244, 4, 150, 100)];
     [self.contentView addSubview:self.videoImage];
@@ -68,6 +71,7 @@
     [self.title makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.top).with.offset(20);
         make.left.equalTo(self.left).with.offset(10);
+        
     }];
     [self.detail makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.bottom).with.offset(-20);
