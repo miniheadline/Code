@@ -248,9 +248,19 @@
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];*/
-        [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum+1] forState:UIControlStateNormal]; 
+        [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum+1] forState:UIControlStateNormal];
     }
 }
 
+- (void)loadNewLikeNum {
+    PostViewModel *viewModel = [[PostViewModel alloc] init];
+    [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+        });
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error:%@",error.description);
+    }];
+}
 
 @end

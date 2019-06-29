@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface VideoDetailTableViewCell : UITableViewCell
 - (void)setCellData:(MyVideo*) data;
 @property (nonatomic, weak) id <VideoTableViewCellDelegate> delegate;
+- (void)loadNewLikeNum;
 @end
 
 NS_ASSUME_NONNULL_END

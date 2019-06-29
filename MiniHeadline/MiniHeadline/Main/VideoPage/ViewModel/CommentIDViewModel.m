@@ -156,13 +156,13 @@
         
         NSInteger count = offset + size < dataArr.count ? size : (dataArr.count - offset);
         
-        for(int i = 0; i < count; i++){
+        for(int i = 0; i < dataArr.count; i++){
             MyComment *data = [[MyComment alloc] init];
             [arr addObject:data];
         }
         
         dispatch_group_t downloadTaskGroup = dispatch_group_create();
-        for (int i = offset; i < offset + count; i++) {
+        for (int i = 0; i < dataArr.count; i++) {
             int cid = [[dataArr[i] objectForKey:@"cid"] integerValue];
             NSString *text = [dataArr[i] objectForKey:@"text"];
             NSString *time = [dataArr[i] objectForKey:@"time"];

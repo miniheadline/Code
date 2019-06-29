@@ -91,6 +91,8 @@
 @property (nonatomic, assign) BOOL isTwo;
 @property (nonatomic, assign) int uid;
 @property (nonatomic, assign) BOOL isLogin;
+@property (nonatomic, strong) VideoDetailTableViewCell *detailCell;
+//@property (nonatomic, )
 @end
 
 @implementation VideoDetailViewController
@@ -262,9 +264,30 @@
     //self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0, 44, screenBound.size.width, 254)];
     self.videoView.backgroundColor = [UIColor blackColor];
     NSURL *url = [NSURL URLWithString:self.myVideo.video];
-    self.videoPlayer = [AVPlayer playerWithURL:url];
-    self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
-    [self.videoView.layer addSublayer:self.video];
+    self.duraTime = [[UILabel alloc] init];
+    //self.duraTime = [[UILabel alloc] initWithFrame:CGRectMake(329, 224, 34, 15)];
+    [self.duraTime setTextColor:[UIColor whiteColor]];
+    self.duraTime.font = [UIFont systemFontOfSize:12];
+    //self.video = [[AVPlayerLayer alloc] init];
+    //[self.videoView.layer addSublayer:self.video];
+    [self.videoView addSubview:self.duraTime];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.videoPlayer = [AVPlayer playerWithURL:url];
+        self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
+        AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
+        CMTime videoDuration = [avUrlAsset duration];
+        float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
+        NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoDurationSeconds];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+        [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
+        NSString* result = [dateFormatter stringFromDate:date];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.videoView.layer insertSublayer:self.video atIndex:0];
+            [self.duraTime setText:result];
+        });
+    });
     [self.view addSubview:self.videoView];
     self.backBtn = [[UIButton alloc] init];
     //self.backBtn = [[UIButton alloc] initWithFrame:CGRectMake(8, 8, 30, 30)];
@@ -292,20 +315,8 @@
     self.currTime.font = [UIFont systemFontOfSize:12];
     [self.currTime setText:@"00:00"];
     [self.videoView addSubview:self.currTime];
-    AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
-    CMTime videoDuration = [avUrlAsset duration];
-    float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
-    NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoDurationSeconds];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-    [dateFormatter setDateFormat:@"mm:ss"];  //you can vary the date string. Ex: "mm:ss"
-    NSString* result = [dateFormatter stringFromDate:date];
-    self.duraTime = [[UILabel alloc] init];
-    //self.duraTime = [[UILabel alloc] initWithFrame:CGRectMake(329, 224, 34, 15)];
-    [self.duraTime setTextColor:[UIColor whiteColor]];
-    self.duraTime.font = [UIFont systemFontOfSize:12];
-    [self.duraTime setText:result];
-    [self.videoView addSubview:self.duraTime];
+    
+    
     self.editCommentField = [[UITextField alloc] init];
     //self.commentTwoView = [[UIView alloc] init];
     self.closeCommentViewBtn = [[UIButton alloc] init];
@@ -434,6 +445,7 @@
         UITableView* tableView = ([[UITableView alloc]initWithFrame:CGRectMake(0, 477, 414, 341) style:UITableViewStylePlain]);
         tableView.delegate = self;
         tableView.dataSource = self;
+        tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [footer setTitle:@"" forState:MJRefreshStateIdle];
         tableView.mj_footer = footer;
@@ -714,10 +726,12 @@
     if(self.isLogin){
         if(self.isTwo == NO) {
             [viewModel postCommentWith:self.uid vid:self.myVideo.vid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
-                //[self.commentsList addObject:<#(nonnull MyComment *)#>];
+                //[self.commentsList addObject:comment ];
+                [self.commentsList insertObject:comment atIndex:0];
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     [self.commentText setText:@""];
-                    [self.commentTableView reloadData];
+                    NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:2];
+                    [self.commentTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
                 });
             } failure:^(NSError * _Nonnull error) {
                 NSLog(@"请求失败 error:%@",error.description);
@@ -729,10 +743,13 @@
                 cid = self.commentTwoView.choosenComment.cid;
             }
             [viewModel postCommentTwoWith:self.uid cid:cid text:self.commentText.text success:^(int cid, MyComment * _Nonnull comment) {
+                [self.commentTwoView.commentsListSecond insertObject:comment atIndex:0];
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     [self.commentText setText:@""];
                     //[self.commentTwoView.commentsListSecond addObject:comment];
-                    [self.commentTwoView.commentViewTableView reloadData];
+                    NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+                    [self.commentTwoView.commentViewTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+                    //[self.commentTwoView.commentViewTableView reloadData];
                 });
             } failure:^(NSError * _Nonnull error) {
                 NSLog(@"请求失败 error:%@",error.description);
@@ -799,19 +816,20 @@
                 int count = self.commentsList.count;
                 int minID = self.commentsList[count-1].cid;
                 int maxID = self.commentsList[0].cid;
-                NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<%ld AND cid>=%ld",minID, minID-10];
-                NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", maxID];
-                if(beforeApredicate != nil) {
+                NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<=%ld AND cid>=%ld",maxID, minID-10];
+                //NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", maxID];
+                /*if(beforeApredicate != nil) {
                     NSArray *beforeArray = [dataArray filteredArrayUsingPredicate:beforeApredicate];
                     if(beforeArray.count > 0) {
                         NSRange range = NSMakeRange(0, beforeArray.count);
                         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
                         [self.commentsList insertObjects:beforeArray atIndexes:indexSet];
                     }
-                }
+                }*/
                 if(backApredicate != nil) {
                     NSArray *afterArray = [dataArray filteredArrayUsingPredicate:backApredicate];
                     if(afterArray.count > 0) {
+                        [self.commentsList removeAllObjects];
                         [self.commentsList addObjectsFromArray:afterArray];
                     }
                 }
@@ -836,6 +854,66 @@
         [self.commentTableView.mj_footer endRefreshing];
         self.isLoading = NO;
     }];
+}
+
+- (void)loadNewData {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
+    CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
+    [viewModel getFeedsListWithID:self.myVideo.vid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        if(dataArray.count == self.commentsList.count) {
+            self.hasMore = NO;
+        }
+        else {
+            self.hasMore = YES;
+        }
+        if (dataArray != nil && dataArray.count > self.commentsList.count) {
+            //[self.commentsList addObjectsFromArray:dataArray];
+            if(self.commentsList.count > 0) {
+                int count = self.commentsList.count;
+                int minID = self.commentsList[count-1].cid;
+                //int maxID = self.commentsList[0].cid;
+                //NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<%ld AND cid>=%ld",minID, minID-10];
+                NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", minID];
+                if(beforeApredicate != nil) {
+                    NSArray *beforeArray = [dataArray filteredArrayUsingPredicate:beforeApredicate];
+                    if(beforeArray.count > 0) {
+                        [self.commentsList removeAllObjects];
+                        [self.commentsList addObjectsFromArray:beforeArray];
+                    }
+                }
+                /*if(backApredicate != nil) {
+                    NSArray *afterArray = [dataArray filteredArrayUsingPredicate:backApredicate];
+                    if(afterArray.count > 0) {
+                        [self.commentsList addObjectsFromArray:afterArray];
+                    }
+                }*/
+            }
+            else {
+                int count = dataArray.count < 5 ? dataArray.count : 5;
+                for(int i = 0; i < count; i++) {
+                    [self.commentsList addObject:dataArray[i]];
+                }
+            }
+        }
+        NSLog(@"count: %d", self.commentsList.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:2];
+            [self.commentTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            //[self.commentTableView reloadData];
+            [self.commentTableView.mj_header endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.commentsList.count;
+        });
+    } failure:^(NSError * _Nonnull error) {
+        [self.commentTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+    //[self.detailCell loadNewLikeNum];
+    NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
+    VideoDetailTableViewCell *cell = (VideoDetailTableViewCell *)[self.commentTableView cellForRowAtIndexPath:path];
+    [cell loadNewLikeNum];
+
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -893,7 +971,7 @@
             else if(cellType == 3) {
                 cell = [[VideoDetailTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
                 [(VideoDetailTableViewCell*)cell setCellData:self.myVideo];
-                VideoDetailTableViewCell* vcell = (VideoDetailTableViewCell*) cell;
+                VideoDetailTableViewCell *vcell = (VideoDetailTableViewCell*) cell;
                 vcell.delegate = self;
                 self.delegate = cell.self;
             }

@@ -108,7 +108,7 @@
     [self.name setTitle:data.authorName forState:UIControlStateNormal];
     [self.comment setText:data.comment];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     [self.detail setText:[dateFormatter stringFromDate:data.date]];
 }
 
