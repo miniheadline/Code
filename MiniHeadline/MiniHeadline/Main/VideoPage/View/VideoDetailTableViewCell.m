@@ -103,6 +103,7 @@
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.font = [UIFont systemFontOfSize:25];
     [self.titleLabel setTextColor:[UIColor blackColor]];
+    [self.titleLabel setNumberOfLines:0];
     //[self.titleLabel setText:self.myVideo.title];
     [self.contentView addSubview:self.titleLabel];
     self.moreDetail = [[UILabel alloc] init];
@@ -110,6 +111,7 @@
     self.moreDetail.font = [UIFont systemFontOfSize:17];
     self.moreDetail.textColor = [UIColor grayColor];
     [self.moreDetail setText:@"随便下的视频"];
+    [self.moreDetail setNumberOfLines:0];
     [self.contentView addSubview:self.moreDetail];
     self.likeBtn = [[UIButton alloc] init];
     //self.likeBtn = [[UIButton alloc] initWithFrame:CGRectMake(19, 436, 71, 25)];
@@ -141,12 +143,12 @@
     [self.titleLabel makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).with.offset(20);
         make.top.equalTo(self.icon.bottom).with.offset(15);
-        make.width.equalTo(screenBound.size.width);
+        make.width.equalTo(screenBound.size.width-40);
     }];
     [self.moreDetail makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.titleLabel.left);
         make.top.equalTo(self.titleLabel.bottom).with.offset(15);
-        make.width.equalTo(screenBound.size.width);
+        make.width.equalTo(screenBound.size.width-40);
     }];
     [self.likeBtn makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).with.offset(20);
@@ -192,19 +194,24 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(isLikeGet) {
                     [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                    self.myVideo.likeNum++;
+                    [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum] forState:UIControlStateNormal];
                 }
                 else {
                     [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                    self.myVideo.likeNum--;
+                    [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum] forState:UIControlStateNormal];
                 }
-                [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+                
             });
-            [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+            /*[viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
                 });
             } failure:^(NSError * _Nonnull error) {
                 NSLog(@"请求失败 error:%@",error.description);
-            }];
+            }];*/
+            [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum+1] forState:UIControlStateNormal];
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];
@@ -235,9 +242,13 @@
         self.myVideo.isLike = !self.myVideo.isLike;
         if(self.myVideo.isLike) {
             [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+            self.myVideo.likeNum++;
+            [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum] forState:UIControlStateNormal];
         }
         else {
             [self.likeBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+            self.myVideo.likeNum--;
+            [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum] forState:UIControlStateNormal];
         }
         /*[viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
             self.myVideo.likeNum = likeNumGet;
@@ -248,7 +259,7 @@
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
         }];*/
-        [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", self.myVideo.likeNum+1] forState:UIControlStateNormal];
+        
     }
 }
 
@@ -257,6 +268,7 @@
     [viewModel getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.likeBtn setTitle:[NSString stringWithFormat:@"%d", likeNumGet] forState:UIControlStateNormal];
+            self.myVideo.likeNum = likeNumGet;
         });
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"请求失败 error:%@",error.description);

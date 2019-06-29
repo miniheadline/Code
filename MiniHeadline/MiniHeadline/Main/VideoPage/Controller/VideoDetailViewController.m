@@ -787,7 +787,8 @@
 
 - (void)loadRecommendationData {
     VideoListViewModel *viewModel = [[VideoListViewModel alloc] init];
-    [viewModel getFeedsListWithOffset:self.myVideo.vid size:3 success:^(NSMutableArray * _Nonnull dataArray) {
+    int randNum = (arc4random() % 43) + 5;
+    [viewModel getFeedsListWithOffset:randNum size:3 success:^(NSMutableArray * _Nonnull dataArray) {
         [self.recommendationVideoList addObjectsFromArray:dataArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
@@ -910,6 +911,12 @@
         self.isLoading = NO;
     }];
     //[self.detailCell loadNewLikeNum];
+    PostViewModel* viewModel2 = [[PostViewModel alloc] init];
+    [viewModel2 getLikeNumWithUid:self.uid vid:self.myVideo.vid success:^(int likeNumGet) {
+        self.myVideo.likeNum = likeNumGet;
+    } failure:^(NSError * _Nonnull error) {
+    
+    }];
     NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
     VideoDetailTableViewCell *cell = (VideoDetailTableViewCell *)[self.commentTableView cellForRowAtIndexPath:path];
     [cell loadNewLikeNum];
