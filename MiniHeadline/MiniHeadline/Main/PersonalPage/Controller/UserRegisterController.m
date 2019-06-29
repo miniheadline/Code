@@ -132,11 +132,12 @@
     UITapGestureRecognizer *back = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backSingleTap:)];
     [self.backImageView addGestureRecognizer:back];
     
+    double scale = screenBound.size.width/414;
     
     self.headlineImageView = ({
         UIImage *headlineImage = [UIImage imageNamed:@"logo.png"];
         UIImageView *imageView = [[UIImageView alloc]initWithImage:headlineImage];
-        imageView.frame = CGRectMake(50, 100, 80, 80);
+        imageView.frame = CGRectMake(scale*50, scale*100, scale*80, scale*80);
         imageView.clipsToBounds = YES;
         imageView.layer.cornerRadius = 10.0;
         imageView;
@@ -144,16 +145,16 @@
     [self.view addSubview:self.headlineImageView];
     
     self.titleLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(150, 100, screenBound.size.width - 150, 80)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(scale*150, scale*100, screenBound.size.width - scale*150, scale*80)];
         label.text = @"账号注册";
-        UIFont *bigFont = [UIFont systemFontOfSize:32];
+        UIFont *bigFont = [UIFont systemFontOfSize:scale*32];
         label.font = bigFont;
         label;
     });
     [self.view addSubview:self.titleLabel];
     
     self.smallHintLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 200, screenBound.size.width - 50, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(scale*50, scale*200, screenBound.size.width - scale*50, scale*20)];
         label.text = @"注册表示同意“用户协议”和“隐私政策”";
         UIFont *smallFont = [UIFont systemFontOfSize:12];
         label.font = smallFont;
@@ -162,10 +163,10 @@
     [self.view addSubview:self.smallHintLabel];
     
     self.usernameTextField = ({
-        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(50, 250, screenBound.size.width - 50, 100)];
+        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(scale*50, scale*250, screenBound.size.width - scale*50, scale*100)];
         textField.placeholder = @"用户名";
         textField.keyboardType = UIKeyboardTypeDefault;
-        UIFont *bigFont = [UIFont systemFontOfSize:28];
+        UIFont *bigFont = [UIFont systemFontOfSize:scale*28];
         textField.font = bigFont;
         [textField addTarget:self action:@selector(usernameTextFieldChange:) forControlEvents:UIControlEventEditingChanged];
         textField;
@@ -173,43 +174,43 @@
     [self.view addSubview:self.usernameTextField];
     
     UILabel *grayline1 = ({
-        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(50, 328, screenBound.size.width - 100, 2)];
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(scale*50, scale*328, screenBound.size.width - scale*100, 2)];
         line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
         line;
     });
     [self.view addSubview:grayline1];
     
     self.passwordTextField = ({
-        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(50, 350, screenBound.size.width - 50, 100)];
+        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(scale*50, scale*350, screenBound.size.width - scale*50, scale*100)];
         textField.placeholder = @"密码";
         textField.secureTextEntry = YES;
         textField.keyboardType = UIKeyboardTypeDefault;
-        UIFont *bigFont = [UIFont systemFontOfSize:28];
+        UIFont *bigFont = [UIFont systemFontOfSize:scale*28];
         textField.font = bigFont;
         [textField addTarget:self action:@selector(passwordTextFieldChange:) forControlEvents:UIControlEventEditingChanged];
         textField;
     });
     [self.view addSubview:self.passwordTextField];
     UILabel *grayline2 = ({
-        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(50, 428, screenBound.size.width - 100, 2)];
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(scale*50, scale*428, screenBound.size.width - scale*100, 2)];
         line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
         line;
     });
     [self.view addSubview:grayline2];
     
     self.confirmTextField = ({
-        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(50, 450, screenBound.size.width - 50, 100)];
+        UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(scale*50, scale*450, screenBound.size.width - scale*50, scale*100)];
         textField.placeholder = @"确认密码";
         textField.secureTextEntry = YES;
         textField.keyboardType = UIKeyboardTypeDefault;
-        UIFont *bigFont = [UIFont systemFontOfSize:28];
+        UIFont *bigFont = [UIFont systemFontOfSize:scale*28];
         textField.font = bigFont;
         [textField addTarget:self action:@selector(confirmTextFieldChange:) forControlEvents:UIControlEventEditingChanged];
         textField;
     });
     [self.view addSubview:self.confirmTextField];
     UILabel *grayline3 = ({
-        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(50, 528, screenBound.size.width - 100, 2)];
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(scale*50, scale*528, screenBound.size.width - scale*100, 2)];
         line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
         line;
     });
@@ -217,7 +218,7 @@
     
     self.confirmButton = ({
         UIImage *image = [UIImage imageNamed:@"jiantou.png"];
-        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(screenBound.size.width/2-40, 600, 80, 80)];
+        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(screenBound.size.width/2-scale*40, scale*600, scale*80, scale*80)];
         button.clipsToBounds = YES;
         button.layer.cornerRadius = button.frame.size.width/2;
         [button setImage:image forState:UIControlStateNormal];

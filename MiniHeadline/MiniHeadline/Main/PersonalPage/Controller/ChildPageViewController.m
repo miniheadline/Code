@@ -10,13 +10,16 @@
 #import "InfoTableViewCell.h"
 #import "InfoTableViewCellWithPicture.h"
 #import "NSComment.h"
-#import "FirstPageViewModel.h"
+#import "ChildPageNetworkModel.h"
 #import "NoImageTableViewCell.h"
 #import "SingleImageTableViewCell.h"
 #import "MultiImageTableViewCell.h"
 #import "VideoTableViewCell.h"
 #import "NewsDetailViewController.h"
+#import "UserInfoModel.h"
 #import "UIColor+Hex.h"
+#import "VideoDetailViewController.h"
+#import "SimpleVideoView.h"
 
 @interface ChildPageViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -35,22 +38,34 @@
 
 @property int select;
 @property (nonatomic, retain) NSMutableArray *items;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt1;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt2;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt3;
-@property (nonatomic, copy) NSMutableArray *itemsOfbt4;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt1;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt2;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt3;
+@property (nonatomic, retain) NSMutableArray *itemsOfbt4;
 
 @property (nonatomic) BOOL isLoading;
 
 @property (nonatomic) int offset;
+@property(nonatomic, strong) UserInfoModel* user;
+
+
+@property (nonatomic, assign) UITableViewCell *cell;
+@property (nonatomic, strong) SimpleVideoView *playerView;
 
 @end
 
 
 @implementation ChildPageViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.user = [UserInfoModel testUser];
+    self.items = [[NSMutableArray alloc]init];
+    self.itemsOfbt1 = [[NSMutableArray alloc]init];
+    self.itemsOfbt2 = [[NSMutableArray alloc]init];
+    self.itemsOfbt3 = [[NSMutableArray alloc]init];
+    self.itemsOfbt4 = [[NSMutableArray alloc]init];
     
     CGRect mainscreenBound =  [UIScreen mainScreen].bounds;
     CGRect statusBarBound = [[UIApplication sharedApplication] statusBarFrame];
@@ -76,7 +91,6 @@
         tableView;
     });
     
-    self.items =  [[NSMutableArray alloc]init];
     //self.items = self.itemsOfbt1;
     self.select = 1;
     self.offset = 0;
@@ -173,10 +187,139 @@
     [self.bt4 setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 }
 
+- (void)loadVideo:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getVideoList?uid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"videoList"];
+            for(int i = 0; i < dataArr.count; i ++){// 到icon都是可用的，后面的信息没有，likeNum没用上
+                
+                NSString *title = [dataArr[i] objectForKey:@"title"];
+                NSString *url = [dataArr[i] objectForKey:@"url"];
+                NSString *detail = [dataArr[i] objectForKey:@"introduction"];
+                NSString *userPicURL = [dataArr[i] objectForKey:@"user_pic"];
+                NSString *userName = [dataArr[i] objectForKey:@"username"];
+                BOOL isFollow = [[dataArr[i] objectForKey:@"statusWithUser"] boolValue];
+                int userID = [[dataArr[i] objectForKey:@"from_uid"] integerValue];
+                NSString *index = [NSString stringWithFormat:@"icon_%d", userID];
+                int vid = [[dataArr[i] objectForKey:@"vid"] integerValue];
+                int likeNum = [[dataArr[i] objectForKey:@"likeNum"] integerValue];
+                UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+                MyVideo *video = [[MyVideo alloc] initWithVideo:title video:url authorName:userName icon:pic commentNum:0 isFollow:isFollow playNum:0];
+                video.vid = vid;
+                video.detail = detail;
+                video.likeNum = likeNum;
+                
+                switch (type) {
+                        //浏览
+                    case 0:
+                        [self.itemsOfbt4 addObject:video];
+                        break;
+                        //点赞
+                    case 1:
+                        [self.itemsOfbt2 addObject:video];
+                        break;
+                        //收藏
+                    case 2:
+                        [self.itemsOfbt1 addObject:video];
+
+                        dispatch_group_t group = dispatch_group_create();
+                        dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                            self.items = self.itemsOfbt1;
+                            [self.tableView  reloadData];
+                        });
+                        break;
+                }
+            
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
+- (void)loadNews:(NSInteger)type{
+    NSString *urlString = [NSString stringWithFormat:@"http://149.28.26.98:8082/miniheadline/getNewsList?uid=%ld&type=%ld", self.user.uid,(long)type];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error == nil) {
+            NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"%@",dict);
+            NSLog(@"%@",str);
+            NSMutableArray *dataArr = [dict objectForKey:@"newsList"];
+            
+            ChildPageNetworkModel *viewModel = [[ChildPageNetworkModel alloc] init];
+            for(int i = 0; i < dataArr.count; i ++){
+                NSLog(@"%d",[[dataArr[i] objectForKey:@"offset"]intValue]);
+                [viewModel getFeedsListWithOffset:[[dataArr[i] objectForKey:@"offset"]intValue] count:1 success:^(NSMutableArray * _Nonnull dataArray) {
+                    switch (type) {
+                            //浏览
+                        case 0:
+                            [self.itemsOfbt4 addObjectsFromArray:dataArray];
+                            break;
+                            //点赞
+                        case 1:
+                            [self.itemsOfbt2 addObjectsFromArray:dataArray];
+                            break;
+                            //收藏
+                        case 2:
+                            [self.itemsOfbt1 addObjectsFromArray:dataArray];
+
+                            dispatch_group_t group = dispatch_group_create();
+                            dispatch_group_async(group, dispatch_get_main_queue(), ^{
+                                self.items = self.itemsOfbt1;
+                                [self.tableView  reloadData];
+                            });
+                            break;
+                            
+                    }
+     
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"请求失败 error:%@",error.description);
+
+                }];
+            }
+        }
+    }];
+    
+    [dataTask resume];
+
+}
+
 - (void)tableLoad {
     NSLog(@"loadNewData");
     
-    
+    // 线程问题
+    [self loadNews:2];
+    [self loadNews:0];
+    [self loadNews:1];
+
+    [self loadVideo:0];
+    [self loadVideo:1];
+    [self loadVideo:2];
+
+    /*
     self.isLoading = YES;
     FirstPageViewModel *viewModel = [[FirstPageViewModel alloc] init];
     [viewModel getFeedsListWithOffset:self.offset count:20 success:^(NSMutableArray * _Nonnull dataArray) {
@@ -209,9 +352,10 @@
         [result addObject:myVideo];
     }
     [self.items addObjectsFromArray:result];
-    
+    */
     
 }
+
 
 -(void)SelectPage:(int) select {
     
@@ -296,11 +440,22 @@
         }
     }
     else{
-        MyVideo* cellData = self.items[indexPath.row];
+        MyVideo *cellData = self.items[indexPath.row];
+        NSInteger cellType;
+        cellType = cellData.cellType;
+        NSString* cellTypeString = [NSString stringWithFormat:@"cellType:%d", cellType];
+        //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+        VideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellTypeString];
+        if(cell == nil) {
+            cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellTypeString];
+            [(VideoTableViewCell*)cell setCellData:cellData];
+            cell.delegate = self;
+            
+        } else {
+            [(VideoTableViewCell*)cell setCellData:cellData];
+            cell.delegate = self;
+        }
         
-        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"1"];
-        cell = [[VideoTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"1"];
-        [(VideoTableViewCell*)cell setCellData:cellData];
         return cell;
     }
 }
@@ -315,14 +470,30 @@
 
 // 通知委托指定行被选中
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-        // 跳转
-    NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
-    NewsModel *temp = self.items[indexPath.row];
-    newsDetailVC.groupID = temp.groupID;
-    [self.navigationController pushViewController:newsDetailVC animated:NO];
+    if([self.items[indexPath.row] isKindOfClass:[NewsModel class]]){
+        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+            // 跳转
+        NewsDetailViewController *newsDetailVC = [[NewsDetailViewController alloc] init];
+        NewsModel *temp = self.items[indexPath.row];
+        newsDetailVC.groupID = temp.groupID;
+        [self.navigationController pushViewController:newsDetailVC animated:NO];
+    }
+    else{
+        
+        NSLog(@"didSelectRowAtIndexPath:%@", indexPath);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        if ([tableView isEqual:self.tableView]) {
+            // 跳转
+            VideoDetailViewController *videoDetailViewController = [[VideoDetailViewController alloc] init];
+            videoDetailViewController.myVideo = self.items[indexPath.row];
+            //[videoDetailViewController setData];
+            [self.navigationController pushViewController:videoDetailViewController animated:NO];
+        }
+    }
     
 }
 
@@ -369,6 +540,68 @@
     //    self.tableView.editing = !self.tableView.isEditing;
     [self.tableView setEditing:!self.tableView.isEditing animated:YES];
 }
+
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if([self.items[indexPath.row] isKindOfClass:[NewsModel class]]){
+        return UITableViewAutomaticDimension;
+    }
+    else{
+        return 270;
+    }
+}
+
+/*- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+ //因为复用，同一个cell可能会走多次
+ if ([_cell isEqual:cell]) {
+ //区分是否是播放器所在cell,销毁时将指针置空
+ [_playerView destroyPlayer];
+ _cell = nil;
+ }
+ }*/
+
+- (void)cl_tableViewCellPlayVideoWithCell:(VideoTableViewCell *)cell{
+    //记录被点击的Cell
+    _cell = cell;
+    //销毁播放器
+    [_playerView destroyPlayer];
+    SimpleVideoView *playerView = [[SimpleVideoView alloc] initWithFrame:cell.videoView.frame];
+    //playerView.frame = cell.videoView.frame;
+    _playerView = playerView;
+    //[cell.videoView addSubview:_playerView];
+    [cell.videoView insertSubview:_playerView belowSubview:cell.titleLabel];
+    //视频地址
+    _playerView.url = cell.videoModel.video;
+    [_playerView loadVideo];
+    //播放
+    [_playerView playVideo];
+    
+}
+
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+ NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
+ if (indexPath.row == self.dataList.count - 1 && self.isLoading == NO) {
+ [self loadMoreData];
+ }
+ 
+ }*/
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    //我尝试去修改作者的，似乎也没有起作用，所有自己在改方法中进行销毁
+    NSArray *cells = [self.tableView visibleCells];
+    if (![cells containsObject:self.cell]) {
+        
+        if (self.playerView) {
+            //销毁播放器
+            [self.playerView destroyPlayer];
+            self.playerView = nil;
+        }
+        
+    }
+}
+
 
 
 @end

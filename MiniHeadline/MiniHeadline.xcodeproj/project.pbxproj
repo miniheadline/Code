@@ -130,6 +130,8 @@
 		E8893885227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E8893884227AAFD8003C8FB7 /* UIButton+ImageTitleStyle.m */; };
 		E8913EE32298D401007C16CA /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE12298D401007C16CA /* Toast.m */; };
 		E8913EE522B48DBD007C16CA /* UserRegisterController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8913EE422B48DBD007C16CA /* UserRegisterController.m */; };
+		E8F6CB3A22C627080018B941 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F6CB3922C627070018B941 /* default.png */; };
+		E8F6CB3D22C634BF0018B941 /* ChildPageNetworkModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -335,6 +337,9 @@
 		E8913EE422B48DBD007C16CA /* UserRegisterController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserRegisterController.m; sourceTree = "<group>"; };
 		E8913EE622B48DE0007C16CA /* UserRegisterController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserRegisterController.h; sourceTree = "<group>"; };
 		E8913EE722B49105007C16CA /* zhuce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhuce.png; sourceTree = "<group>"; };
+		E8F6CB3922C627070018B941 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = "<group>"; };
+		E8F6CB3B22C6348F0018B941 /* ChildPageNetworkModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChildPageNetworkModel.h; sourceTree = "<group>"; };
+		E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChildPageNetworkModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,6 +409,7 @@
 		1B0F34F222C0CC1B00449F42 /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				E8F6CB3922C627070018B941 /* default.png */,
 				D60073F422C3A64A003DDA07 /* play_list.png */,
 				D60073F522C3A64A003DDA07 /* shadow.png */,
 				D60073F622C3A64A003DDA07 /* star_on.png */,
@@ -662,6 +668,8 @@
 		1BCE642F226DB42D0078E11B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E8F6CB3C22C634BF0018B941 /* ChildPageNetworkModel.m */,
+				E8F6CB3B22C6348F0018B941 /* ChildPageNetworkModel.h */,
 				E81158D62297F61F002BA4CD /* NSComment.h */,
 				E81158D72297F61F002BA4CD /* NSComment.m */,
 				E81158B42297F559002BA4CD /* UserInfoModel.h */,
@@ -943,6 +951,7 @@
 				1B0F354422C0CC1B00449F42 /* video_unselected.png in Resources */,
 				1B0F353A22C0CC1B00449F42 /* star_selected.png in Resources */,
 				1B0F355522C0CC1B00449F42 /* next_black.png in Resources */,
+				E8F6CB3A22C627080018B941 /* default.png in Resources */,
 				1B0F353B22C0CC1B00449F42 /* unlike-fill_23.png in Resources */,
 				1B0F352C22C0CC1B00449F42 /* pause _white.png in Resources */,
 				D6BC8BB72283E66B001AFD60 /* View2.xib in Resources */,
@@ -1046,6 +1055,7 @@
 				D6F8174122BAC684001143CB /* CommentIDViewModel.m in Sources */,
 				E81158B62297F55A002BA4CD /* UserInfoModel.m in Sources */,
 				E81158BD2297F575002BA4CD /* EditInfoController.m in Sources */,
+				E8F6CB3D22C634BF0018B941 /* ChildPageNetworkModel.m in Sources */,
 				D60073EC22C37317003DDA07 /* CommentTwoTableViewCell.m in Sources */,
 				1B09D190226AFF7C00BB7480 /* main.m in Sources */,
 				1B69A996226EF424008B5A16 /* SingleImageTableViewCell.m in Sources */,
