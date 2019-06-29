@@ -65,7 +65,7 @@
             NSDate *stringDate = [formatter dateFromString:time];
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
             dispatch_group_enter(downloadTaskGroup);
-            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            UIImage *pic = [UIImage imageNamed:@"default_user.jpg"];
             MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
             comment.cid = cid;
             [arr replaceObjectAtIndex:i withObject:comment];
@@ -179,7 +179,7 @@
             NSDate *stringDate = [formatter dateFromString:time];
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
             
-            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            UIImage *pic = [UIImage imageNamed:@"default_user.jpg"];
             MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
             comment.cid = cid;
             [arr replaceObjectAtIndex:i withObject:comment];
@@ -267,7 +267,7 @@
             NSString *index = [NSString stringWithFormat:@"icon_%d", fromUID];
             
             //static NSString *picPath;
-            UIImage *pic = [UIImage imageNamed:@"icon_default.jpg"];
+            UIImage *pic = [UIImage imageNamed:@"default_user.jpg"];
             MyComment *comment = [[MyComment alloc] initWithComment:pic authorName:userName comment:text likeNum:likeNum date:stringDate];
             comment.cid = cid;
             [arr replaceObjectAtIndex:i-offset withObject:comment];
