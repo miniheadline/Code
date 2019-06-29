@@ -89,6 +89,10 @@
         tableView.dataSource = self;
         tableView.separatorStyle = NO;
 //        tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        [footer setTitle:@"" forState:MJRefreshStateIdle];
+        tableView.mj_footer = footer;
         [self addSubview:tableView];
         _commentViewTableView = tableView;
     }
@@ -179,7 +183,7 @@
     [self loadMoreData];
 }
 
-- (void)loadMoreData {
+/*- (void)loadMoreData {
     NSLog(@"loadMoreData");
     self.isLoading = YES;
     CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
@@ -204,7 +208,7 @@
 //        [self.commentViewTableView.mj_footer endRefreshing];
         self.isLoading = NO;
     }];
-}
+}*/
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -280,5 +284,117 @@
     }
 }
 
+- (void)loadNewData {
+    NSLog(@"loadNewData");
+    self.isLoading = YES;
+    CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
+    [viewModel getCommentListWithID:self.choosenComment.cid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        if(dataArray.count == self.commentsListSecond.count) {
+            self.hasMore = NO;
+        }
+        else {
+            self.hasMore = YES;
+        }
+        if (dataArray != nil && dataArray.count > self.commentsListSecond.count) {
+            //[self.commentsList addObjectsFromArray:dataArray];
+            if(self.commentsListSecond.count > 0) {
+                int count = self.commentsListSecond.count;
+                int minID = self.commentsListSecond[count-1].cid;
+                //int maxID = self.commentsList[0].cid;
+                //NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<%ld AND cid>=%ld",minID, minID-10];
+                NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", minID];
+                if(beforeApredicate != nil) {
+                    NSArray *beforeArray = [dataArray filteredArrayUsingPredicate:beforeApredicate];
+                    if(beforeArray.count > 0) {
+                        [self.commentsListSecond removeAllObjects];
+                        [self.commentsListSecond addObjectsFromArray:beforeArray];
+                    }
+                }
+                /*if(backApredicate != nil) {
+                 NSArray *afterArray = [dataArray filteredArrayUsingPredicate:backApredicate];
+                 if(afterArray.count > 0) {
+                 [self.commentsList addObjectsFromArray:afterArray];
+                 }
+                 }*/
+            }
+            else {
+                int count = dataArray.count < 5 ? dataArray.count : 5;
+                for(int i = 0; i < count; i++) {
+                    [self.commentsListSecond addObject:dataArray[i]];
+                }
+            }
+        }
+        NSLog(@"count: %d", self.commentsListSecond.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+            [self.commentViewTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            //[self.commentTableView reloadData];
+            [self.commentViewTableView.mj_header endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.commentsListSecond.count;
+        });
+    } failure:^(NSError * _Nonnull error) {
+        [self.commentViewTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+    //[self.detailCell loadNewLikeNum];
+    
+}
 
+- (void)loadMoreData {
+    NSLog(@"loadMoreData");
+    self.isLoading = YES;
+    CommentIDViewModel *viewModel = [[CommentIDViewModel alloc] init];
+    [viewModel getCommentListWithID:self.choosenComment.cid offset:self.offset size:5 success:^(NSMutableArray * _Nonnull dataArray) {
+        if(dataArray.count == self.commentsListSecond.count) {
+            self.hasMore = NO;
+        }
+        else {
+            self.hasMore = YES;
+        }
+        if (dataArray != nil && dataArray.count > self.commentsListSecond.count) {
+            //[self.commentsList addObjectsFromArray:dataArray];
+            if(self.commentsListSecond.count > 0) {
+                int count = self.commentsListSecond.count;
+                int minID = self.commentsListSecond[count-1].cid;
+                int maxID = self.commentsListSecond[0].cid;
+                NSPredicate *backApredicate = [NSPredicate predicateWithFormat:@"cid<=%ld AND cid>=%ld",maxID, minID-10];
+                //NSPredicate *beforeApredicate = [NSPredicate predicateWithFormat:@"cid>%ld", maxID];
+                /*if(beforeApredicate != nil) {
+                 NSArray *beforeArray = [dataArray filteredArrayUsingPredicate:beforeApredicate];
+                 if(beforeArray.count > 0) {
+                 NSRange range = NSMakeRange(0, beforeArray.count);
+                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                 [self.commentsList insertObjects:beforeArray atIndexes:indexSet];
+                 }
+                 }*/
+                if(backApredicate != nil) {
+                    NSArray *afterArray = [dataArray filteredArrayUsingPredicate:backApredicate];
+                    if(afterArray.count > 0) {
+                        [self.commentsListSecond removeAllObjects];
+                        [self.commentsListSecond addObjectsFromArray:afterArray];
+                    }
+                }
+            }
+            else {
+                int count = dataArray.count < 5 ? dataArray.count : 5;
+                for(int i = 0; i < count; i++) {
+                    [self.commentsListSecond addObject:dataArray[i]];
+                }
+            }
+        }
+        NSLog(@"count: %d", self.commentsListSecond.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:1];
+            [self.commentViewTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            //[self.commentTableView reloadData];
+            [self.commentViewTableView.mj_footer endRefreshing];
+            self.isLoading = NO;
+            self.offset = self.commentsListSecond.count;
+        });
+    } failure:^(NSError * _Nonnull error) {
+        [self.commentViewTableView.mj_footer endRefreshing];
+        self.isLoading = NO;
+    }];
+}
 @end

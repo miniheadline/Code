@@ -343,12 +343,13 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     return indexPath;
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+/*- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     //因为复用，同一个cell可能会走多次
     if ([_cell isEqual:cell]) {
         //[_cell.imageView setBackgroundColor:<#(UIColor * _Nullable)#>];
+        [_cell.imageView setImage:[UIImage imageNamed:@"white_pic.png"]];
     }
-}
+}*/
 
 - (void)cl_tableViewCellPlayVideoWithCell:(VideoTableViewCell *)cell{
     //记录被点击的Cell
