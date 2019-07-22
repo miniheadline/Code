@@ -35,15 +35,16 @@
         
         // 为了确保返回的数据和加载的顺序一致
         NSMutableArray *arr = [NSMutableArray array];
-        for (NSInteger i = 0; i < count; i++) {
+        
+        
+        NSMutableArray *dataArr = [[res objectForKey:@"data"] objectForKey:@"article_feed"];
+        NSInteger truecount = count <= dataArr.count ? count : dataArr.count;
+        for (NSInteger i = 0; i < truecount; i++) {
             NewsModel *temp = [[NewsModel alloc] init];
             [arr addObject:temp];
         }
-        
-        NSMutableArray *dataArr = [[res objectForKey:@"data"] objectForKey:@"article_feed"];
-        
         dispatch_group_t downloadTaskGroup = dispatch_group_create();
-        for (NSInteger i = 0; i < count; i++) {
+        for (NSInteger i = 0; i < truecount; i++) {
             NSString *title = [dataArr[i] objectForKey:@"title"];
             
             // urlencode

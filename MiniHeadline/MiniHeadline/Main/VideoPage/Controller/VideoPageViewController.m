@@ -176,6 +176,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [footer setTitle:@"" forState:MJRefreshStateIdle];
         tableView.mj_footer = footer;
+        tableView.estimatedRowHeight = 270;
+        tableView.rowHeight = UITableViewAutomaticDimension;
         tableView;
     });
     [self.view addSubview:self.tableView];
@@ -250,6 +252,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
             [self.dataList addObjectsFromArray:dataArray];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
+                //NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:0];
+                //[self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView.mj_footer endRefreshing];
                 self.isLoading = NO;
                 self.offset = self.offset + 5;
@@ -316,7 +320,7 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
         [(VideoTableViewCell*)cell setCellData:self.dataList[indexPath.row]];
         cell.delegate = self;
     }
-    
+    [cell layoutIfNeeded];
     return cell;
 }
 
@@ -334,7 +338,8 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 270;
+    //return 270;
+    return UITableViewAutomaticDimension;
 }
 
 // 通知委托指定行将要被选中，返回响应行的索引
@@ -369,13 +374,13 @@ static NSString *VideoTableViewCellIdentifier = @"VideoTableViewCellIdentifier";
     
 }
 
-/*- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"willSelectRowAtIndexPath:%@", indexPath);
     if (indexPath.row == self.dataList.count - 1 && self.isLoading == NO) {
         [self loadMoreData];
     }
     
-}*/
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
