@@ -59,6 +59,7 @@
 @property (nonatomic, assign) BOOL isPlay;
 @property (nonatomic, strong) AVPlayer *videoPlayer;
 @property (nonatomic, strong) AVPlayerLayer *video;
+@property (nonatomic, strong) AVURLAsset *urlAsset;
 @property (nonatomic, strong) UIView *videoView;
 @property (nonatomic, strong) UIButton *playBtn;
 @property (nonatomic, strong) UISlider *videoProgess;
@@ -282,8 +283,8 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.videoPlayer = [AVPlayer playerWithURL:url];
         self.video = [AVPlayerLayer playerLayerWithPlayer:self.videoPlayer];
-        AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
-        CMTime videoDuration = [avUrlAsset duration];
+        self.urlAsset = [AVURLAsset assetWithURL:url];
+        CMTime videoDuration = [self.urlAsset duration];
         float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:videoDurationSeconds];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -558,7 +559,7 @@
 }
 
 - (IBAction)commentBtnClick:(id)sender {
-    NSIndexPath * dayOne = [NSIndexPath indexPathForRow:0 inSection:1];
+    NSIndexPath * dayOne = [NSIndexPath indexPathForRow:0 inSection:2];
     [self.commentTableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
@@ -625,14 +626,34 @@
 }
 
 -(IBAction)progessChange:(UISlider*)sender{
-    NSURL *url = [NSURL URLWithString:self.myVideo.video];
-    AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
-    CMTime videoDuration = [avUrlAsset duration];
-    float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
-    CGFloat fps = [[[avUrlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
-    CMTime time = CMTimeMakeWithSeconds(videoDurationSeconds * sender.value, fps);
-    
-    [self.videoPlayer seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    if(!self.videoPlayer.currentItem.isPlaybackBufferEmpty) {
+        CMTime videoDuration = [self.urlAsset duration];
+        float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
+        CGFloat fps = [[[self.urlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
+        float choose = videoDurationSeconds * sender.value;
+        NSArray *loadedTimeRanges = [self.videoPlayer.currentItem loadedTimeRanges];
+        // 获取缓冲区域
+        CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];
+        //开始的时间
+        NSTimeInterval startSeconds = CMTimeGetSeconds(timeRange.start);
+        //表示已经缓冲的时间
+        NSTimeInterval durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        // 计算缓冲总时间
+        NSTimeInterval result = startSeconds + durationSeconds;
+        NSLog(@"开始:%f,持续:%f,总时间:%f", startSeconds, durationSeconds, result);
+        NSLog(@"视频的加载进度是:%%%f", durationSeconds / videoDurationSeconds * 100);
+        if(choose>durationSeconds){
+            choose = durationSeconds;
+        }
+        //NSInteger last = [ranges objectAtIndex:ranges.count-1];
+        //NSLog(@"value = %@",ranges);
+        CMTime time = CMTimeMakeWithSeconds(choose, fps);
+        
+        
+        
+        
+        [self.videoPlayer seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    }
 }
 
 -(void)textViewDidChange:(UITextView *)textView{

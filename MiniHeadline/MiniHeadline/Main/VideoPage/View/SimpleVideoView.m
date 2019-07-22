@@ -70,14 +70,34 @@
 }
 
 -(IBAction)progessChange:(UISlider*)sender{
-    NSURL *url = [NSURL URLWithString:self.url];
-    AVURLAsset *avUrlAsset = [AVURLAsset assetWithURL:url];
-    CMTime videoDuration = [avUrlAsset duration];
-    float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
-    CGFloat fps = [[[avUrlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
-    CMTime time = CMTimeMakeWithSeconds(videoDurationSeconds * sender.value, fps);
-    
-    [self.videoPlayer seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    if(!self.videoPlayer.currentItem.isPlaybackBufferEmpty) {
+        CMTime videoDuration = [self.urlAsset duration];
+        float videoDurationSeconds = CMTimeGetSeconds(videoDuration);
+        CGFloat fps = [[[self.urlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
+        float choose = videoDurationSeconds * sender.value;
+        NSArray *loadedTimeRanges = [self.videoPlayer.currentItem loadedTimeRanges];
+        // 获取缓冲区域
+        CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];
+        //开始的时间
+        NSTimeInterval startSeconds = CMTimeGetSeconds(timeRange.start);
+        //表示已经缓冲的时间
+        NSTimeInterval durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        // 计算缓冲总时间
+        NSTimeInterval result = startSeconds + durationSeconds;
+        NSLog(@"开始:%f,持续:%f,总时间:%f", startSeconds, durationSeconds, result);
+        NSLog(@"视频的加载进度是:%%%f", durationSeconds / videoDurationSeconds * 100);
+        if(choose>durationSeconds){
+            choose = durationSeconds;
+        }
+        //NSInteger last = [ranges objectAtIndex:ranges.count-1];
+        //NSLog(@"value = %@",ranges);
+        CMTime time = CMTimeMakeWithSeconds(choose, fps);
+        
+        
+        
+        
+        [self.videoPlayer seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    }
 }
 
 -(void) loadVideo {
@@ -85,6 +105,7 @@
     NSURL *url = [NSURL URLWithString:self.url];
     self.videoPlayerItem = [[AVPlayerItem alloc] initWithURL:url];
     self.videoPlayer = [[AVPlayer alloc] initWithPlayerItem:self.videoPlayerItem];
+    self.urlAsset = [AVURLAsset assetWithURL:url];
     [self.videoPlayer.currentItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
     [self.videoPlayer.currentItem addObserver:self
                  forKeyPath:@"playbackBufferEmpty"

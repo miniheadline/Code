@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) AVPlayer *videoPlayer;
 @property (nonatomic, strong) AVPlayerItem *videoPlayerItem;
 @property (nonatomic, strong) AVPlayerLayer *video;
+@property (nonatomic, strong) AVURLAsset* urlAsset;
 @property (nonatomic, strong) UIButton *playBtn;
 @property (nonatomic, strong) UISlider *videoProgess;
 @property (nonatomic, strong) NSTimer *videoTimer;
