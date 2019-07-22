@@ -459,7 +459,7 @@
      error：错误信息，如果请求失败，则error有值
      */
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        dispatch_group_t getIsLikeTaskGroup = dispatch_group_create();
+        //dispatch_group_t getIsLikeTaskGroup = dispatch_group_create();
         if (error == nil) {
             //6.解析服务器返回的数据
             //说明：（此处返回的数据是JSON格式的，因此使用NSJSONSerialization进行反序列化处理）

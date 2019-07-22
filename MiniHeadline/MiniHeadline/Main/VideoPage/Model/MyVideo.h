@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithVideo:(NSString*)title video:(NSString*)video authorName:(NSString*)authorName icon:(UIImage*)icon commentNum:(NSInteger)commentNum isFollow:(BOOL)isFollow
     playNum:(NSInteger)playNum;
 - (float) getHeight;
+- (void) getPic;
 
 @end
 

@@ -118,24 +118,32 @@
     self.isLogin = user.isLogin;
     self.uid = user.uid;
     if(self.isLogin) {
+        dispatch_group_t browseVideo = dispatch_group_create();
+        dispatch_group_t getIsLike = dispatch_group_create();
+        dispatch_group_t getIsStar = dispatch_group_create();
+        dispatch_group_t getLikeNum = dispatch_group_create();
+        dispatch_group_enter(browseVideo);
         [viewModel browseVideoWithUid:self.uid vid:self.myVideo.vid success:^{
-            
+            dispatch_group_leave(browseVideo);
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error:%@",error.description);
+            dispatch_group_leave(browseVideo);
         }];
-        [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
-            self.myVideo.isLike = isLike;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(isLike) {
-                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
-                }
-                else {
-                    [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
-                }
-            });
-        } failure:^(NSError * _Nonnull error) {
-            NSLog(@"请求失败 error:%@",error.description);
-        }];
+        dispatch_group_notify(browseVideo, dispatch_get_main_queue(), ^{
+            [viewModel getIsLikeWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isLike) {
+                self.myVideo.isLike = isLike;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(isLike) {
+                        [self.likeBarBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
+                    }
+                    else {
+                        [self.likeBarBtn setImage:[UIImage imageNamed:@"like_25.png"] forState:UIControlStateNormal];
+                    }
+                });
+            } failure:^(NSError * _Nonnull error) {
+                NSLog(@"请求失败 error:%@",error.description);
+            }];
+        });
         [viewModel getIsStarWithUid:self.uid vid:self.myVideo.vid success:^(BOOL isStar) {
             self.myVideo.isStar = isStar;
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -481,7 +489,7 @@
     
     [self setData];
     
-    /// 添加监听.以及回调
+    // 添加监听.以及回调
     __weak typeof(self) weakSelf = self;
     self.videoTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timer) userInfo:nil repeats:YES];
 }
@@ -706,7 +714,7 @@
         [self.commentText setDelegate:self];
         [self.sendBtn addTarget:self action:@selector(sendBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
-    [self.view.window addSubview:self.commentsView];//添加到window上或者其他视图也行，只要在视图以外就好了
+    [self.view.window addSubview:self.commentsView];
     [self.commentText becomeFirstResponder];//让textView成为第一响应者（第一次）这次键盘并未显示出来，（个人觉得这里主要是将commentsView设置为commentText的inputAccessoryView,然后再给一次焦点就能成功显示）
 }
 

@@ -155,17 +155,19 @@
         make.width.equalTo(screenBound.size.width);
         make.height.equalTo(10);
     }];*/
+    [self.videoView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView.top);
+        make.left.equalTo(self.contentView.left);
+        make.right.equalTo(self.contentView.right);
+        //make.width.equalTo(screenBound.size.width);
+        //make.height.equalTo(215);
+        make.size.equalTo(CGSizeMake(screenBound.size.width, 215)).priorityHigh();
+    }];
     [self.titleLabel makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.videoView.top).with.offset(10);
-        make.left.equalTo(self.left).with.offset(10);
+        make.left.equalTo(self.contentView.left).with.offset(10);
     }];
-    [self.videoView makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.top);
-        make.left.equalTo(self.left);
-        make.right.equalTo(self.right);
-        make.width.equalTo(screenBound.size.width);
-        make.height.equalTo(215);
-    }];
+    
     [self.startBtn makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.videoView.centerX);
         make.centerY.equalTo(self.videoView.centerY);
@@ -173,12 +175,14 @@
     }];
     [self.icon makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.videoView.bottom).with.offset(10);
-        make.left.equalTo(self.left).with.offset(30);
+        make.left.equalTo(self.contentView.left).with.offset(30);
         make.height.and.width.equalTo(30);
+        make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
     [self.name makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.icon.centerY);
         make.left.equalTo(self.icon.right).with.offset(10);
+        make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
     /*[self.followBtn makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.icon.centerY);
@@ -188,11 +192,17 @@
     [self.shareBtn makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.icon.centerY);
         make.right.equalTo(self.right).with.offset(-30);
+        make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
     [self.commentBtn makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.icon.centerY);
         make.right.equalTo(self.shareBtn.left).with.offset(-10);
         make.height.and.width.equalTo(25);
+        make.bottom.equalTo(self.contentView).with.offset(-10);
+    }];
+    [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        // 重点代码：contentView的4条边和self对齐
+        make.top.left.right.bottom.mas_equalTo(self);
     }];
 }
 
@@ -214,17 +224,18 @@
     CMTime cmtime = CMTimeMake(1,1);
     CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
     UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];*/
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL *url = [NSURL URLWithString:cellData.video];
-        AVAsset * asset = [AVAsset assetWithURL:url];
-        AVAssetImageGenerator * imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
-        CMTime cmtime = CMTimeMake(1,1);
-        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmtime actualTime:NULL error:NULL];
-        UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.pic setImage:thumbnail];
+    if(self.videoModel.startPic == NULL){
+        [self.pic setImage:[UIImage imageNamed:@"white.png"]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.videoModel getPic];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.pic setImage:self.videoModel.startPic];
+            });
         });
-    });
+    }
+    else {
+        [self.pic setImage:self.videoModel.startPic];
+    }
     
     [self.icon setBackgroundImage:cellData.icon forState:UIControlStateNormal];
     CGRect rect = [cellData.authorName boundingRectWithSize:CGSizeMake(CGFLOAT_MAX - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: self.titleLabel.font} context:nil];

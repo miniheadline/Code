@@ -75,6 +75,8 @@
 }
 
 - (IBAction)closeComment:(id)sender {
+    //[self.commentsListSecond removeAllObjects];
+    
     if (_delegate && [_delegate respondsToSelector:@selector(closeCommentsViewBtnDelegate:)]){
         //[self.startBtn removeFromSuperview];
         [_delegate closeCommentsViewBtnDelegate:self];
@@ -133,6 +135,8 @@
 #pragma mark- 模型赋值
 - (void)setCommentData:(MyComment *)choosenComment{
     _choosenComment = choosenComment;
+    NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:0];
+    [self.commentViewTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
     //NSArray* commentPart = [self loadComment:1];
     //self.commentsListSecond = [NSMutableArray arrayWithArray:commentPart];
     //self.pageIndexSecond = 0;

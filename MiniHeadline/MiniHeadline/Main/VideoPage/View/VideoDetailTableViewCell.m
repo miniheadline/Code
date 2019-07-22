@@ -179,7 +179,8 @@
         [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
     }*/
     if(data.isLike) {
-        [self.likeBtn setImage:@"like-fill_25.png" forState:UIControlStateNormal];
+        //[self.likeBtn setImage:@"like-fill_25.png" forState:UIControlStateNormal];
+        [self.likeBtn setImage:[UIImage imageNamed:@"like-fill_25.png"] forState:UIControlStateNormal];
     }
     [self.titleLabel setText:data.title];
     [self.moreDetail setText:data.detail];
